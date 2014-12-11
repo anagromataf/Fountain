@@ -129,6 +129,58 @@
     [self.sectionItems removeObjectsAtIndexes:sectionsToDelete];
 }
 
+- (void)insertSectionItems:(NSArray *)sectionItems
+{
+    sectionItems = [sectionItems sortedArrayUsingComparator:self.comperator];
+
+    NSMutableIndexSet *sectionsToInsert = [[NSMutableIndexSet alloc] init];
+
+    [sectionItems enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        [self.sectionItemItentifiers setObject:obj forKey:self.identifier(obj)];
+        
+        NSUInteger offset = [sectionsToInsert lastIndex];
+        if (offset == NSNotFound) {
+            offset = 0;
+        }
+        
+        NSUInteger index = [self.sectionItems indexOfObject:obj
+                                              inSortedRange:NSMakeRange(offset, [self.sectionItems count] - offset)
+                                                    options:NSBinarySearchingInsertionIndex
+                                            usingComparator:self.comperator];
+        [sectionsToInsert addIndex:index];
+    }];
+    
+    [self.sectionItems insertObjects:sectionItems atIndexes:sectionsToInsert];
+}
+
+- (void)updateSectionItems:(NSArray *)sectionItems
+{
+    sectionItems = [sectionItems sortedArrayUsingComparator:self.comperator];
+    
+    __block NSUInteger lastIndex = 0;
+    
+    [sectionItems enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        
+        NSUInteger index = [self.sectionItems indexOfObject:[self.sectionItemItentifiers objectForKey:self.identifier(obj)]];
+        NSUInteger newIndex = [self.sectionItems indexOfObject:obj
+                                                 inSortedRange:NSMakeRange(lastIndex, [self.sectionItems count] - lastIndex)
+                                                       options:NSBinarySearchingInsertionIndex | NSBinarySearchingFirstEqual
+                                               usingComparator:self.comperator];
+        
+        [self.sectionItemItentifiers setObject:obj forKey:self.identifier(obj)];
+        
+        if (newIndex < index) {
+            [self.sectionItems removeObjectAtIndex:index];
+            [self.sectionItems insertObject:obj atIndex:newIndex];
+        } else if (newIndex > index) {
+            [self.sectionItems insertObject:obj atIndex:newIndex];
+            [self.sectionItems removeObjectAtIndex:index];
+        } else {
+            
+        }
+    }];
+}
+
 #pragma mark Observer
 
 @synthesize observers = _observers;

@@ -24,5 +24,7 @@ typedef id<NSCopying>(^FTSectionDataSourceSectionIdentifier)(id);
 
 #pragma mark Updating
 - (void)deleteSectionItems:(NSArray *)sectionItems;
+- (void)insertSectionItems:(NSArray *)sectionItems;
+- (void)updateSectionItems:(NSArray *)sectionItems;
 
 @end

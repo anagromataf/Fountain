@@ -100,6 +100,53 @@ describe(@"FTSectionDataSource", ^{
             });
         });
         
+        context(@"inserting items to the data source", ^{
+           
+            beforeEach(^{
+                [dataSource insertSectionItems:@[@{@"identifier":@"10", @"value":@"c.1"},
+                                                 @{@"identifier":@"11", @"value":@"g.1"}]];
+            });
+            
+            it(@" should contain the item at the correct position", ^{
+                
+                assertThatInteger([dataSource numberOfSections], equalToInteger(12));
+                
+                id item = @{@"identifier":@"10"};
+                assertThat([dataSource sectionsForItem:item], equalTo([NSIndexSet indexSetWithIndex:3]));
+                
+                item = @{@"identifier":@"11"};
+                assertThat([dataSource sectionsForItem:item], equalTo([NSIndexSet indexSetWithIndex:7]));
+                
+            });
+            
+        });
+        
+        context(@"updating items in the data source", ^{
+           
+            beforeEach(^{
+                [dataSource updateSectionItems:@[@{@"identifier":@"5", @"value": @"a"},
+                                                 @{@"identifier":@"8", @"value":@"x"},
+                                                 @{@"identifier":@"2", @"value":@"j"}]];
+            });
+            
+            it(@"should move the updated items to the correct position", ^{
+                
+                assertThatInteger([dataSource numberOfSections], equalToInteger(10));
+                
+                id item;
+                
+                item = @{@"identifier":@"5"};
+                assertThat([dataSource sectionsForItem:item], equalTo([NSIndexSet indexSetWithIndex:0]));
+                
+                item = @{@"identifier":@"8"};
+                assertThat([dataSource sectionsForItem:item], equalTo([NSIndexSet indexSetWithIndex:9]));
+                
+                item = @{@"identifier":@"2"};
+                assertThat([dataSource sectionsForItem:item], equalTo([NSIndexSet indexSetWithIndex:8]));
+            });
+            
+        });
+        
     });
     
 });
