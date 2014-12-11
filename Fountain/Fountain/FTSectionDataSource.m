@@ -81,8 +81,20 @@
 
 - (void)reloadWithCompletionHandler:(void(^)(BOOL success, NSError *error))completionHandler
 {
-    [self reloadWithInitialSectionItems:[self.sectionItems copy]
-                      completionHandler:completionHandler];
+    // Tell all observers to relaod
+    // ----------------------------
+    
+    for (id<FTDataSourceObserver> observer in self.observers) {
+        [observer reload];
+    }
+    
+    
+    // Call the completion handler
+    // ---------------------------
+    
+    if (completionHandler) {
+        completionHandler(YES, nil);
+    }
 }
 
 - (void)reloadWithInitialSectionItems:(NSArray *)sectionItems
@@ -189,9 +201,9 @@
                                                     options:NSBinarySearchingInsertionIndex
                                             usingComparator:self.comperator];
         [sectionsToInsert addIndex:index];
+        
+        [self.sectionItems insertObject:obj atIndex:index];
     }];
-    
-    [self.sectionItems insertObjects:sectionItems atIndexes:sectionsToInsert];
     
     return sectionsToInsert;
 }
