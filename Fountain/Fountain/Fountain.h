@@ -7,4 +7,5 @@
 //
 
 #import "FTDataSource.h"
+#import "FTSectionDataSource.h"
 #import "FTCollectionViewAdapter.h"

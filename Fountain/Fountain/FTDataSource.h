@@ -45,6 +45,7 @@
 
 #pragma mark Getting Section Item
 - (id)itemForSection:(NSInteger)section;
+- (NSIndexSet *)sectionsForItem:(id)item;
 
 #pragma mark Reload
 - (void)reloadWithCompletionHandler:(void(^)(BOOL success, NSError *error))completionHandler;
