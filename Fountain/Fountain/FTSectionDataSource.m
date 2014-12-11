@@ -118,7 +118,37 @@
 
 #pragma mark Updating
 
+- (void)updateWithDeletions:(NSArray *)deletions insertions:(NSArray *)insertions updates:(NSArray *)updates
+{
+    NSIndexSet *deletedSections = [self _deleteSectionItems:deletions];
+    NSIndexSet *insertedSections = [self _insertSectionItems:insertions];
+    NSArray *movedSections = [self _updateSectionItems:updates];
+    
+    for (id<FTDataSourceObserver> observer in self.observers) {
+        [observer performBatchUpdate:^{
+            [observer deleteSections:deletedSections];
+            [observer insertSections:insertedSections];
+            [movedSections enumerateObjectsUsingBlock:^(NSArray *obj, NSUInteger idx, BOOL *stop) {
+                NSUInteger index = [[obj firstObject] unsignedIntegerValue];
+                NSUInteger newIndex = [[obj lastObject] unsignedIntegerValue];
+                if (index != newIndex) {
+                    [observer moveSection:index toSection:newIndex];
+                }
+            }];
+        }];
+    }
+}
+
 - (void)deleteSectionItems:(NSArray *)sectionItems
+{
+    NSIndexSet *sectionsToDelete = [self _deleteSectionItems:sectionItems];
+    
+    for (id<FTDataSourceObserver> observer in self.observers) {
+        [observer deleteSections:sectionsToDelete];
+    }
+}
+
+- (NSIndexSet *)_deleteSectionItems:(NSArray *)sectionItems
 {
     NSMutableIndexSet *sectionsToDelete = [[NSMutableIndexSet alloc] init];
     [sectionItems enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
@@ -127,14 +157,25 @@
     }];
     
     [self.sectionItems removeObjectsAtIndexes:sectionsToDelete];
+    
+    return sectionsToDelete;
 }
 
 - (void)insertSectionItems:(NSArray *)sectionItems
 {
+    NSIndexSet *sectionsToInsert = [self _insertSectionItems:sectionItems];
+    
+    for (id<FTDataSourceObserver> observer in self.observers) {
+        [observer insertSections:sectionsToInsert];
+    }
+}
+
+- (NSIndexSet *)_insertSectionItems:(NSArray *)sectionItems
+{
     sectionItems = [sectionItems sortedArrayUsingComparator:self.comperator];
-
+    
     NSMutableIndexSet *sectionsToInsert = [[NSMutableIndexSet alloc] init];
-
+    
     [sectionItems enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         [self.sectionItemItentifiers setObject:obj forKey:self.identifier(obj)];
         
@@ -151,13 +192,32 @@
     }];
     
     [self.sectionItems insertObjects:sectionItems atIndexes:sectionsToInsert];
+    
+    return sectionsToInsert;
 }
 
 - (void)updateSectionItems:(NSArray *)sectionItems
 {
+    NSArray *updates = [self _updateSectionItems:sectionItems];
+    
+    for (id<FTDataSourceObserver> observer in self.observers) {
+        [updates enumerateObjectsUsingBlock:^(NSArray *obj, NSUInteger idx, BOOL *stop) {
+            NSUInteger index = [[obj firstObject] unsignedIntegerValue];
+            NSUInteger newIndex = [[obj lastObject] unsignedIntegerValue];
+            if (index != newIndex) {
+                [observer moveSection:index toSection:newIndex];
+            }
+        }];
+    }
+}
+
+- (NSArray *)_updateSectionItems:(NSArray *)sectionItems
+{
     sectionItems = [sectionItems sortedArrayUsingComparator:self.comperator];
     
     __block NSUInteger lastIndex = 0;
+    
+    NSMutableArray *updates = [[NSMutableArray alloc] init];
     
     [sectionItems enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         
@@ -167,6 +227,8 @@
                                                        options:NSBinarySearchingInsertionIndex | NSBinarySearchingFirstEqual
                                                usingComparator:self.comperator];
         
+        [updates addObject:@[@(index), @(newIndex)]];
+        
         [self.sectionItemItentifiers setObject:obj forKey:self.identifier(obj)];
         
         if (newIndex < index) {
@@ -175,10 +237,10 @@
         } else if (newIndex > index) {
             [self.sectionItems insertObject:obj atIndex:newIndex];
             [self.sectionItems removeObjectAtIndex:index];
-        } else {
-            
         }
     }];
+    
+    return updates;
 }
 
 #pragma mark Observer
@@ -202,6 +264,5 @@
 {
     [self.observers removeObject:observer];
 }
-
 
 @end
