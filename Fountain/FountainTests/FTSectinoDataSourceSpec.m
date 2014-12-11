@@ -73,6 +73,33 @@ describe(@"FTSectionDataSource", ^{
             assertThat([dataSource sectionsForItem:item], equalTo([NSIndexSet indexSetWithIndex:7]));
         });
         
+        context(@"deleting an item from the data source", ^{
+            
+            beforeEach(^{
+                [dataSource deleteSectionItems:@[@{@"identifier":@"5"}, @{@"identifier":@"8"}]];
+            });
+            
+            it(@"shgould not contain the deleted item", ^{
+                
+                assertThatInteger([dataSource numberOfSections], equalToInteger(8));
+                
+                assertThat([[dataSource itemForSection:0] valueForKey:@"value"], equalTo(@"a"));
+                assertThat([[dataSource itemForSection:1] valueForKey:@"value"], equalTo(@"b"));
+                assertThat([[dataSource itemForSection:2] valueForKey:@"value"], equalTo(@"d"));
+                assertThat([[dataSource itemForSection:3] valueForKey:@"value"], equalTo(@"e"));
+                assertThat([[dataSource itemForSection:4] valueForKey:@"value"], equalTo(@"f"));
+                assertThat([[dataSource itemForSection:5] valueForKey:@"value"], equalTo(@"h"));
+                assertThat([[dataSource itemForSection:6] valueForKey:@"value"], equalTo(@"i"));
+                assertThat([[dataSource itemForSection:7] valueForKey:@"value"], equalTo(@"j"));
+                
+                id item = @{@"identifier":@"5"};
+                assertThat([dataSource sectionsForItem:item], equalTo([NSIndexSet indexSet]));
+                
+                item = @{@"identifier":@"8"};
+                assertThat([dataSource sectionsForItem:item], equalTo([NSIndexSet indexSet]));
+            });
+        });
+        
     });
     
 });

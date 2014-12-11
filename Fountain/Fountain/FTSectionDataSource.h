@@ -22,4 +22,7 @@ typedef id<NSCopying>(^FTSectionDataSourceSectionIdentifier)(id);
 - (void)reloadWithInitialSectionItems:(NSArray *)sectionItems
                     completionHandler:(void(^)(BOOL success, NSError *error))completionHandler;
 
+#pragma mark Updating
+- (void)deleteSectionItems:(NSArray *)sectionItems;
+
 @end

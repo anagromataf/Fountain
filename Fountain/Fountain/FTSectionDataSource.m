@@ -13,6 +13,7 @@
 @property (nonatomic, readonly) FTSectionDataSourceSectionIdentifier identifier;
 
 @property (nonatomic, readonly) NSMutableArray *sectionItems;
+@property (nonatomic, readonly) NSMapTable *sectionItemItentifiers;
 
 @property (nonatomic, readonly) NSHashTable *observers;
 @end
@@ -30,6 +31,7 @@
         _identifier = identifier;
         
         _sectionItems = [[NSMutableArray alloc] init];
+        _sectionItemItentifiers = [NSMapTable strongToWeakObjectsMapTable];
         
         _observers = [NSHashTable weakObjectsHashTable];
     }
@@ -93,6 +95,10 @@
     [self.sectionItems addObjectsFromArray:sectionItems];
     [self.sectionItems sortUsingComparator:self.comperator];
     
+    [self.sectionItemItentifiers removeAllObjects];
+    [self.sectionItems enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        [self.sectionItemItentifiers setObject:obj forKey:self.identifier(obj)];
+    }];
     
     // Tell all observers to relaod
     // ----------------------------
@@ -108,6 +114,19 @@
     if (completionHandler) {
         completionHandler(YES, nil);
     }
+}
+
+#pragma mark Updating
+
+- (void)deleteSectionItems:(NSArray *)sectionItems
+{
+    NSMutableIndexSet *sectionsToDelete = [[NSMutableIndexSet alloc] init];
+    [sectionItems enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        NSUInteger index = [self.sectionItems indexOfObject:[self.sectionItemItentifiers objectForKey:self.identifier(obj)]];
+        [sectionsToDelete addIndex:index];
+    }];
+    
+    [self.sectionItems removeObjectsAtIndexes:sectionsToDelete];
 }
 
 #pragma mark Observer
