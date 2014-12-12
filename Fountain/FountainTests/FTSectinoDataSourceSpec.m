@@ -21,7 +21,7 @@ describe(@"FTSectionDataSource", ^{
     beforeEach(^{
         dataSource = [[FTSectionDataSource alloc] initWithComerator:^NSComparisonResult(NSDictionary *obj1, NSDictionary *obj2) {
             return [[obj1 valueForKey:@"value"] compare:[obj2 valueForKey:@"value"]];
-        } identifer:^id<NSCopying>(NSDictionary *obj) {
+        } identifier:^id<NSCopying>(NSDictionary *obj) {
             return [obj valueForKey:@"identifier"];
         }];
     });
@@ -115,7 +115,7 @@ describe(@"FTSectionDataSource", ^{
                 assertThat([dataSource sectionsForItem:item], equalTo([NSIndexSet indexSetWithIndex:3]));
                 
                 item = @{@"identifier":@"11"};
-                assertThat([dataSource sectionsForItem:item], equalTo([NSIndexSet indexSetWithIndex:7]));
+                assertThat([dataSource sectionsForItem:item], equalTo([NSIndexSet indexSetWithIndex:8]));
                 
             });
             

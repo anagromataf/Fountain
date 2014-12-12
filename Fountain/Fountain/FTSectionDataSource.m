@@ -23,7 +23,7 @@
 #pragma mark Life-cycle
 
 - (instancetype)initWithComerator:(NSComparator)comperator
-                        identifer:(FTSectionDataSourceSectionIdentifier)identifier
+                       identifier:(FTSectionDataSourceSectionIdentifier)identifier
 {
     self = [super init];
     if (self) {

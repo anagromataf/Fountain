@@ -16,7 +16,7 @@ typedef id<NSCopying>(^FTSectionDataSourceSectionIdentifier)(id);
 
 #pragma mark Life-cycle
 - (instancetype)initWithComerator:(NSComparator)comperator
-                        identifer:(FTSectionDataSourceSectionIdentifier)identifier;
+                       identifier:(FTSectionDataSourceSectionIdentifier)identifier;
 
 #pragma mark Relaod
 - (void)reloadWithInitialSectionItems:(NSArray *)sectionItems

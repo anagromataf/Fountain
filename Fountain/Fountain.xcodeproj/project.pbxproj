@@ -10,6 +10,8 @@
 		0D512170FE19E8DF2E1B938C /* libPods-FountainTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F779017B90C1BE975E14DEA6 /* libPods-FountainTests.a */; };
 		F65B92811A38AC7600CEB22E /* FTSectionDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = F65B92801A38AC7600CEB22E /* FTSectionDataSource.m */; };
 		F65B92831A38D09700CEB22E /* FTSectinoDataSourceSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = F65B92821A38D09700CEB22E /* FTSectinoDataSourceSpec.m */; };
+		F67044F81A3B41E4003A44B2 /* FTFlatDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = F67044F71A3B41E4003A44B2 /* FTFlatDataSource.m */; };
+		F67044FA1A3B435B003A44B2 /* FTFlatDataSourceSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = F67044F91A3B435B003A44B2 /* FTFlatDataSourceSpec.m */; };
 		F6B215181A374F04003198D9 /* Fountain.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = F6B215171A374F04003198D9 /* Fountain.h */; };
 		F6B2151A1A374F04003198D9 /* Fountain.m in Sources */ = {isa = PBXBuildFile; fileRef = F6B215191A374F04003198D9 /* Fountain.m */; };
 		F6B215201A374F04003198D9 /* libFountain.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F6B215141A374F04003198D9 /* libFountain.a */; };
@@ -46,6 +48,9 @@
 		F65B927F1A38AC7600CEB22E /* FTSectionDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FTSectionDataSource.h; sourceTree = "<group>"; };
 		F65B92801A38AC7600CEB22E /* FTSectionDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTSectionDataSource.m; sourceTree = "<group>"; };
 		F65B92821A38D09700CEB22E /* FTSectinoDataSourceSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTSectinoDataSourceSpec.m; sourceTree = "<group>"; };
+		F67044F61A3B41E4003A44B2 /* FTFlatDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FTFlatDataSource.h; sourceTree = "<group>"; };
+		F67044F71A3B41E4003A44B2 /* FTFlatDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTFlatDataSource.m; sourceTree = "<group>"; };
+		F67044F91A3B435B003A44B2 /* FTFlatDataSourceSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTFlatDataSourceSpec.m; sourceTree = "<group>"; };
 		F6B215141A374F04003198D9 /* libFountain.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libFountain.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		F6B215171A374F04003198D9 /* Fountain.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Fountain.h; sourceTree = "<group>"; };
 		F6B215191A374F04003198D9 /* Fountain.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Fountain.m; sourceTree = "<group>"; };
@@ -131,6 +136,7 @@
 			isa = PBXGroup;
 			children = (
 				F65B92821A38D09700CEB22E /* FTSectinoDataSourceSpec.m */,
+				F67044F91A3B435B003A44B2 /* FTFlatDataSourceSpec.m */,
 				F6B215241A374F04003198D9 /* Supporting Files */,
 			);
 			path = FountainTests;
@@ -150,6 +156,8 @@
 				F6B2152E1A374F5B003198D9 /* FTDataSource.h */,
 				F65B927F1A38AC7600CEB22E /* FTSectionDataSource.h */,
 				F65B92801A38AC7600CEB22E /* FTSectionDataSource.m */,
+				F67044F61A3B41E4003A44B2 /* FTFlatDataSource.h */,
+				F67044F71A3B41E4003A44B2 /* FTFlatDataSource.m */,
 			);
 			name = "Data Source";
 			sourceTree = "<group>";
@@ -290,6 +298,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F6B215391A375445003198D9 /* FTAdapterPrepareHandler.m in Sources */,
+				F67044F81A3B41E4003A44B2 /* FTFlatDataSource.m in Sources */,
 				F6B2151A1A374F04003198D9 /* Fountain.m in Sources */,
 				F65B92811A38AC7600CEB22E /* FTSectionDataSource.m in Sources */,
 				F6B215361A3751CF003198D9 /* FTCollectionViewAdapter.m in Sources */,
@@ -300,6 +309,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F67044FA1A3B435B003A44B2 /* FTFlatDataSourceSpec.m in Sources */,
 				F65B92831A38D09700CEB22E /* FTSectinoDataSourceSpec.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
