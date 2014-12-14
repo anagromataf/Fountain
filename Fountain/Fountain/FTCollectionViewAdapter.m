@@ -13,6 +13,16 @@
 @interface FTCollectionViewAdapter () <FTDataSourceObserver, UICollectionViewDataSource, UICollectionViewDelegate>
 @property (nonatomic, readonly) NSMutableArray *cellPrepareHandler;
 @property (nonatomic, readonly) NSMutableDictionary *supplementaryElementPrepareHandler;
+
+#pragma mark Data Source Changes
+@property (nonatomic, readonly) NSMutableIndexSet *insertedSections;
+@property (nonatomic, readonly) NSMutableIndexSet *deletedSections;
+@property (nonatomic, readonly) NSMutableIndexSet *reloadedSections;
+@property (nonatomic, readonly) NSMutableArray *movedSections;
+@property (nonatomic, readonly) NSMutableArray *insertedItems;
+@property (nonatomic, readonly) NSMutableArray *deletedItems;
+@property (nonatomic, readonly) NSMutableArray *reloadedItems;
+@property (nonatomic, readonly) NSMutableArray *movedItems;
 @end
 
 @implementation FTCollectionViewAdapter
@@ -29,6 +39,16 @@
         
         _cellPrepareHandler = [[NSMutableArray alloc] init];
         _supplementaryElementPrepareHandler = [[NSMutableDictionary alloc] init];
+        
+        _insertedSections = [[NSMutableIndexSet alloc] init];
+        _deletedSections = [[NSMutableIndexSet alloc] init];
+        _movedSections = [[NSMutableArray alloc] init];
+        _reloadedSections = [[NSMutableIndexSet alloc] init];
+        
+        _insertedItems = [[NSMutableArray alloc] init];
+        _deletedItems = [[NSMutableArray alloc] init];
+        _movedItems = [[NSMutableArray alloc] init];
+        _reloadedItems = [[NSMutableArray alloc] init];
         
         [_collectionView reloadData];
     }
@@ -212,15 +232,53 @@
     }
 }
 
-#pragma mark Perform Batch Update
+#pragma mark Begin End Updates
 
-- (void)dataSource:(id<FTDataSource>)dataSource performBatchUpdate:(void (^)(void))update
+- (void)dataSourceWillChange:(id<FTDataSource>)dataSource
 {
-    if (dataSource == self.dataSource) {
-        [self.collectionView performBatchUpdates:update completion:nil];
-    } else {
-        update();
-    }
+    [self.insertedSections removeAllIndexes];
+    [self.deletedSections removeAllIndexes];
+    [self.reloadedSections removeAllIndexes];
+    [self.movedSections removeAllObjects];
+    [self.insertedItems removeAllObjects];
+    [self.deletedItems removeAllObjects];
+    [self.movedItems removeAllObjects];
+    [self.reloadedItems removeAllObjects];
+}
+
+- (void)dataSourceDidChange:(id<FTDataSource>)dataSource
+{
+    [self.collectionView performBatchUpdates:^{
+        [self.collectionView deleteSections:self.deletedSections];
+        [self.collectionView insertSections:self.insertedSections];
+        [self.collectionView reloadSections:self.reloadedSections];
+        
+        [self.movedSections enumerateObjectsUsingBlock:^(NSArray *indexes, NSUInteger idx, BOOL *stop) {
+            [self.collectionView moveSection:[[indexes firstObject] integerValue]
+                                   toSection:[[indexes lastObject] integerValue]];
+        }];
+        
+        [self.collectionView insertItemsAtIndexPaths:self.insertedItems];
+        [self.collectionView deleteItemsAtIndexPaths:self.deletedItems];
+        [self.collectionView reloadItemsAtIndexPaths:self.reloadedItems];
+        
+        [self.movedItems enumerateObjectsUsingBlock:^(NSArray *indexPaths, NSUInteger idx, BOOL *stop) {
+            [self.collectionView moveItemAtIndexPath:[indexPaths firstObject]
+                                         toIndexPath:[indexPaths lastObject]];
+        }];
+        
+    } completion:^(BOOL finished) {
+        
+    }];
+    
+    [self.insertedSections removeAllIndexes];
+    [self.deletedSections removeAllIndexes];
+    [self.reloadedSections removeAllIndexes];
+    [self.movedSections removeAllObjects];
+    [self.insertedItems removeAllObjects];
+    [self.deletedItems removeAllObjects];
+    [self.movedItems removeAllObjects];
+    [self.reloadedItems removeAllObjects];
 }
 
 #pragma mark Manage Sections
@@ -228,28 +286,28 @@
 - (void)dataSource:(id<FTDataSource>)dataSource didInsertSections:(NSIndexSet *)sections
 {
     if (dataSource == self.dataSource) {
-        [self.collectionView insertSections:sections];
+        [self.insertedSections addIndexes:sections];
     }
 }
 
 - (void)dataSource:(id<FTDataSource>)dataSource didDeleteSections:(NSIndexSet *)sections
 {
     if (dataSource == self.dataSource) {
-        [self.collectionView deleteSections:sections];
+        [self.deletedSections addIndexes:sections];
     }
 }
 
 - (void)dataSource:(id<FTDataSource>)dataSource didReloadSections:(NSIndexSet *)sections
 {
     if (dataSource == self.dataSource) {
-        [self.collectionView reloadSections:sections];
+        [self.reloadedSections addIndexes:sections];
     }
 }
 
 - (void)dataSource:(id<FTDataSource>)dataSource didMoveSection:(NSInteger)section toSection:(NSInteger)newSection
 {
     if (dataSource == self.dataSource) {
-        [self.collectionView moveSection:section toSection:newSection];
+        [self.movedSections addObject:@[@(section), @(newSection)]];
     }
 }
 
@@ -258,28 +316,28 @@
 - (void)dataSource:(id<FTDataSource>)dataSource didInsertItemsAtIndexPaths:(NSArray *)indexPaths
 {
     if (dataSource == self.dataSource) {
-        [self.collectionView insertItemsAtIndexPaths:indexPaths];
+        [self.insertedItems addObjectsFromArray:indexPaths];
     }
 }
 
 - (void)dataSource:(id<FTDataSource>)dataSource didDeleteItemsAtIndexPaths:(NSArray *)indexPaths
 {
     if (dataSource == self.dataSource) {
-        [self.collectionView deleteItemsAtIndexPaths:indexPaths];
+        [self.deletedItems addObjectsFromArray:indexPaths];
     }
 }
 
 - (void)dataSource:(id<FTDataSource>)dataSource didReloadItemsAtIndexPaths:(NSArray *)indexPaths
 {
     if (dataSource == self.dataSource) {
-        [self.collectionView reloadItemsAtIndexPaths:indexPaths];
+        [self.reloadedItems addObjectsFromArray:indexPaths];
     }
 }
 
 - (void)dataSource:(id<FTDataSource>)dataSource didMoveItemAtIndexPath:(NSIndexPath *)indexPath toIndexPath:(NSIndexPath *)newIndexPath
 {
     if (dataSource == self.dataSource) {
-        [self.collectionView moveItemAtIndexPath:indexPath toIndexPath:newIndexPath];
+        [self.movedItems addObject:@[indexPath, newIndexPath]];
     }
 }
 
