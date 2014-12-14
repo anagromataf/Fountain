@@ -15,17 +15,9 @@ typedef id<NSCopying>(^FTSectionDataSourceSectionIdentifier)(id);
 @interface FTSectionDataSource : NSObject <FTDataSource>
 
 #pragma mark Life-cycle
-- (instancetype)initWithComerator:(NSComparator)comperator
-                       identifier:(FTSectionDataSourceSectionIdentifier)identifier;
+- (instancetype)initWithSectionDataSource:(id<FTDataSource>)sectionDataSource;
 
-#pragma mark Relaod
-- (void)reloadWithInitialSectionItems:(NSArray *)sectionItems
-                    completionHandler:(void(^)(BOOL success, NSError *error))completionHandler;
-
-#pragma mark Updating
-- (void)updateWithDeletions:(NSArray *)deletions insertions:(NSArray *)insertions updates:(NSArray *)updates;
-- (void)deleteSectionItems:(NSArray *)sectionItems;
-- (void)insertSectionItems:(NSArray *)sectionItems;
-- (void)updateSectionItems:(NSArray *)sectionItems;
+#pragma mark Section Data Source
+@property (nonatomic, readonly) id<FTDataSource> sectionDataSource;
 
 @end

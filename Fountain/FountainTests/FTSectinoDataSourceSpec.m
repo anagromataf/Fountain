@@ -16,14 +16,17 @@ SpecBegin(FTSectionDataSource)
 
 describe(@"FTSectionDataSource", ^{
     
+    __block FTFlatDataSource *sections = nil;
     __block FTSectionDataSource *dataSource = nil;
     
     beforeEach(^{
-        dataSource = [[FTSectionDataSource alloc] initWithComerator:^NSComparisonResult(NSDictionary *obj1, NSDictionary *obj2) {
+        sections = [[FTFlatDataSource alloc] initWithComerator:^NSComparisonResult(NSDictionary *obj1, NSDictionary *obj2) {
             return [[obj1 valueForKey:@"value"] compare:[obj2 valueForKey:@"value"]];
         } identifier:^id<NSCopying>(NSDictionary *obj) {
             return [obj valueForKey:@"identifier"];
         }];
+        
+        dataSource = [[FTSectionDataSource alloc] initWithSectionDataSource:sections];
     });
     
     it(@"should exsits", ^{
@@ -48,8 +51,8 @@ describe(@"FTSectionDataSource", ^{
                                    @{@"identifier":@"0", @"value":@"f"}
                 ];
                 
-                [dataSource reloadWithInitialSectionItems:items
-                                        completionHandler:^(BOOL success, NSError *error) {
+                [sections reloadWithItems:items
+                        completionHandler:^(BOOL success, NSError *error) {
                     assertThatBool(success, equalToBool(YES));
                     assertThat(error, nilValue());
                     done();
@@ -76,10 +79,10 @@ describe(@"FTSectionDataSource", ^{
         context(@"deleting an item from the data source", ^{
             
             beforeEach(^{
-                [dataSource deleteSectionItems:@[@{@"identifier":@"5"}, @{@"identifier":@"8"}]];
+                [sections deleteItems:@[@{@"identifier":@"5"}, @{@"identifier":@"8"}]];
             });
             
-            it(@"shgould not contain the deleted item", ^{
+            it(@"should not contain the deleted item", ^{
                 
                 assertThatInteger([dataSource numberOfSections], equalToInteger(8));
                 
@@ -103,8 +106,8 @@ describe(@"FTSectionDataSource", ^{
         context(@"inserting items to the data source", ^{
            
             beforeEach(^{
-                [dataSource insertSectionItems:@[@{@"identifier":@"10", @"value":@"c.1"},
-                                                 @{@"identifier":@"11", @"value":@"g.1"}]];
+                [sections insertItems:@[@{@"identifier":@"10", @"value":@"c.1"},
+                                        @{@"identifier":@"11", @"value":@"g.1"}]];
             });
             
             it(@" should contain the item at the correct position", ^{
@@ -124,9 +127,9 @@ describe(@"FTSectionDataSource", ^{
         context(@"updating items in the data source", ^{
            
             beforeEach(^{
-                [dataSource updateSectionItems:@[@{@"identifier":@"5", @"value":@"a"},
-                                                 @{@"identifier":@"8", @"value":@"x"},
-                                                 @{@"identifier":@"2", @"value":@"j"}]];
+                [sections updateItems:@[@{@"identifier":@"5", @"value":@"a"},
+                                        @{@"identifier":@"8", @"value":@"x"},
+                                        @{@"identifier":@"2", @"value":@"j"}]];
             });
             
             it(@"should move the updated items to the correct position", ^{
