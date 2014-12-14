@@ -8,26 +8,27 @@
 
 #import <Foundation/Foundation.h>
 
+@protocol FTDataSource;
+
 @protocol FTDataSourceObserver <NSObject>
-@optional
 
 #pragma mark Reload
-- (void)reload;
+- (void)dataSourceDidReload:(id<FTDataSource>)dataSource;
 
 #pragma mark Perform Batch Update
-- (void)performBatchUpdate:(void (^)(void))update;
+- (void)dataSource:(id<FTDataSource>)dataSource performBatchUpdate:(void (^)(void))update;
 
 #pragma mark Manage Sections
-- (void)insertSections:(NSIndexSet *)sections;
-- (void)deleteSections:(NSIndexSet *)sections;
-- (void)reloadSections:(NSIndexSet *)sections;
-- (void)moveSection:(NSInteger)section toSection:(NSInteger)newSection;
+- (void)dataSource:(id<FTDataSource>)dataSource didInsertSections:(NSIndexSet *)sections;
+- (void)dataSource:(id<FTDataSource>)dataSource didDeleteSections:(NSIndexSet *)sections;
+- (void)dataSource:(id<FTDataSource>)dataSource didReloadSections:(NSIndexSet *)sections;
+- (void)dataSource:(id<FTDataSource>)dataSource didMoveSection:(NSInteger)section toSection:(NSInteger)newSection;
 
 #pragma mark Manage Items
-- (void)insertItemsAtIndexPaths:(NSArray *)indexPaths;
-- (void)deleteItemsAtIndexPaths:(NSArray *)indexPaths;
-- (void)reloadItemsAtIndexPaths:(NSArray *)indexPaths;
-- (void)moveItemAtIndexPath:(NSIndexPath *)indexPath toIndexPath:(NSIndexPath *)newIndexPath;
+- (void)dataSource:(id<FTDataSource>)dataSource didInsertItemsAtIndexPaths:(NSArray *)indexPaths;
+- (void)dataSource:(id<FTDataSource>)dataSource didDeleteItemsAtIndexPaths:(NSArray *)indexPaths;
+- (void)dataSource:(id<FTDataSource>)dataSource didReloadItemsAtIndexPaths:(NSArray *)indexPaths;
+- (void)dataSource:(id<FTDataSource>)dataSource didMoveItemAtIndexPath:(NSIndexPath *)indexPath toIndexPath:(NSIndexPath *)newIndexPath;
 
 @end
 

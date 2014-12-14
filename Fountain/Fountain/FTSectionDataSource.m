@@ -83,7 +83,7 @@
     // ----------------------------
     
     for (id<FTDataSourceObserver> observer in self.observers) {
-        [observer reload];
+        [observer dataSourceDidReload:self];
     }
     
     
@@ -109,7 +109,7 @@
 - (void)addObserver:(id<FTDataSourceObserver>)observer
 {
     [self.observers addObject:observer];
-    [observer reload];
+    [observer dataSourceDidReload:self];
 }
 
 - (void)removeObserver:(id<FTDataSourceObserver>)observer

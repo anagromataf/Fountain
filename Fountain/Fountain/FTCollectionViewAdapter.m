@@ -204,21 +204,83 @@
 #pragma mark - FTDataSourceObserver
 
 #pragma mark Reload
-- (void)reload { [self.collectionView reloadData]; }
+
+- (void)dataSourceDidReload:(id<FTDataSource>)dataSource
+{
+    if (dataSource == self.dataSource) {
+        [self.collectionView reloadData];
+    }
+}
 
 #pragma mark Perform Batch Update
-- (void)performBatchUpdate:(void (^)(void))update { [self.collectionView performBatchUpdates:update completion:nil]; }
+
+- (void)dataSource:(id<FTDataSource>)dataSource performBatchUpdate:(void (^)(void))update
+{
+    if (dataSource == self.dataSource) {
+        [self.collectionView performBatchUpdates:update completion:nil];
+    } else {
+        update();
+    }
+}
 
 #pragma mark Manage Sections
-- (void)insertSections:(NSIndexSet *)sections { [self.collectionView insertSections:sections]; }
-- (void)deleteSections:(NSIndexSet *)sections { [self.collectionView deleteSections:sections]; }
-- (void)reloadSections:(NSIndexSet *)sections { [self.collectionView reloadSections:sections]; }
-- (void)moveSection:(NSInteger)section toSection:(NSInteger)newSection { [self.collectionView moveSection:section toSection:newSection]; }
+
+- (void)dataSource:(id<FTDataSource>)dataSource didInsertSections:(NSIndexSet *)sections
+{
+    if (dataSource == self.dataSource) {
+        [self.collectionView insertSections:sections];
+    }
+}
+
+- (void)dataSource:(id<FTDataSource>)dataSource didDeleteSections:(NSIndexSet *)sections
+{
+    if (dataSource == self.dataSource) {
+        [self.collectionView deleteSections:sections];
+    }
+}
+
+- (void)dataSource:(id<FTDataSource>)dataSource didReloadSections:(NSIndexSet *)sections
+{
+    if (dataSource == self.dataSource) {
+        [self.collectionView reloadSections:sections];
+    }
+}
+
+- (void)dataSource:(id<FTDataSource>)dataSource didMoveSection:(NSInteger)section toSection:(NSInteger)newSection
+{
+    if (dataSource == self.dataSource) {
+        [self.collectionView moveSection:section toSection:newSection];
+    }
+}
 
 #pragma mark Manage Items
-- (void)insertItemsAtIndexPaths:(NSArray *)indexPaths { [self.collectionView insertItemsAtIndexPaths:indexPaths]; }
-- (void)deleteItemsAtIndexPaths:(NSArray *)indexPaths { [self.collectionView deleteItemsAtIndexPaths:indexPaths]; }
-- (void)reloadItemsAtIndexPaths:(NSArray *)indexPaths { [self.collectionView reloadItemsAtIndexPaths:indexPaths]; }
-- (void)moveItemAtIndexPath:(NSIndexPath *)indexPath toIndexPath:(NSIndexPath *)newIndexPath { [self.collectionView moveItemAtIndexPath:indexPath toIndexPath:newIndexPath]; }
+
+- (void)dataSource:(id<FTDataSource>)dataSource didInsertItemsAtIndexPaths:(NSArray *)indexPaths
+{
+    if (dataSource == self.dataSource) {
+        [self.collectionView insertItemsAtIndexPaths:indexPaths];
+    }
+}
+
+- (void)dataSource:(id<FTDataSource>)dataSource didDeleteItemsAtIndexPaths:(NSArray *)indexPaths
+{
+    if (dataSource == self.dataSource) {
+        [self.collectionView deleteItemsAtIndexPaths:indexPaths];
+    }
+}
+
+- (void)dataSource:(id<FTDataSource>)dataSource didReloadItemsAtIndexPaths:(NSArray *)indexPaths
+{
+    if (dataSource == self.dataSource) {
+        [self.collectionView reloadItemsAtIndexPaths:indexPaths];
+    }
+}
+
+- (void)dataSource:(id<FTDataSource>)dataSource didMoveItemAtIndexPath:(NSIndexPath *)indexPath toIndexPath:(NSIndexPath *)newIndexPath
+{
+    if (dataSource == self.dataSource) {
+        [self.collectionView moveItemAtIndexPath:indexPath toIndexPath:newIndexPath];
+    }
+}
 
 @end

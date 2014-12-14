@@ -98,7 +98,7 @@
     // ----------------------------
     
     for (id<FTDataSourceObserver> observer in self.observers) {
-        [observer reload];
+        [observer dataSourceDidReload:self];
     }
     
     
@@ -129,7 +129,7 @@
     // ----------------------------
     
     for (id<FTDataSourceObserver> observer in self.observers) {
-        [observer reload];
+        [observer dataSourceDidReload:self];
     }
     
     
@@ -158,7 +158,7 @@
     }];
     
     for (id<FTDataSourceObserver> observer in self.observers) {
-        [observer deleteItemsAtIndexPaths:indexPaths];
+        [observer dataSource:self didDeleteItemsAtIndexPaths:indexPaths];
     }
 }
 
@@ -186,7 +186,7 @@
     }];
     
     for (id<FTDataSourceObserver> observer in self.observers) {
-        [observer insertItemsAtIndexPaths:indexPaths];
+        [observer dataSource:self didInsertItemsAtIndexPaths:indexPaths];
     }
 }
 
@@ -227,8 +227,9 @@
             NSUInteger index = [[obj firstObject] unsignedIntegerValue];
             NSUInteger newIndex = [[obj lastObject] unsignedIntegerValue];
             if (index != newIndex) {
-                [observer moveItemAtIndexPath:[sectionIndex indexPathByAddingIndex:index]
-                                  toIndexPath:[sectionIndex indexPathByAddingIndex:newIndex]];
+                [observer dataSource:self
+              didMoveItemAtIndexPath:[sectionIndex indexPathByAddingIndex:index]
+                         toIndexPath:[sectionIndex indexPathByAddingIndex:newIndex]];
             }
         }];
     }
@@ -280,7 +281,7 @@
 - (void)addObserver:(id<FTDataSourceObserver>)observer
 {
     [self.observers addObject:observer];
-    [observer reload];
+    [observer dataSourceDidReload:self];
 }
 
 - (void)removeObserver:(id<FTDataSourceObserver>)observer
