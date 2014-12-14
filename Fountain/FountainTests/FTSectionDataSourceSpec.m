@@ -7,7 +7,10 @@
 //
 
 #define HC_SHORTHAND
+#define MOCKITO_SHORTHAND
+
 #import <OCHamcrest/OCHamcrest.h>
+#import <OCMockito/OCMockito.h>
 #import <Specta/Specta.h>
 
 #import "Fountain.h"
@@ -35,7 +38,13 @@ describe(@"FTSectionDataSource", ^{
     
     context(@"reloading with section items", ^{
         
+        __block id observer = nil;
+        
         beforeEach(^{
+            
+            observer = mockProtocol(@protocol(FTDataSourceObserver));
+            [dataSource addObserver:observer];
+            
             waitUntil(^(DoneCallback done) {
                 
                 NSArray *items = @[
@@ -60,6 +69,15 @@ describe(@"FTSectionDataSource", ^{
             });
         });
         
+        afterEach(^{
+            [dataSource removeObserver:observer];
+            observer = nil;
+        });
+        
+        it(@"have called the observer to reload", ^{
+            [verifyCount(observer, times(2)) dataSourceDidReload:dataSource];
+        });
+        
         it(@"should contain the section items ordered by the comperator", ^{
             assertThatInteger([dataSource numberOfSections], equalToInteger(10));
             
@@ -82,7 +100,7 @@ describe(@"FTSectionDataSource", ^{
                 [sections deleteItems:@[@{@"identifier":@"5"}, @{@"identifier":@"8"}]];
             });
             
-            it(@"should not contain the deleted item", ^{
+            it(@"should not contain the deleted items", ^{
                 
                 assertThatInteger([dataSource numberOfSections], equalToInteger(8));
                 
@@ -100,6 +118,18 @@ describe(@"FTSectionDataSource", ^{
                 
                 item = @{@"identifier":@"8"};
                 assertThat([dataSource sectionsForItem:item], equalTo([NSIndexSet indexSet]));
+            });
+            
+            it(@"should have called the observer", ^{
+                
+                [verifyCount(observer, times(1)) dataSourceWillChange:anything()];
+                [verifyCount(observer, times(1)) dataSourceDidChange:anything()];
+                
+                NSMutableIndexSet *indexes = [[NSMutableIndexSet alloc] init];
+                [indexes addIndex:2];
+                [indexes addIndex:6];
+                
+                [verifyCount(observer, times(1)) dataSource:anything() didDeleteSections:indexes];
             });
         });
         
@@ -120,6 +150,18 @@ describe(@"FTSectionDataSource", ^{
                 item = @{@"identifier":@"11"};
                 assertThat([dataSource sectionsForItem:item], equalTo([NSIndexSet indexSetWithIndex:8]));
                 
+            });
+            
+            it(@"should have called the observer", ^{
+                
+                [verifyCount(observer, times(1)) dataSourceWillChange:anything()];
+                [verifyCount(observer, times(1)) dataSourceDidChange:anything()];
+                
+                NSMutableIndexSet *indexes = [[NSMutableIndexSet alloc] init];
+                [indexes addIndex:3];
+                [indexes addIndex:8];
+                
+                [verifyCount(observer, times(1)) dataSource:anything() didInsertSections:indexes];
             });
             
         });
@@ -146,6 +188,15 @@ describe(@"FTSectionDataSource", ^{
                 
                 item = @{@"identifier":@"2"};
                 assertThat([dataSource sectionsForItem:item], equalTo([NSIndexSet indexSetWithIndex:8]));
+            });
+            
+            it(@"should have called the observer", ^{
+                
+                [verifyCount(observer, times(1)) dataSourceWillChange:anything()];
+                [verifyCount(observer, times(1)) dataSourceDidChange:anything()];
+                
+                [verifyCount(observer, times(1)) dataSource:anything() didMoveSection:2 toSection:0];
+                [verifyCount(observer, times(1)) dataSource:anything() didMoveSection:6 toSection:10];
             });
             
         });

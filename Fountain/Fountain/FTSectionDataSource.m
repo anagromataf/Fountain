@@ -8,7 +8,8 @@
 
 #import "FTSectionDataSource.h"
 
-@interface FTSectionDataSource ()
+@interface FTSectionDataSource () <FTDataSourceObserver>
+@property (nonatomic, assign) BOOL updating;
 @property (nonatomic, readonly) NSHashTable *observers;
 @end
 
@@ -21,6 +22,7 @@
     self = [super init];
     if (self) {
         _sectionDataSource = sectionDataSource;
+        [_sectionDataSource addObserver:self];
     }
     return self;
 }
@@ -116,5 +118,134 @@
 {
     [self.observers removeObject:observer];
 }
+
+#pragma mark - FTDataSourceObserver
+
+#pragma mark Reload
+
+- (void)dataSourceDidReload:(id<FTDataSource>)dataSource
+{
+    if (dataSource == self.sectionDataSource) {
+        for (id<FTDataSourceObserver> observer in self.observers) {
+            [observer dataSourceDidReload:self];
+        }
+    }
+}
+
+#pragma mark Begin End Updates
+
+- (void)dataSourceWillChange:(id<FTDataSource>)dataSource
+{
+    if (self.updating == NO) {
+        self.updating = YES;
+        for (id<FTDataSourceObserver> observer in self.observers) {
+            [observer dataSourceWillChange:self];
+        }
+    }
+}
+
+- (void)dataSourceDidChange:(id<FTDataSource>)dataSource
+{
+    if (self.updating == YES) {
+        for (id<FTDataSourceObserver> observer in self.observers) {
+            [observer dataSourceDidChange:self];
+        }
+        self.updating = NO;
+    }
+}
+
+#pragma mark Manage Sections
+
+- (void)dataSource:(id<FTDataSource>)dataSource didInsertSections:(NSIndexSet *)sections
+{
+    if (dataSource == self.sectionDataSource) {
+        
+    }
+}
+
+- (void)dataSource:(id<FTDataSource>)dataSource didDeleteSections:(NSIndexSet *)sections
+{
+    if (dataSource == self.sectionDataSource) {
+        
+    }
+}
+
+- (void)dataSource:(id<FTDataSource>)dataSource didReloadSections:(NSIndexSet *)sections
+{
+    if (dataSource == self.sectionDataSource) {
+        
+    }
+}
+
+- (void)dataSource:(id<FTDataSource>)dataSource didMoveSection:(NSInteger)section toSection:(NSInteger)newSection
+{
+    if (dataSource == self.sectionDataSource) {
+        
+    }
+}
+
+#pragma mark Manage Items
+
+- (void)dataSource:(id<FTDataSource>)dataSource didInsertItemsAtIndexPaths:(NSArray *)indexPaths
+{
+    if (dataSource == self.sectionDataSource) {
+        NSMutableIndexSet *indexes = [[NSMutableIndexSet alloc] init];
+        
+        for (NSIndexPath *indexPath in indexPaths) {
+            if ([indexPath length] >= 2 && [indexPath indexAtPosition:0] == 0) {
+                NSUInteger index = [indexPath indexAtPosition:1];
+                [indexes addIndex:index];
+            }
+        }
+        
+        for (id<FTDataSourceObserver> observer in self.observers) {
+            [observer dataSource:self didInsertSections:indexes];
+        }
+    }
+}
+
+- (void)dataSource:(id<FTDataSource>)dataSource didDeleteItemsAtIndexPaths:(NSArray *)indexPaths
+{
+    if (dataSource == self.sectionDataSource) {
+        NSMutableIndexSet *indexes = [[NSMutableIndexSet alloc] init];
+        
+        for (NSIndexPath *indexPath in indexPaths) {
+            if ([indexPath length] >= 2 && [indexPath indexAtPosition:0] == 0) {
+                NSUInteger index = [indexPath indexAtPosition:1];
+                [indexes addIndex:index];
+            }
+        }
+        
+        for (id<FTDataSourceObserver> observer in self.observers) {
+            [observer dataSource:self didDeleteSections:indexes];
+        }
+    }
+}
+
+- (void)dataSource:(id<FTDataSource>)dataSource didReloadItemsAtIndexPaths:(NSArray *)indexPaths
+{
+    if (dataSource == self.sectionDataSource) {
+        
+    }
+}
+
+- (void)dataSource:(id<FTDataSource>)dataSource didMoveItemAtIndexPath:(NSIndexPath *)indexPath toIndexPath:(NSIndexPath *)newIndexPath
+{
+    if (dataSource == self.sectionDataSource) {
+        if ([indexPath length] >= 2 &&
+            [newIndexPath length] >= 2 &&
+            [indexPath indexAtPosition:0] == 0 &&
+            [newIndexPath indexAtPosition:0] == 0) {
+            
+            NSUInteger index = [indexPath indexAtPosition:1];
+            NSUInteger newIndex = [newIndexPath indexAtPosition:1];
+            
+            for (id<FTDataSourceObserver> observer in self.observers) {
+                [observer dataSource:self didMoveSection:index toSection:newIndex];
+            }
+        }
+    }
+}
+
 
 @end

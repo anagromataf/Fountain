@@ -158,7 +158,9 @@
     }];
     
     for (id<FTDataSourceObserver> observer in self.observers) {
+        [observer dataSourceWillChange:self];
         [observer dataSource:self didDeleteItemsAtIndexPaths:indexPaths];
+        [observer dataSourceDidChange:self];
     }
 }
 
@@ -186,7 +188,9 @@
     }];
     
     for (id<FTDataSourceObserver> observer in self.observers) {
+        [observer dataSourceWillChange:self];
         [observer dataSource:self didInsertItemsAtIndexPaths:indexPaths];
+        [observer dataSourceDidChange:self];
     }
 }
 
@@ -223,6 +227,7 @@
     NSIndexPath *sectionIndex = [NSIndexPath indexPathWithIndex:0];
     
     for (id<FTDataSourceObserver> observer in self.observers) {
+        [observer dataSourceWillChange:self];
         [updates enumerateObjectsUsingBlock:^(NSArray *obj, NSUInteger idx, BOOL *stop) {
             NSUInteger index = [[obj firstObject] unsignedIntegerValue];
             NSUInteger newIndex = [[obj lastObject] unsignedIntegerValue];
@@ -232,6 +237,7 @@
                          toIndexPath:[sectionIndex indexPathByAddingIndex:newIndex]];
             }
         }];
+        [observer dataSourceDidChange:self];
     }
 }
 

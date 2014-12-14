@@ -15,8 +15,9 @@
 #pragma mark Reload
 - (void)dataSourceDidReload:(id<FTDataSource>)dataSource;
 
-#pragma mark Perform Batch Update
-- (void)dataSource:(id<FTDataSource>)dataSource performBatchUpdate:(void (^)(void))update;
+#pragma mark Begin End Updates
+- (void)dataSourceWillChange:(id<FTDataSource>)dataSource;
+- (void)dataSourceDidChange:(id<FTDataSource>)dataSource;
 
 #pragma mark Manage Sections
 - (void)dataSource:(id<FTDataSource>)dataSource didInsertSections:(NSIndexSet *)sections;
