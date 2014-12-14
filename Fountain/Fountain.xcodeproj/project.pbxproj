@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		0D512170FE19E8DF2E1B938C /* libPods-FountainTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F779017B90C1BE975E14DEA6 /* libPods-FountainTests.a */; };
 		F65B92811A38AC7600CEB22E /* FTSectionDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = F65B92801A38AC7600CEB22E /* FTSectionDataSource.m */; };
-		F65B92831A38D09700CEB22E /* FTSectinoDataSourceSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = F65B92821A38D09700CEB22E /* FTSectinoDataSourceSpec.m */; };
+		F65B92831A38D09700CEB22E /* FTSectionDataSourceSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = F65B92821A38D09700CEB22E /* FTSectionDataSourceSpec.m */; };
 		F67044F81A3B41E4003A44B2 /* FTFlatDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = F67044F71A3B41E4003A44B2 /* FTFlatDataSource.m */; };
 		F67044FA1A3B435B003A44B2 /* FTFlatDataSourceSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = F67044F91A3B435B003A44B2 /* FTFlatDataSourceSpec.m */; };
 		F6B215181A374F04003198D9 /* Fountain.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = F6B215171A374F04003198D9 /* Fountain.h */; };
@@ -47,7 +47,7 @@
 		870F95D674BAC412D768B177 /* Pods-FountainTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FountainTests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-FountainTests/Pods-FountainTests.debug.xcconfig"; sourceTree = "<group>"; };
 		F65B927F1A38AC7600CEB22E /* FTSectionDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FTSectionDataSource.h; sourceTree = "<group>"; };
 		F65B92801A38AC7600CEB22E /* FTSectionDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTSectionDataSource.m; sourceTree = "<group>"; };
-		F65B92821A38D09700CEB22E /* FTSectinoDataSourceSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTSectinoDataSourceSpec.m; sourceTree = "<group>"; };
+		F65B92821A38D09700CEB22E /* FTSectionDataSourceSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTSectionDataSourceSpec.m; sourceTree = "<group>"; };
 		F67044F61A3B41E4003A44B2 /* FTFlatDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FTFlatDataSource.h; sourceTree = "<group>"; };
 		F67044F71A3B41E4003A44B2 /* FTFlatDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTFlatDataSource.m; sourceTree = "<group>"; };
 		F67044F91A3B435B003A44B2 /* FTFlatDataSourceSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTFlatDataSourceSpec.m; sourceTree = "<group>"; };
@@ -135,7 +135,7 @@
 		F6B215231A374F04003198D9 /* FountainTests */ = {
 			isa = PBXGroup;
 			children = (
-				F65B92821A38D09700CEB22E /* FTSectinoDataSourceSpec.m */,
+				F65B92821A38D09700CEB22E /* FTSectionDataSourceSpec.m */,
 				F67044F91A3B435B003A44B2 /* FTFlatDataSourceSpec.m */,
 				F6B215241A374F04003198D9 /* Supporting Files */,
 			);
@@ -310,7 +310,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F67044FA1A3B435B003A44B2 /* FTFlatDataSourceSpec.m in Sources */,
-				F65B92831A38D09700CEB22E /* FTSectinoDataSourceSpec.m in Sources */,
+				F65B92831A38D09700CEB22E /* FTSectionDataSourceSpec.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

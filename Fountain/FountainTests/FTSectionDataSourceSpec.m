@@ -1,5 +1,5 @@
 //
-//  FTSectinoDataSourceSpec.m
+//  FTSectionDataSourceSpec.m
 //  Fountain
 //
 //  Created by Tobias Kräntzer on 10.12.14.
