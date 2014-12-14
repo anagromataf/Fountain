@@ -72,7 +72,7 @@ describe(@"FTSectionDataSource", ^{
             id item = @{@"identifier":@"6", @"value":@"h"};
             assertThat([dataSource sectionsForItem:item], equalTo([NSIndexSet indexSetWithIndex:7]));
         });
-        
+
         context(@"deleting an item from the data source", ^{
             
             beforeEach(^{
@@ -124,7 +124,7 @@ describe(@"FTSectionDataSource", ^{
         context(@"updating items in the data source", ^{
            
             beforeEach(^{
-                [dataSource updateSectionItems:@[@{@"identifier":@"5", @"value": @"a"},
+                [dataSource updateSectionItems:@[@{@"identifier":@"5", @"value":@"a"},
                                                  @{@"identifier":@"8", @"value":@"x"},
                                                  @{@"identifier":@"2", @"value":@"j"}]];
             });

@@ -13,6 +13,7 @@
 @property (nonatomic, readonly) FTFlatDataSourceItemIdentifier identifier;
 
 @property (nonatomic, readonly) NSMutableArray *items;
+@property (nonatomic, readonly) NSMapTable *itemItentifiers;
 
 @property (nonatomic, readonly) NSHashTable *observers;
 @end
@@ -30,6 +31,7 @@
         _identifier = identifier;
         
         _items = [[NSMutableArray alloc] init];
+        _itemItentifiers = [NSMapTable strongToWeakObjectsMapTable];
     }
     return self;
 }
@@ -64,6 +66,15 @@
 
 - (NSArray *)indexPathsOfItem:(id)item
 {
+    id identifier = self.identifier(item);
+    id object = [self.itemItentifiers objectForKey:identifier];
+    if (object) {
+        NSUInteger index = [self.items indexOfObject:object];
+        if (index != NSNotFound) {
+            NSIndexPath *sectionIndexPath = [NSIndexPath indexPathWithIndex:0];
+            return @[[sectionIndexPath indexPathByAddingIndex:index]];
+        }
+    }
     return @[];
 }
 
@@ -109,6 +120,10 @@
     [self.items addObjectsFromArray:sectionItems];
     [self.items sortUsingComparator:self.comperator];
     
+    [self.itemItentifiers removeAllObjects];
+    [self.items enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        [self.itemItentifiers setObject:obj forKey:self.identifier(obj)];
+    }];
     
     // Tell all observers to relaod
     // ----------------------------
@@ -132,16 +147,123 @@
 {
 }
 
-- (void)deleteItems:(NSArray *)sectionItems
+- (void)deleteItems:(NSArray *)items
 {
+    NSIndexSet *itemsToDelete = [self _deleteItems:items];
+    
+    NSIndexPath *section = [NSIndexPath indexPathWithIndex:0];
+    NSMutableArray *indexPaths = [[NSMutableArray alloc] init];
+    [itemsToDelete enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+        [indexPaths addObject:[section indexPathByAddingIndex:idx]];
+    }];
+    
+    for (id<FTDataSourceObserver> observer in self.observers) {
+        [observer deleteItemsAtIndexPaths:indexPaths];
+    }
 }
 
-- (void)insertItems:(NSArray *)sectionItems
+- (NSIndexSet *)_deleteItems:(NSArray *)items
 {
+    NSMutableIndexSet *itemsToDelete = [[NSMutableIndexSet alloc] init];
+    [items enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        NSUInteger index = [self.items indexOfObject:[self.itemItentifiers objectForKey:self.identifier(obj)]];
+        [itemsToDelete addIndex:index];
+    }];
+    
+    [self.items removeObjectsAtIndexes:itemsToDelete];
+    
+    return itemsToDelete;
 }
 
-- (void)updateItems:(NSArray *)sectionItems
+- (void)insertItems:(NSArray *)items
 {
+    NSIndexSet *itemsToInsert = [self _insertItems:items];
+    
+    NSIndexPath *section = [NSIndexPath indexPathWithIndex:0];
+    NSMutableArray *indexPaths = [[NSMutableArray alloc] init];
+    [itemsToInsert enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+        [indexPaths addObject:[section indexPathByAddingIndex:idx]];
+    }];
+    
+    for (id<FTDataSourceObserver> observer in self.observers) {
+        [observer insertItemsAtIndexPaths:indexPaths];
+    }
+}
+
+- (NSIndexSet *)_insertItems:(NSArray *)items
+{
+    items = [items sortedArrayUsingComparator:self.comperator];
+    
+    NSMutableIndexSet *itemsToInsert = [[NSMutableIndexSet alloc] init];
+    
+    [items enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        [self.itemItentifiers setObject:obj forKey:self.identifier(obj)];
+        
+        NSUInteger offset = [itemsToInsert lastIndex];
+        if (offset == NSNotFound) {
+            offset = 0;
+        }
+        
+        NSUInteger index = [self.items indexOfObject:obj
+                                       inSortedRange:NSMakeRange(offset, [self.items count] - offset)
+                                             options:NSBinarySearchingInsertionIndex
+                                     usingComparator:self.comperator];
+        [itemsToInsert addIndex:index];
+        
+        [self.items insertObject:obj atIndex:index];
+    }];
+    
+    return itemsToInsert;
+}
+
+- (void)updateItems:(NSArray *)items
+{
+    NSArray *updates = [self _updateItems:items];
+    
+    NSIndexPath *sectionIndex = [NSIndexPath indexPathWithIndex:0];
+    
+    for (id<FTDataSourceObserver> observer in self.observers) {
+        [updates enumerateObjectsUsingBlock:^(NSArray *obj, NSUInteger idx, BOOL *stop) {
+            NSUInteger index = [[obj firstObject] unsignedIntegerValue];
+            NSUInteger newIndex = [[obj lastObject] unsignedIntegerValue];
+            if (index != newIndex) {
+                [observer moveItemAtIndexPath:[sectionIndex indexPathByAddingIndex:index]
+                                  toIndexPath:[sectionIndex indexPathByAddingIndex:newIndex]];
+            }
+        }];
+    }
+}
+
+- (NSArray *)_updateItems:(NSArray *)items
+{
+    items = [items sortedArrayUsingComparator:self.comperator];
+    
+    __block NSUInteger lastIndex = 0;
+    
+    NSMutableArray *updates = [[NSMutableArray alloc] init];
+    
+    [items enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        
+        NSUInteger index = [self.items indexOfObject:[self.itemItentifiers objectForKey:self.identifier(obj)]];
+        NSUInteger newIndex = [self.items indexOfObject:obj
+                                                 inSortedRange:NSMakeRange(lastIndex, [self.items count] - lastIndex)
+                                                       options:NSBinarySearchingInsertionIndex | NSBinarySearchingFirstEqual
+                                               usingComparator:self.comperator];
+        
+        [updates addObject:@[@(index), @(newIndex)]];
+        
+        [self.itemItentifiers setObject:obj forKey:self.identifier(obj)];
+        
+        if (newIndex < index) {
+            [self.items removeObjectAtIndex:index];
+            [self.items insertObject:obj atIndex:newIndex];
+        } else if (newIndex > index) {
+            [self.items insertObject:obj atIndex:newIndex];
+            [self.items removeObjectAtIndex:index];
+        }
+    }];
+    
+    return updates;
 }
 
 #pragma mark Observer

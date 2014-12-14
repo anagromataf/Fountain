@@ -77,7 +77,7 @@ describe(@"FTFlatDataSource", ^{
             assertThat([dataSource indexPathsOfItem:item], contains([sectionIndexPath indexPathByAddingIndex:7], nil));
         });
         
-        xcontext(@"deleting an item from the data source", ^{
+        context(@"deleting an item from the data source", ^{
             
             beforeEach(^{
                 [dataSource deleteItems:@[@{@"identifier":@"5"}, @{@"identifier":@"8"}]];
@@ -96,10 +96,10 @@ describe(@"FTFlatDataSource", ^{
                 }
                 
                 id item = @{@"identifier":@"5"};
-                assertThat([dataSource indexPathsOfItem:item], contains(nil));
+                assertThat([dataSource indexPathsOfItem:item], hasCountOf(0));
                 
                 item = @{@"identifier":@"8"};
-                assertThat([dataSource indexPathsOfItem:item], contains(nil));
+                assertThat([dataSource indexPathsOfItem:item], hasCountOf(0));
             });
         });
         
