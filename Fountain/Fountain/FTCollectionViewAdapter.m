@@ -145,6 +145,8 @@
             if (prepareBlock) {
                 prepareBlock(cell, item, indexPath, self.dataSource);
             }
+            
+            return cell;
         }
     }
     return nil;
@@ -180,12 +182,15 @@
         }];
         
         if (handler) {
-            UICollectionViewCell *cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:handler.reuseIdentifier
-                                                                                        forIndexPath:indexPath];
-            FTCollectionViewAdapterCellPrepareBlock prepareBlock = handler.block;
+            id view = [self.collectionView dequeueReusableSupplementaryViewOfKind:kind
+                                                              withReuseIdentifier:handler.reuseIdentifier
+                                                                     forIndexPath:indexPath];
+            FTCollectionViewAdapterSupplementaryViewPrepareBlock prepareBlock = handler.block;
             if (prepareBlock) {
-                prepareBlock(cell, item, indexPath, self.dataSource);
+                prepareBlock(view, item, indexPath, self.dataSource);
             }
+            
+            return view;
         }
         
     }
