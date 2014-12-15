@@ -142,6 +142,46 @@
 
 - (void)updateWithDeletedItems:(NSArray *)deleted insertedItems:(NSArray *)inserted updatedItems:(NSArray *)updated
 {
+    for (id<FTDataSourceObserver> observer in self.observers) {
+        [observer dataSourceWillChange:self];
+    }
+    
+    NSIndexSet *itemsToDelete = [self _deleteItems:deleted];
+    NSIndexSet *itemsToInsert = [self _insertItems:inserted];
+    NSArray *updates = [self _updateItems:updated];
+    
+    NSIndexPath *section = [NSIndexPath indexPathWithIndex:0];
+    
+    NSMutableArray *indexPathsOfDeletedItems = [[NSMutableArray alloc] init];
+    [itemsToDelete enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+        [indexPathsOfDeletedItems addObject:[section indexPathByAddingIndex:idx]];
+    }];
+    
+    NSMutableArray *indexPathsOfInsertedItems = [[NSMutableArray alloc] init];
+    [itemsToInsert enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+        [indexPathsOfInsertedItems addObject:[section indexPathByAddingIndex:idx]];
+    }];
+    
+    for (id<FTDataSourceObserver> observer in self.observers) {
+        [observer dataSource:self didDeleteItemsAtIndexPaths:indexPathsOfDeletedItems];
+        [observer dataSource:self didInsertItemsAtIndexPaths:indexPathsOfInsertedItems];
+        
+        [updates enumerateObjectsUsingBlock:^(NSArray *indexes, NSUInteger idx, BOOL *stop) {
+            
+            NSUInteger index = [[indexes firstObject] unsignedIntegerValue];
+            NSUInteger newIndex = [[indexes lastObject] unsignedIntegerValue];
+            
+            if (index == newIndex) {
+                [observer dataSource:self didReloadItemsAtIndexPaths:@[[section indexPathByAddingIndex:index]]];
+            } else {
+                [observer dataSource:self
+              didMoveItemAtIndexPath:[section indexPathByAddingIndex:index]
+                         toIndexPath:[section indexPathByAddingIndex:newIndex]];
+            }
+            
+        }];
+        [observer dataSourceDidChange:self];
+    }
 }
 
 - (void)deleteItems:(NSArray *)items
