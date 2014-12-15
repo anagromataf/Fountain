@@ -12,12 +12,12 @@
 
 @protocol FTDataSourceObserver <NSObject>
 
-#pragma mark Reload
-- (void)dataSourceDidReload:(id<FTDataSource>)dataSource;
-
 #pragma mark Begin End Updates
 - (void)dataSourceWillChange:(id<FTDataSource>)dataSource;
 - (void)dataSourceDidChange:(id<FTDataSource>)dataSource;
+
+#pragma mark Reload
+- (void)dataSourceDidReload:(id<FTDataSource>)dataSource;
 
 #pragma mark Manage Sections
 - (void)dataSource:(id<FTDataSource>)dataSource didInsertSections:(NSIndexSet *)sections;

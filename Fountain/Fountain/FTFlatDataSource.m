@@ -94,14 +94,6 @@
 
 - (void)reloadWithCompletionHandler:(void(^)(BOOL success, NSError *error))completionHandler
 {
-    // Tell all observers to relaod
-    // ----------------------------
-    
-    for (id<FTDataSourceObserver> observer in self.observers) {
-        [observer dataSourceDidReload:self];
-    }
-    
-    
     // Call the completion handler
     // ---------------------------
     
@@ -113,6 +105,11 @@
 - (void)reloadWithItems:(NSArray *)sectionItems
       completionHandler:(void(^)(BOOL success, NSError *error))completionHandler
 {
+    
+    for (id<FTDataSourceObserver> observer in self.observers) {
+        [observer dataSourceWillChange:self];
+    }
+    
     // Sort new items
     // --------------
     
@@ -130,8 +127,8 @@
     
     for (id<FTDataSourceObserver> observer in self.observers) {
         [observer dataSourceDidReload:self];
+        [observer dataSourceDidChange:self];
     }
-    
     
     // Call the completion handler
     // ---------------------------
@@ -149,6 +146,10 @@
 
 - (void)deleteItems:(NSArray *)items
 {
+    for (id<FTDataSourceObserver> observer in self.observers) {
+        [observer dataSourceWillChange:self];
+    }
+    
     NSIndexSet *itemsToDelete = [self _deleteItems:items];
     
     NSIndexPath *section = [NSIndexPath indexPathWithIndex:0];
@@ -158,7 +159,6 @@
     }];
     
     for (id<FTDataSourceObserver> observer in self.observers) {
-        [observer dataSourceWillChange:self];
         [observer dataSource:self didDeleteItemsAtIndexPaths:indexPaths];
         [observer dataSourceDidChange:self];
     }
@@ -179,6 +179,10 @@
 
 - (void)insertItems:(NSArray *)items
 {
+    for (id<FTDataSourceObserver> observer in self.observers) {
+        [observer dataSourceWillChange:self];
+    }
+    
     NSIndexSet *itemsToInsert = [self _insertItems:items];
     
     NSIndexPath *section = [NSIndexPath indexPathWithIndex:0];
@@ -188,7 +192,6 @@
     }];
     
     for (id<FTDataSourceObserver> observer in self.observers) {
-        [observer dataSourceWillChange:self];
         [observer dataSource:self didInsertItemsAtIndexPaths:indexPaths];
         [observer dataSourceDidChange:self];
     }
@@ -222,12 +225,15 @@
 
 - (void)updateItems:(NSArray *)items
 {
+    for (id<FTDataSourceObserver> observer in self.observers) {
+        [observer dataSourceWillChange:self];
+    }
+    
     NSArray *updates = [self _updateItems:items];
     
     NSIndexPath *sectionIndex = [NSIndexPath indexPathWithIndex:0];
     
     for (id<FTDataSourceObserver> observer in self.observers) {
-        [observer dataSourceWillChange:self];
         [updates enumerateObjectsUsingBlock:^(NSArray *obj, NSUInteger idx, BOOL *stop) {
             NSUInteger index = [[obj firstObject] unsignedIntegerValue];
             NSUInteger newIndex = [[obj lastObject] unsignedIntegerValue];
@@ -281,7 +287,6 @@
 - (void)addObserver:(id<FTDataSourceObserver>)observer
 {
     [self.observers addObject:observer];
-    [observer dataSourceDidReload:self];
 }
 
 - (void)removeObserver:(id<FTDataSourceObserver>)observer

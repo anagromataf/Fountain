@@ -224,6 +224,53 @@ describe(@"FTSectionDataSource", ^{
             });
             
         });
+        
+        context(@"changes in a data source of a section", ^{
+            
+            beforeEach(^{
+                [observer reset];
+                
+                FTFlatDataSource *section = (FTFlatDataSource *)[dataSource dataSourceForSection:3];
+                [section insertItems:@[@"u", @"v"]];
+            });
+            
+            fit(@"should be forwared to the observer", ^{
+                
+                assertThatInteger([dataSource numberOfItemsInSection:3], equalToInteger(2));
+                
+                [verifyCount(observer, times(1)) dataSourceWillChange:anything()];
+                [verifyCount(observer, times(1)) dataSourceDidChange:anything()];
+                
+                NSIndexPath *section = [NSIndexPath indexPathWithIndex:3];
+                NSArray *indexPaths = @[[section indexPathByAddingIndex:0],
+                                        [section indexPathByAddingIndex:1]];
+                
+                [verifyCount(observer, times(1)) dataSource:anything() didInsertItemsAtIndexPaths:indexPaths];
+            });
+        });
+        
+        context(@"reloading in a data source of a section", ^{
+            
+            beforeEach(^{
+                [observer reset];
+                
+                FTFlatDataSource *section = (FTFlatDataSource *)[dataSource dataSourceForSection:3];
+                [section reloadWithItems:@[@"u", @"v"]
+                       completionHandler:^(BOOL success, NSError *error) {
+                           
+                       }];
+            });
+            
+            fit(@"should be forwared to the observer", ^{
+                
+                assertThatInteger([dataSource numberOfItemsInSection:3], equalToInteger(2));
+                
+                [verifyCount(observer, times(1)) dataSourceWillChange:anything()];
+                [verifyCount(observer, times(1)) dataSourceDidChange:anything()];
+                
+                [verifyCount(observer, times(1)) dataSource:anything() didReloadSections:[NSIndexSet indexSetWithIndex:3]];
+            });
+        });
     });
     
 });

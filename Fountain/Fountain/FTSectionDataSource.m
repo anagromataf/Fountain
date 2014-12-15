@@ -100,14 +100,6 @@
 
 - (void)reloadWithCompletionHandler:(void(^)(BOOL success, NSError *error))completionHandler
 {
-    // Tell all observers to relaod
-    // ----------------------------
-    
-    for (id<FTDataSourceObserver> observer in self.observers) {
-        [observer dataSourceDidReload:self];
-    }
-    
-    
     // Call the completion handler
     // ---------------------------
     
@@ -130,6 +122,7 @@
         id sectionItem = [self itemForSection:section];
         if (sectionItem) {
             dataSource = [self createDataSourceWithSectionItem:sectionItem];
+            [dataSource addObserver:self];
             [self.sectionDataSources setObject:dataSource forKey:@(section)];
         }
     }
@@ -155,7 +148,6 @@
 - (void)addObserver:(id<FTDataSourceObserver>)observer
 {
     [self.observers addObject:observer];
-    [observer dataSourceDidReload:self];
 }
 
 - (void)removeObserver:(id<FTDataSourceObserver>)observer
@@ -172,6 +164,20 @@
     if (dataSource == self.sectionDataSource) {
         for (id<FTDataSourceObserver> observer in self.observers) {
             [observer dataSourceDidReload:self];
+        }
+    } else {
+        NSUInteger section = NSNotFound;
+        for (id key in [self.sectionDataSources keyEnumerator]) {
+            if ([self.sectionDataSources objectForKey:key] == dataSource) {
+                section = [key integerValue];
+                break;
+            }
+        }
+        
+        if (section != NSNotFound) {
+            for (id<FTDataSourceObserver> observer in self.observers) {
+                [observer dataSource:self didReloadSections:[NSIndexSet indexSetWithIndex:section]];
+            }
         }
     }
 }
@@ -245,6 +251,30 @@
         for (id<FTDataSourceObserver> observer in self.observers) {
             [observer dataSource:self didInsertSections:indexes];
         }
+    } else {
+        NSUInteger section = NSNotFound;
+        for (id key in [self.sectionDataSources keyEnumerator]) {
+            if ([self.sectionDataSources objectForKey:key] == dataSource) {
+                section = [key integerValue];
+                break;
+            }
+        }
+        
+        if (section != NSNotFound) {
+            NSIndexPath *sectionIndexPath = [NSIndexPath indexPathWithIndex:section];
+            
+            NSMutableArray *translatedIndexPaths = [[NSMutableArray alloc] init];
+            for (NSIndexPath *indexPath in indexPaths) {
+                if ([indexPath length] >= 2 && [indexPath indexAtPosition:0] == 0) {
+                    NSUInteger index = [indexPath indexAtPosition:1];
+                    [translatedIndexPaths addObject:[sectionIndexPath indexPathByAddingIndex:index]];
+                }
+            }
+            
+            for (id<FTDataSourceObserver> observer in self.observers) {
+                [observer dataSource:self didInsertItemsAtIndexPaths:translatedIndexPaths];
+            }
+        }
     }
 }
 
@@ -264,6 +294,30 @@
         for (id<FTDataSourceObserver> observer in self.observers) {
             [observer dataSource:self didDeleteSections:indexes];
         }
+    } else {
+        NSUInteger section = NSNotFound;
+        for (id key in [self.sectionDataSources keyEnumerator]) {
+            if ([self.sectionDataSources objectForKey:key] == dataSource) {
+                section = [key integerValue];
+                break;
+            }
+        }
+        
+        if (section != NSNotFound) {
+            NSIndexPath *sectionIndexPath = [NSIndexPath indexPathWithIndex:section];
+            
+            NSMutableArray *translatedIndexPaths = [[NSMutableArray alloc] init];
+            for (NSIndexPath *indexPath in indexPaths) {
+                if ([indexPath length] >= 2 && [indexPath indexAtPosition:0] == 0) {
+                    NSUInteger index = [indexPath indexAtPosition:1];
+                    [translatedIndexPaths addObject:[sectionIndexPath indexPathByAddingIndex:index]];
+                }
+            }
+            
+            for (id<FTDataSourceObserver> observer in self.observers) {
+                [observer dataSource:self didDeleteItemsAtIndexPaths:translatedIndexPaths];
+            }
+        }
     }
 }
 
@@ -271,6 +325,30 @@
 {
     if (dataSource == self.sectionDataSource) {
         
+    } else {
+        NSUInteger section = NSNotFound;
+        for (id key in [self.sectionDataSources keyEnumerator]) {
+            if ([self.sectionDataSources objectForKey:key] == dataSource) {
+                section = [key integerValue];
+                break;
+            }
+        }
+        
+        if (section != NSNotFound) {
+            NSIndexPath *sectionIndexPath = [NSIndexPath indexPathWithIndex:section];
+            
+            NSMutableArray *translatedIndexPaths = [[NSMutableArray alloc] init];
+            for (NSIndexPath *indexPath in indexPaths) {
+                if ([indexPath length] >= 2 && [indexPath indexAtPosition:0] == 0) {
+                    NSUInteger index = [indexPath indexAtPosition:1];
+                    [translatedIndexPaths addObject:[sectionIndexPath indexPathByAddingIndex:index]];
+                }
+            }
+            
+            for (id<FTDataSourceObserver> observer in self.observers) {
+                [observer dataSource:self didReloadItemsAtIndexPaths:translatedIndexPaths];
+            }
+        }
     }
 }
 
@@ -296,8 +374,35 @@
                 [observer dataSource:self didMoveSection:index toSection:newIndex];
             }
         }
+    } else {
+        NSUInteger section = NSNotFound;
+        for (id key in [self.sectionDataSources keyEnumerator]) {
+            if ([self.sectionDataSources objectForKey:key] == dataSource) {
+                section = [key integerValue];
+                break;
+            }
+        }
+        
+        if (section != NSNotFound) {
+            
+            if ([indexPath length] >= 2 &&
+                [newIndexPath length] >= 2 &&
+                [indexPath indexAtPosition:0] == 0 &&
+                [newIndexPath indexAtPosition:0] == 0) {
+            
+                NSIndexPath *sectionIndexPath = [NSIndexPath indexPathWithIndex:section];
+                
+                NSUInteger index = [indexPath indexAtPosition:1];
+                NSUInteger newIndex = [newIndexPath indexAtPosition:1];
+                
+                for (id<FTDataSourceObserver> observer in self.observers) {
+                    [observer dataSource:self
+                  didMoveItemAtIndexPath:[sectionIndexPath indexPathByAddingIndex:index]
+                             toIndexPath:[sectionIndexPath indexPathByAddingIndex:newIndex]];
+                }
+            }
+        }
     }
 }
-
 
 @end
