@@ -11,6 +11,7 @@
 @interface FTSectionDataSource () <FTDataSourceObserver>
 @property (nonatomic, assign) BOOL updating;
 @property (nonatomic, readonly) NSHashTable *observers;
+@property (nonatomic, readonly) NSMapTable *sectionDataSources;
 @end
 
 @implementation FTSectionDataSource
@@ -22,6 +23,7 @@
     self = [super init];
     if (self) {
         _sectionDataSource = sectionDataSource;
+        _sectionDataSources = [NSMapTable strongToStrongObjectsMapTable];
         [_sectionDataSource addObserver:self];
     }
     return self;
@@ -39,14 +41,31 @@
 
 - (NSInteger)numberOfItemsInSection:(NSInteger)section
 {
-    return 0;
+    id<FTDataSource> dataSource = [self dataSourceForSection:section];
+    if (dataSource && [dataSource numberOfSections] > 0) {
+        return [dataSource numberOfItemsInSection:0];
+    } else {
+        return 0;
+    }
 }
 
 #pragma mark Getting Items and Index Paths
 
 - (id)itemAtIndexPath:(NSIndexPath *)indexPath
 {
-    return nil;
+    if ([indexPath length] >= 2) {
+        NSUInteger section = [indexPath indexAtPosition:0];
+        id<FTDataSource> dataSource = [self dataSourceForSection:section];
+        if (dataSource) {
+            NSIndexPath *childIndexPath = [NSIndexPath indexPathWithIndex:0];
+            childIndexPath = [childIndexPath indexPathByAddingIndex:[indexPath indexAtPosition:1]];
+            return [dataSource itemAtIndexPath:childIndexPath];
+        } else {
+            return nil;
+        }
+    } else {
+        return nil;
+    }
 }
 
 - (NSArray *)indexPathsOfItem:(id)item
@@ -95,6 +114,31 @@
     if (completionHandler) {
         completionHandler(YES, nil);
     }
+}
+
+#pragma mark Section Data Sources
+
+- (id<FTDataSource>)createDataSourceWithSectionItem:(id)sectionItem
+{
+    return nil;
+}
+
+- (id<FTDataSource>)dataSourceForSection:(NSUInteger)section
+{
+    id<FTDataSource> dataSource = [self.sectionDataSources objectForKey:@(section)];
+    if (dataSource == nil) {
+        id sectionItem = [self itemForSection:section];
+        if (sectionItem) {
+            dataSource = [self createDataSourceWithSectionItem:sectionItem];
+            [self.sectionDataSources setObject:dataSource forKey:@(section)];
+        }
+    }
+    
+    if (dataSource == nil) {
+        [self.sectionDataSources setObject:[NSNull null] forKey:@(section)];
+    }
+    
+    return [dataSource isEqual:[NSNull null]] ? nil : dataSource;
 }
 
 #pragma mark Observer
@@ -213,6 +257,7 @@
             if ([indexPath length] >= 2 && [indexPath indexAtPosition:0] == 0) {
                 NSUInteger index = [indexPath indexAtPosition:1];
                 [indexes addIndex:index];
+                [self.sectionDataSources removeObjectForKey:@(index)];
             }
         }
         
@@ -239,6 +284,13 @@
             
             NSUInteger index = [indexPath indexAtPosition:1];
             NSUInteger newIndex = [newIndexPath indexAtPosition:1];
+            
+            id<FTDataSource> sectionDataSource = [self.sectionDataSources objectForKey:@(index)];
+            if (sectionDataSource) {
+                [self.sectionDataSources removeObjectForKey:@(index)];
+                [self.sectionDataSources setObject:sectionDataSource
+                                            forKey:@(newIndex)];
+            }
             
             for (id<FTDataSourceObserver> observer in self.observers) {
                 [observer dataSource:self didMoveSection:index toSection:newIndex];

@@ -15,6 +15,9 @@
 
 #import "Fountain.h"
 
+@interface TestSectionDataSource : FTSectionDataSource
+@end
+
 SpecBegin(FTSectionDataSource)
 
 describe(@"FTSectionDataSource", ^{
@@ -29,7 +32,7 @@ describe(@"FTSectionDataSource", ^{
             return [obj valueForKey:@"identifier"];
         }];
         
-        dataSource = [[FTSectionDataSource alloc] initWithSectionDataSource:sections];
+        dataSource = [[TestSectionDataSource alloc] initWithSectionDataSource:sections];
     });
     
     it(@"should exsits", ^{
@@ -48,14 +51,14 @@ describe(@"FTSectionDataSource", ^{
             waitUntil(^(DoneCallback done) {
                 
                 NSArray *items = @[
-                                   @{@"identifier":@"1", @"value":@"a"},
-                                   @{@"identifier":@"2", @"value":@"j"},
+                                   @{@"identifier":@"1", @"value":@"a", @"items": @[@"1", @"2", @"3", @"4", @"5"]},
+                                   @{@"identifier":@"2", @"value":@"j", @"items": @[@"A", @"B", @"C"]},
                                    @{@"identifier":@"3", @"value":@"b"},
                                    @{@"identifier":@"4", @"value":@"i"},
                                    @{@"identifier":@"5", @"value":@"c"},
                                    @{@"identifier":@"6", @"value":@"h"},
                                    @{@"identifier":@"7", @"value":@"d"},
-                                   @{@"identifier":@"8", @"value":@"g"},
+                                   @{@"identifier":@"8", @"value":@"g", @"items": @[@"x", @"y", @"z"]},
                                    @{@"identifier":@"9", @"value":@"e"},
                                    @{@"identifier":@"0", @"value":@"f"}
                 ];
@@ -170,7 +173,7 @@ describe(@"FTSectionDataSource", ^{
            
             beforeEach(^{
                 [sections updateItems:@[@{@"identifier":@"5", @"value":@"a"},
-                                        @{@"identifier":@"8", @"value":@"x"},
+                                        @{@"identifier":@"8", @"value":@"x", @"items": @[@"x", @"y", @"z"]},
                                         @{@"identifier":@"2", @"value":@"j"}]];
             });
             
@@ -196,13 +199,55 @@ describe(@"FTSectionDataSource", ^{
                 [verifyCount(observer, times(1)) dataSourceDidChange:anything()];
                 
                 [verifyCount(observer, times(1)) dataSource:anything() didMoveSection:2 toSection:0];
-                [verifyCount(observer, times(1)) dataSource:anything() didMoveSection:6 toSection:10];
+                [verifyCount(observer, times(1)) dataSource:anything() didMoveSection:6 toSection:9];
+            });
+            
+            it(@"should have moved the items in the data sources", ^{
+                
+                assertThatInteger([dataSource numberOfItemsInSection:6], equalToInteger(0));
+                assertThatInteger([dataSource numberOfItemsInSection:9], equalToInteger(3));
+                
+                assertThat([dataSource itemAtIndexPath:[[NSIndexPath indexPathWithIndex:9] indexPathByAddingIndex:2]], equalTo(@"z"));
+            });
+        });
+        
+        context(@"using a test data source", ^{
+            
+            it(@"should use the items passed via the section items for its sections", ^{
+                
+                assertThatInteger([dataSource numberOfItemsInSection:0], equalToInteger(5));
+                assertThatInteger([dataSource numberOfItemsInSection:1], equalToInteger(0));
+                assertThatInteger([dataSource numberOfItemsInSection:9], equalToInteger(3));
+                
+                assertThat([dataSource itemAtIndexPath:[[NSIndexPath indexPathWithIndex:0] indexPathByAddingIndex:2]], equalTo(@"3"));
+                assertThat([dataSource itemAtIndexPath:[[NSIndexPath indexPathWithIndex:9] indexPathByAddingIndex:1]], equalTo(@"B"));
             });
             
         });
-        
     });
     
 });
 
 SpecEnd
+
+@implementation TestSectionDataSource
+
+- (id<FTDataSource>)createDataSourceWithSectionItem:(NSDictionary *)sectionItem
+{
+    FTFlatDataSource *dataSource = [[FTFlatDataSource alloc] initWithComerator:^NSComparisonResult(id obj1, id obj2) {
+        return [obj1 compare:obj2];
+    } identifier:^id<NSCopying>(id obj) {
+        return obj;
+    }];
+    
+    NSArray *items = [NSArray arrayWithArray:[sectionItem objectForKey:@"items"]];
+    
+    [dataSource reloadWithItems:items
+              completionHandler:^(BOOL success, NSError *error) {
+                  
+              }];
+    
+    return dataSource;
+}
+
+@end

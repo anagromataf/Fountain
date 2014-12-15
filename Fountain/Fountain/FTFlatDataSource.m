@@ -252,22 +252,16 @@
     [items enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         
         NSUInteger index = [self.items indexOfObject:[self.itemItentifiers objectForKey:self.identifier(obj)]];
+        [self.items removeObjectAtIndex:index];
+        
         NSUInteger newIndex = [self.items indexOfObject:obj
-                                                 inSortedRange:NSMakeRange(lastIndex, [self.items count] - lastIndex)
-                                                       options:NSBinarySearchingInsertionIndex | NSBinarySearchingFirstEqual
-                                               usingComparator:self.comperator];
+                                          inSortedRange:NSMakeRange(lastIndex, [self.items count] - lastIndex)
+                                                options:NSBinarySearchingInsertionIndex | NSBinarySearchingFirstEqual
+                                        usingComparator:self.comperator];
+        [self.items insertObject:obj atIndex:newIndex];
         
         [updates addObject:@[@(index), @(newIndex)]];
-        
         [self.itemItentifiers setObject:obj forKey:self.identifier(obj)];
-        
-        if (newIndex < index) {
-            [self.items removeObjectAtIndex:index];
-            [self.items insertObject:obj atIndex:newIndex];
-        } else if (newIndex > index) {
-            [self.items insertObject:obj atIndex:newIndex];
-            [self.items removeObjectAtIndex:index];
-        }
     }];
     
     return updates;

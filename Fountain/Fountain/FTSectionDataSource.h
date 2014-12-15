@@ -20,4 +20,7 @@ typedef id<NSCopying>(^FTSectionDataSourceSectionIdentifier)(id);
 #pragma mark Section Data Source
 @property (nonatomic, readonly) id<FTDataSource> sectionDataSource;
 
+- (id<FTDataSource>)createDataSourceWithSectionItem:(id)sectionItem;
+- (id<FTDataSource>)dataSourceForSection:(NSUInteger)section;
+
 @end
