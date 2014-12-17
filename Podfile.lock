@@ -7,16 +7,16 @@ PODS:
 DEPENDENCIES:
   - OCHamcrest (~> 4.0.1)
   - OCMockito (~> 1.3.1)
-  - Specta (from `git@github.com:specta/specta.git`, tag `v0.3.0.beta1`)
+  - Specta (from `https://github.com/specta/specta.git`, tag `v0.3.0.beta1`)
 
 EXTERNAL SOURCES:
   Specta:
-    :git: git@github.com:specta/specta.git
+    :git: https://github.com/specta/specta.git
     :tag: v0.3.0.beta1
 
 CHECKOUT OPTIONS:
   Specta:
-    :git: git@github.com:specta/specta.git
+    :git: https://github.com/specta/specta.git
     :tag: v0.3.0.beta1
 
 SPEC CHECKSUMS:
