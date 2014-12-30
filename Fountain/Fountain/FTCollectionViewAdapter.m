@@ -10,7 +10,11 @@
 
 #import "FTCollectionViewAdapter.h"
 
-@interface FTCollectionViewAdapter () <FTDataSourceObserver, UICollectionViewDataSource, UICollectionViewDelegate>
+@interface UICollectionReusableView ()
+- (void)setPreferredMaxLayoutWidth:(CGFloat)width;
+@end
+
+@interface FTCollectionViewAdapter () <FTDataSourceObserver, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
 @property (nonatomic, readonly) NSMutableArray *cellPrepareHandler;
 @property (nonatomic, readonly) NSMutableDictionary *supplementaryElementPrepareHandler;
 
@@ -192,7 +196,6 @@
             
             return view;
         }
-        
     }
     return nil;
 }
@@ -225,6 +228,106 @@
 }
 
 #pragma mark UICollectionViewDelegate
+
+#pragma mark UICollectionViewDelegateFlowLayout
+
+#warning Remove delegate call for item size if the collection view can for with self-sizing cells properly
+- (CGSize)collectionView:(UICollectionView *)collectionView
+                  layout:(UICollectionViewLayout *)collectionViewLayout
+  sizeForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (collectionView == self.collectionView) {
+        
+        id item = [self.dataSource itemAtIndexPath:indexPath];
+        __block FTAdapterPrepareHandler *handler = nil;
+        
+        NSDictionary *substitutionVariables = @{@"SECTION": @(indexPath.section),
+                                                @"ITEM":    @(indexPath.item),
+                                                @"ROW":     @(indexPath.row)};
+        
+        [self.cellPrepareHandler enumerateObjectsUsingBlock:^(FTAdapterPrepareHandler *h, NSUInteger idx, BOOL *stop) {
+            handler = h;
+            if ([handler.predicate evaluateWithObject:item substitutionVariables:substitutionVariables]) {
+                *stop = YES;
+            }
+        }];
+        
+        if (handler) {
+            if (handler.prototype == nil) {
+                NSDictionary *cellNibDict = [collectionView valueForKey:@"_cellNibDict"];
+                UINib *nib = [cellNibDict objectForKey:handler.reuseIdentifier];
+                handler.prototype = [[nib instantiateWithOwner:nil options:nil] firstObject];
+            }
+            
+            if (handler.prototype == nil) {
+                NSDictionary *cellClassDict = [collectionView valueForKey:@"_cellClassDict"];
+                Class _class = [cellClassDict objectForKey:handler.reuseIdentifier];
+                handler.prototype = [[_class alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(collectionView.bounds), 0)];
+            }
+            
+            FTCollectionViewAdapterCellPrepareBlock prepareBlock = handler.block;
+            if (prepareBlock) {
+                prepareBlock(handler.prototype, item, indexPath, self.dataSource);
+            }
+            
+            if ([handler.prototype respondsToSelector:@selector(setPreferredMaxLayoutWidth:)]) {
+                [handler.prototype setPreferredMaxLayoutWidth:CGRectGetWidth(collectionView.bounds)];
+            }
+            
+            return [handler.prototype systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
+        }
+    }
+    return CGSizeZero;
+}
+
+#warning Remove delegate call for item size if the collection view can for with self-sizing cells properly
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section
+{
+    NSMutableArray *handlers = [self.supplementaryElementPrepareHandler objectForKey:UICollectionElementKindSectionHeader];
+    if (handlers) {
+        
+        NSDictionary *substitutionVariables = @{};
+        
+        id item = [self.dataSource itemForSection:section];
+        substitutionVariables = @{@"SECTION": @(section)};
+        
+        __block FTAdapterPrepareHandler *handler = nil;
+        
+        [handlers enumerateObjectsUsingBlock:^(FTAdapterPrepareHandler *h, NSUInteger idx, BOOL *stop) {
+            handler = h;
+            if ([handler.predicate evaluateWithObject:item substitutionVariables:substitutionVariables]) {
+                *stop = YES;
+            }
+        }];
+        
+        if (handler) {
+            
+            if (handler.prototype == nil) {
+                NSDictionary *cellNibDict = [collectionView valueForKey:@"_supplementaryViewNibDict"];
+                UINib *nib = [cellNibDict objectForKey:[NSString stringWithFormat:@"%@/%@", UICollectionElementKindSectionHeader, handler.reuseIdentifier]];
+                handler.prototype = [[nib instantiateWithOwner:nil options:nil] firstObject];
+            }
+            
+            if (handler.prototype == nil) {
+                NSDictionary *cellClassDict = [collectionView valueForKey:@"_supplementaryViewClassDict"];
+                Class _class = [cellClassDict objectForKey:[NSString stringWithFormat:@"%@/%@", UICollectionElementKindSectionHeader, handler.reuseIdentifier]];
+                handler.prototype = [[_class alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(collectionView.bounds), 0)];
+            }
+            
+            FTCollectionViewAdapterSupplementaryViewPrepareBlock prepareBlock = handler.block;
+            if (prepareBlock) {
+                prepareBlock(handler.prototype, item, [NSIndexPath indexPathWithIndex:section], self.dataSource);
+            }
+            
+            if ([handler.prototype respondsToSelector:@selector(setPreferredMaxLayoutWidth:)]) {
+                [handler.prototype setPreferredMaxLayoutWidth:CGRectGetWidth(collectionView.bounds)];
+            }
+            
+            return [handler.prototype systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
+        }
+    }
+    return CGSizeZero;
+}
 
 #pragma mark - FTDataSourceObserver
 
