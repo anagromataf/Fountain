@@ -329,6 +329,55 @@
     return CGSizeZero;
 }
 
+#warning Remove delegate call for item size if the collection view can for with self-sizing cells properly
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout referenceSizeForFooterInSection:(NSInteger)section
+{
+    NSMutableArray *handlers = [self.supplementaryElementPrepareHandler objectForKey:UICollectionElementKindSectionFooter];
+    if (handlers) {
+        
+        NSDictionary *substitutionVariables = @{};
+        
+        id item = [self.dataSource itemForSection:section];
+        substitutionVariables = @{@"SECTION": @(section)};
+        
+        __block FTAdapterPrepareHandler *handler = nil;
+        
+        [handlers enumerateObjectsUsingBlock:^(FTAdapterPrepareHandler *h, NSUInteger idx, BOOL *stop) {
+            handler = h;
+            if ([handler.predicate evaluateWithObject:item substitutionVariables:substitutionVariables]) {
+                *stop = YES;
+            }
+        }];
+        
+        if (handler) {
+            
+            if (handler.prototype == nil) {
+                NSDictionary *cellNibDict = [collectionView valueForKey:@"_supplementaryViewNibDict"];
+                UINib *nib = [cellNibDict objectForKey:[NSString stringWithFormat:@"%@/%@", UICollectionElementKindSectionFooter, handler.reuseIdentifier]];
+                handler.prototype = [[nib instantiateWithOwner:nil options:nil] firstObject];
+            }
+            
+            if (handler.prototype == nil) {
+                NSDictionary *cellClassDict = [collectionView valueForKey:@"_supplementaryViewClassDict"];
+                Class _class = [cellClassDict objectForKey:[NSString stringWithFormat:@"%@/%@", UICollectionElementKindSectionFooter, handler.reuseIdentifier]];
+                handler.prototype = [[_class alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(collectionView.bounds), 0)];
+            }
+            
+            FTCollectionViewAdapterSupplementaryViewPrepareBlock prepareBlock = handler.block;
+            if (prepareBlock) {
+                prepareBlock(handler.prototype, item, [NSIndexPath indexPathWithIndex:section], self.dataSource);
+            }
+            
+            if ([handler.prototype respondsToSelector:@selector(setPreferredMaxLayoutWidth:)]) {
+                [handler.prototype setPreferredMaxLayoutWidth:CGRectGetWidth(collectionView.bounds)];
+            }
+            
+            return [handler.prototype systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
+        }
+    }
+    return CGSizeZero;
+}
+
 #pragma mark - FTDataSourceObserver
 
 #pragma mark Reload
