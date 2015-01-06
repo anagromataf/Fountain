@@ -10,6 +10,7 @@
 		0D512170FE19E8DF2E1B938C /* libPods-FountainTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F779017B90C1BE975E14DEA6 /* libPods-FountainTests.a */; };
 		F65B92811A38AC7600CEB22E /* FTSectionDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = F65B92801A38AC7600CEB22E /* FTSectionDataSource.m */; };
 		F65B92831A38D09700CEB22E /* FTSectionDataSourceSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = F65B92821A38D09700CEB22E /* FTSectionDataSourceSpec.m */; };
+		F661E8D31A5BF7B6000EB7AC /* FTTableViewAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = F661E8D21A5BF7B6000EB7AC /* FTTableViewAdapter.m */; };
 		F67044F81A3B41E4003A44B2 /* FTFlatDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = F67044F71A3B41E4003A44B2 /* FTFlatDataSource.m */; };
 		F67044FA1A3B435B003A44B2 /* FTFlatDataSourceSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = F67044F91A3B435B003A44B2 /* FTFlatDataSourceSpec.m */; };
 		F6B215181A374F04003198D9 /* Fountain.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = F6B215171A374F04003198D9 /* Fountain.h */; };
@@ -48,6 +49,8 @@
 		F65B927F1A38AC7600CEB22E /* FTSectionDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FTSectionDataSource.h; sourceTree = "<group>"; };
 		F65B92801A38AC7600CEB22E /* FTSectionDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTSectionDataSource.m; sourceTree = "<group>"; };
 		F65B92821A38D09700CEB22E /* FTSectionDataSourceSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTSectionDataSourceSpec.m; sourceTree = "<group>"; };
+		F661E8D11A5BF7B6000EB7AC /* FTTableViewAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FTTableViewAdapter.h; sourceTree = "<group>"; };
+		F661E8D21A5BF7B6000EB7AC /* FTTableViewAdapter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTTableViewAdapter.m; sourceTree = "<group>"; };
 		F67044F61A3B41E4003A44B2 /* FTFlatDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FTFlatDataSource.h; sourceTree = "<group>"; };
 		F67044F71A3B41E4003A44B2 /* FTFlatDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTFlatDataSource.m; sourceTree = "<group>"; };
 		F67044F91A3B435B003A44B2 /* FTFlatDataSourceSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTFlatDataSourceSpec.m; sourceTree = "<group>"; };
@@ -100,6 +103,24 @@
 				3D244AADBBD64658A489925C /* Pods-FountainTests.release.xcconfig */,
 			);
 			name = Pods;
+			sourceTree = "<group>";
+		};
+		F661E8CF1A5BF794000EB7AC /* Collection View */ = {
+			isa = PBXGroup;
+			children = (
+				F6B215341A3751CF003198D9 /* FTCollectionViewAdapter.h */,
+				F6B215351A3751CF003198D9 /* FTCollectionViewAdapter.m */,
+			);
+			name = "Collection View";
+			sourceTree = "<group>";
+		};
+		F661E8D01A5BF7A0000EB7AC /* Table View */ = {
+			isa = PBXGroup;
+			children = (
+				F661E8D11A5BF7B6000EB7AC /* FTTableViewAdapter.h */,
+				F661E8D21A5BF7B6000EB7AC /* FTTableViewAdapter.m */,
+			);
+			name = "Table View";
 			sourceTree = "<group>";
 		};
 		F6B2150B1A374F04003198D9 = {
@@ -167,10 +188,10 @@
 			isa = PBXGroup;
 			children = (
 				F6A6B97C1A5AECFE006168C5 /* FTReusableViewSizeCache.h */,
-				F6B215341A3751CF003198D9 /* FTCollectionViewAdapter.h */,
-				F6B215351A3751CF003198D9 /* FTCollectionViewAdapter.m */,
 				F6B215371A375444003198D9 /* FTAdapterPrepareHandler.h */,
 				F6B215381A375444003198D9 /* FTAdapterPrepareHandler.m */,
+				F661E8D01A5BF7A0000EB7AC /* Table View */,
+				F661E8CF1A5BF794000EB7AC /* Collection View */,
 			);
 			name = Adapter;
 			sourceTree = "<group>";
@@ -302,6 +323,7 @@
 				F6B215391A375445003198D9 /* FTAdapterPrepareHandler.m in Sources */,
 				F67044F81A3B41E4003A44B2 /* FTFlatDataSource.m in Sources */,
 				F6B2151A1A374F04003198D9 /* Fountain.m in Sources */,
+				F661E8D31A5BF7B6000EB7AC /* FTTableViewAdapter.m in Sources */,
 				F65B92811A38AC7600CEB22E /* FTSectionDataSource.m in Sources */,
 				F6B215361A3751CF003198D9 /* FTCollectionViewAdapter.m in Sources */,
 			);

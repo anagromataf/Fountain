@@ -10,4 +10,5 @@
 #import "FTFlatDataSource.h"
 #import "FTSectionDataSource.h"
 #import "FTCollectionViewAdapter.h"
+#import "FTTableViewAdapter.h"
 #import "FTReusableViewSizeCache.h"

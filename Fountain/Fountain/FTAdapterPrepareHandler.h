@@ -19,6 +19,6 @@
 @property (nonatomic, readonly) NSString *reuseIdentifier;
 @property (nonatomic, readonly) NSPredicate *predicate;
 @property (nonatomic, readonly) id block;
-@property (nonatomic, strong) UICollectionReusableView *prototype;
+@property (nonatomic, strong) id prototype;
 
 @end
