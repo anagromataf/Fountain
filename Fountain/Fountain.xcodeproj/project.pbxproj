@@ -51,6 +51,7 @@
 		F67044F61A3B41E4003A44B2 /* FTFlatDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FTFlatDataSource.h; sourceTree = "<group>"; };
 		F67044F71A3B41E4003A44B2 /* FTFlatDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTFlatDataSource.m; sourceTree = "<group>"; };
 		F67044F91A3B435B003A44B2 /* FTFlatDataSourceSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTFlatDataSourceSpec.m; sourceTree = "<group>"; };
+		F6A6B97C1A5AECFE006168C5 /* FTReusableViewSizeCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FTReusableViewSizeCache.h; sourceTree = "<group>"; };
 		F6B215141A374F04003198D9 /* libFountain.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libFountain.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		F6B215171A374F04003198D9 /* Fountain.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Fountain.h; sourceTree = "<group>"; };
 		F6B215191A374F04003198D9 /* Fountain.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Fountain.m; sourceTree = "<group>"; };
@@ -165,6 +166,7 @@
 		F6B215301A374FDF003198D9 /* Adapter */ = {
 			isa = PBXGroup;
 			children = (
+				F6A6B97C1A5AECFE006168C5 /* FTReusableViewSizeCache.h */,
 				F6B215341A3751CF003198D9 /* FTCollectionViewAdapter.h */,
 				F6B215351A3751CF003198D9 /* FTCollectionViewAdapter.m */,
 				F6B215371A375444003198D9 /* FTAdapterPrepareHandler.h */,
