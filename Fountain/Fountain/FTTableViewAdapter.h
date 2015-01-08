@@ -26,6 +26,9 @@ typedef void(^FTTableViewAdapterCellPrepareBlock)(id cell, id item, NSIndexPath 
 #pragma mark Data Source
 @property (nonatomic, strong) id<FTDataSource> dataSource;
 
+#pragma mark Reload Behaviour
+@property (nonatomic, assign) BOOL reloadRowIfItemChanged;
+
 #pragma mark Estimated Heights
 @property (nonatomic, assign) CGFloat estimatedRowHeight;
 
@@ -35,3 +38,4 @@ typedef void(^FTTableViewAdapterCellPrepareBlock)(id cell, id item, NSIndexPath 
                     prepareBlock:(FTTableViewAdapterCellPrepareBlock)prepareBlock;
 
 @end
+

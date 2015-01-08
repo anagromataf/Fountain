@@ -234,7 +234,7 @@
 
 - (void)dataSource:(id<FTDataSource>)dataSource didReloadItemsAtIndexPaths:(NSArray *)indexPaths
 {
-    if (dataSource == self.dataSource) {
+    if (dataSource == self.dataSource && self.reloadRowIfItemChanged) {
         [self.tableView reloadRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
     }
 }
