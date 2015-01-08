@@ -26,6 +26,9 @@ typedef void(^FTTableViewAdapterCellPrepareBlock)(id cell, id item, NSIndexPath 
 #pragma mark Data Source
 @property (nonatomic, strong) id<FTDataSource> dataSource;
 
+#pragma mark Estimated Heights
+@property (nonatomic, assign) CGFloat estimatedRowHeight;
+
 #pragma mark Prepare Handler
 - (void)forRowsMatchingPredicate:(NSPredicate *)predicate
       useCellWithReuseIdentifier:(NSString *)reuseIdentifier

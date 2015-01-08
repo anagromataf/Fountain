@@ -25,7 +25,7 @@
         _tableView = tableView;
         _tableView.dataSource = self;
         _tableView.delegate = self;
-        
+        _estimatedRowHeight = 30;
         _cellPrepareHandler = [[NSMutableArray alloc] init];
     }
     return self;
@@ -62,6 +62,19 @@
 }
 
 #pragma mark UITableViewDelegate
+
+- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (tableView == self.tableView) {
+        if ([self.delegate respondsToSelector:@selector(tableView:estimatedHeightForRowAtIndexPath:)]) {
+            return [self.delegate tableView:tableView estimatedHeightForRowAtIndexPath:indexPath];
+        } else {
+            return self.estimatedRowHeight;
+        }
+    } else {
+        return 0;
+    }
+}
 
 #pragma mark UITableViewDataSource
 
