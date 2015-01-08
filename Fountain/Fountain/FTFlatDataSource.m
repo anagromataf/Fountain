@@ -296,7 +296,8 @@
     
     [items enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         
-        NSUInteger index = [self.items indexOfObject:[self.itemItentifiers objectForKey:self.identifier(obj)]];
+        id identifier = [self.itemItentifiers objectForKey:self.identifier(obj)];
+        NSUInteger index = [self.items indexOfObject:identifier];
         [self.items removeObjectAtIndex:index];
         
         NSUInteger newIndex = [self.items indexOfObject:obj

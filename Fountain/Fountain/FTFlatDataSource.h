@@ -10,13 +10,13 @@
 
 #import "FTDataSource.h"
 
-typedef id<NSCopying>(^FTFlatDataSourceItemIdentifier)(id);
+typedef id<NSObject>(^FTFlatDataSourceItemIdentifier)(id);
 
 @interface FTFlatDataSource : NSObject <FTDataSource>
 
 #pragma mark Life-cycle
 - (instancetype)initWithComerator:(NSComparator)comperator
-                        identifier:(FTFlatDataSourceItemIdentifier)identifier;
+                       identifier:(FTFlatDataSourceItemIdentifier)identifier;
 
 #pragma mark Relaod
 - (void)reloadWithItems:(NSArray *)sectionItems
