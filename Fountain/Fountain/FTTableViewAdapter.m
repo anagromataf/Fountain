@@ -150,6 +150,10 @@
 
 #pragma mark Reload
 
+- (void)dataSourceWillReload:(id<FTDataSource>)dataSource
+{
+}
+
 - (void)dataSourceDidReload:(id<FTDataSource>)dataSource
 {
     if (dataSource == self.dataSource) {

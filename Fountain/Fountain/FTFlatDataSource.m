@@ -107,7 +107,7 @@
 {
     
     for (id<FTDataSourceObserver> observer in self.observers) {
-        [observer dataSourceWillChange:self];
+        [observer dataSourceWillReload:self];
     }
     
     // Sort new items
@@ -127,7 +127,6 @@
     
     for (id<FTDataSourceObserver> observer in self.observers) {
         [observer dataSourceDidReload:self];
-        [observer dataSourceDidChange:self];
     }
     
     // Call the completion handler

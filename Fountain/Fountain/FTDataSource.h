@@ -17,6 +17,7 @@
 - (void)dataSourceDidChange:(id<FTDataSource>)dataSource;
 
 #pragma mark Reload
+- (void)dataSourceWillReload:(id<FTDataSource>)dataSource;
 - (void)dataSourceDidReload:(id<FTDataSource>)dataSource;
 
 #pragma mark Manage Sections

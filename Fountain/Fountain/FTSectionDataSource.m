@@ -159,6 +159,19 @@
 
 #pragma mark Reload
 
+- (void)dataSourceWillReload:(id<FTDataSource>)dataSource
+{
+    if (dataSource == self.sectionDataSource) {
+        for (id<FTDataSourceObserver> observer in self.observers) {
+            [observer dataSourceWillReload:self];
+        }
+    } else {
+        for (id<FTDataSourceObserver> observer in self.observers) {
+            [observer dataSourceWillChange:self];
+        }
+    }
+}
+
 - (void)dataSourceDidReload:(id<FTDataSource>)dataSource
 {
     if (dataSource == self.sectionDataSource) {
@@ -177,6 +190,7 @@
         if (section != NSNotFound) {
             for (id<FTDataSourceObserver> observer in self.observers) {
                 [observer dataSource:self didReloadSections:[NSIndexSet indexSetWithIndex:section]];
+                [observer dataSourceDidChange:self];
             }
         }
     }
