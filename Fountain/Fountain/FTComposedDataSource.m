@@ -1,20 +1,20 @@
 //
-//  FTSectionDataSource.m
+//  FTComposedDataSource.m
 //  Fountain
 //
 //  Created by Tobias Kräntzer on 10.12.14.
 //  Copyright (c) 2014 Tobias Kräntzer. All rights reserved.
 //
 
-#import "FTSectionDataSource.h"
+#import "FTComposedDataSource.h"
 
-@interface FTSectionDataSource () <FTDataSourceObserver>
+@interface FTComposedDataSource () <FTDataSourceObserver>
 @property (nonatomic, assign) BOOL updating;
 @property (nonatomic, readonly) NSHashTable *observers;
 @property (nonatomic, readonly) NSMapTable *sectionDataSources;
 @end
 
-@implementation FTSectionDataSource
+@implementation FTComposedDataSource
 
 #pragma mark Life-cycle
 

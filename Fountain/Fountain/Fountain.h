@@ -7,8 +7,8 @@
 //
 
 #import "FTDataSource.h"
-#import "FTFlatDataSource.h"
-#import "FTSectionDataSource.h"
+#import "FTDynamicDataSource.h"
+#import "FTComposedDataSource.h"
 #import "FTCollectionViewAdapter.h"
 #import "FTTableViewAdapter.h"
 #import "FTReusableViewSizeCache.h"

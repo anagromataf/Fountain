@@ -1,5 +1,5 @@
 //
-//  FTFlatDataSource.h
+//  FTDynamicDataSource.h
 //  Fountain
 //
 //  Created by Tobias Kräntzer on 12.12.14.
@@ -10,13 +10,13 @@
 
 #import "FTDataSource.h"
 
-typedef id<NSObject>(^FTFlatDataSourceItemIdentifier)(id);
+typedef id<NSObject>(^FTDynamicDataSourceItemIdentifier)(id);
 
-@interface FTFlatDataSource : NSObject <FTDataSource>
+@interface FTDynamicDataSource : NSObject <FTDataSource>
 
 #pragma mark Life-cycle
 - (instancetype)initWithComerator:(NSComparator)comperator
-                       identifier:(FTFlatDataSourceItemIdentifier)identifier;
+                       identifier:(FTDynamicDataSourceItemIdentifier)identifier;
 
 #pragma mark Relaod
 - (void)reloadWithItems:(NSArray *)sectionItems

@@ -1,16 +1,16 @@
 //
-//  FTFlatDataSource.m
+//  FTDynamicDataSource.m
 //  Fountain
 //
 //  Created by Tobias Kräntzer on 12.12.14.
 //  Copyright (c) 2014 Tobias Kräntzer. All rights reserved.
 //
 
-#import "FTFlatDataSource.h"
+#import "FTDynamicDataSource.h"
 
-@interface FTFlatDataSource ()
+@interface FTDynamicDataSource ()
 @property (nonatomic, readonly) NSComparator comperator;
-@property (nonatomic, readonly) FTFlatDataSourceItemIdentifier identifier;
+@property (nonatomic, readonly) FTDynamicDataSourceItemIdentifier identifier;
 
 @property (nonatomic, readonly) NSMutableArray *items;
 @property (nonatomic, readonly) NSMapTable *itemItentifiers;
@@ -18,12 +18,12 @@
 @property (nonatomic, readonly) NSHashTable *observers;
 @end
 
-@implementation FTFlatDataSource
+@implementation FTDynamicDataSource
 
 #pragma mark Life-cycle
 
 - (instancetype)initWithComerator:(NSComparator)comperator
-                       identifier:(FTFlatDataSourceItemIdentifier)identifier
+                       identifier:(FTDynamicDataSourceItemIdentifier)identifier
 {
     self = [super init];
     if (self) {

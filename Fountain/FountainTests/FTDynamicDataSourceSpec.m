@@ -1,5 +1,5 @@
 //
-//  FTFlatDataSourceSpec.m
+//  FTDynamicDataSourceSpec.m
 //  Fountain
 //
 //  Created by Tobias Kräntzer on 12.12.14.
@@ -12,16 +12,16 @@
 
 #import "Fountain.h"
 
-SpecBegin(FTFlatDataSource)
+SpecBegin(FTDynamicDataSource)
 
-describe(@"FTFlatDataSource", ^{
+describe(@"FTDynamicDataSource", ^{
     
-    __block FTFlatDataSource *dataSource = nil;
+    __block FTDynamicDataSource *dataSource = nil;
     
     beforeEach(^{
-        dataSource = [[FTFlatDataSource alloc] initWithComerator:^NSComparisonResult(NSDictionary *obj1, NSDictionary *obj2) {
+        dataSource = [[FTDynamicDataSource alloc] initWithComerator:^NSComparisonResult(NSDictionary *obj1, NSDictionary *obj2) {
             return [[obj1 valueForKey:@"value"] compare:[obj2 valueForKey:@"value"]];
-        } identifier:^id<NSCopying>(NSDictionary *obj) {
+        } identifier:^id<NSObject>(NSDictionary *obj) {
             return [obj valueForKey:@"identifier"];
         }];
     });

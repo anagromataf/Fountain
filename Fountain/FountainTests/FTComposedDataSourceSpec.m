@@ -1,5 +1,5 @@
 //
-//  FTSectionDataSourceSpec.m
+//  FTComposedDataSourceSpec.m
 //  Fountain
 //
 //  Created by Tobias Kräntzer on 10.12.14.
@@ -15,20 +15,20 @@
 
 #import "Fountain.h"
 
-@interface TestSectionDataSource : FTSectionDataSource
+@interface TestSectionDataSource : FTComposedDataSource
 @end
 
-SpecBegin(FTSectionDataSource)
+SpecBegin(FTComposedDataSource)
 
-describe(@"FTSectionDataSource", ^{
+describe(@"FTComposedDataSource", ^{
     
-    __block FTFlatDataSource *sections = nil;
-    __block FTSectionDataSource *dataSource = nil;
+    __block FTDynamicDataSource *sections = nil;
+    __block FTComposedDataSource *dataSource = nil;
     
     beforeEach(^{
-        sections = [[FTFlatDataSource alloc] initWithComerator:^NSComparisonResult(NSDictionary *obj1, NSDictionary *obj2) {
+        sections = [[FTDynamicDataSource alloc] initWithComerator:^NSComparisonResult(NSDictionary *obj1, NSDictionary *obj2) {
             return [[obj1 valueForKey:@"value"] compare:[obj2 valueForKey:@"value"]];
-        } identifier:^id<NSCopying>(NSDictionary *obj) {
+        } identifier:^id<NSObject>(NSDictionary *obj) {
             return [obj valueForKey:@"identifier"];
         }];
         
@@ -230,7 +230,7 @@ describe(@"FTSectionDataSource", ^{
             beforeEach(^{
                 [observer reset];
                 
-                FTFlatDataSource *section = (FTFlatDataSource *)[dataSource dataSourceForSection:3];
+                FTDynamicDataSource *section = (FTDynamicDataSource *)[dataSource dataSourceForSection:3];
                 [section insertItems:@[@"u", @"v"]];
             });
             
@@ -254,7 +254,7 @@ describe(@"FTSectionDataSource", ^{
             beforeEach(^{
                 [observer reset];
                 
-                FTFlatDataSource *section = (FTFlatDataSource *)[dataSource dataSourceForSection:3];
+                FTDynamicDataSource *section = (FTDynamicDataSource *)[dataSource dataSourceForSection:3];
                 [section reloadWithItems:@[@"u", @"v"]
                        completionHandler:^(BOOL success, NSError *error) {
                            
@@ -281,9 +281,9 @@ SpecEnd
 
 - (id<FTDataSource>)createDataSourceWithSectionItem:(NSDictionary *)sectionItem
 {
-    FTFlatDataSource *dataSource = [[FTFlatDataSource alloc] initWithComerator:^NSComparisonResult(id obj1, id obj2) {
+    FTDynamicDataSource *dataSource = [[FTDynamicDataSource alloc] initWithComerator:^NSComparisonResult(id obj1, id obj2) {
         return [obj1 compare:obj2];
-    } identifier:^id<NSCopying>(id obj) {
+    } identifier:^id<NSObject>(id obj) {
         return obj;
     }];
     

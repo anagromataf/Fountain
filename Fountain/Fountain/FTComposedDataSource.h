@@ -1,5 +1,5 @@
 //
-//  FTSectionDataSource.h
+//  FTComposedDataSource.h
 //  Fountain
 //
 //  Created by Tobias Kräntzer on 10.12.14.
@@ -10,9 +10,7 @@
 
 #import "FTDataSource.h"
 
-typedef id<NSCopying>(^FTSectionDataSourceSectionIdentifier)(id);
-
-@interface FTSectionDataSource : NSObject <FTDataSource>
+@interface FTComposedDataSource : NSObject <FTDataSource>
 
 #pragma mark Life-cycle
 - (instancetype)initWithSectionDataSource:(id<FTDataSource>)sectionDataSource;
