@@ -28,8 +28,6 @@ describe(@"FTComposedDataSource", ^{
     beforeEach(^{
         sections = [[FTDynamicDataSource alloc] initWithComerator:^NSComparisonResult(NSDictionary *obj1, NSDictionary *obj2) {
             return [[obj1 valueForKey:@"value"] compare:[obj2 valueForKey:@"value"]];
-        } identifier:^id<NSObject>(NSDictionary *obj) {
-            return [obj valueForKey:@"identifier"];
         }];
         
         dataSource = [[TestSectionDataSource alloc] initWithSectionDataSource:sections];
@@ -283,8 +281,6 @@ SpecEnd
 {
     FTDynamicDataSource *dataSource = [[FTDynamicDataSource alloc] initWithComerator:^NSComparisonResult(id obj1, id obj2) {
         return [obj1 compare:obj2];
-    } identifier:^id<NSObject>(id obj) {
-        return obj;
     }];
     
     NSArray *items = [NSArray arrayWithArray:[sectionItem objectForKey:@"items"]];

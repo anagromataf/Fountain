@@ -10,11 +10,7 @@
 
 @interface FTDynamicDataSource ()
 @property (nonatomic, readonly) NSComparator comperator;
-@property (nonatomic, readonly) FTDynamicDataSourceItemIdentifier identifier;
-
 @property (nonatomic, readonly) NSMutableArray *items;
-@property (nonatomic, readonly) NSMapTable *itemItentifiers;
-
 @property (nonatomic, readonly) NSHashTable *observers;
 @end
 
@@ -23,15 +19,12 @@
 #pragma mark Life-cycle
 
 - (instancetype)initWithComerator:(NSComparator)comperator
-                       identifier:(FTDynamicDataSourceItemIdentifier)identifier
 {
     self = [super init];
     if (self) {
         _comperator = comperator;
-        _identifier = identifier;
         
         _items = [[NSMutableArray alloc] init];
-        _itemItentifiers = [NSMapTable strongToWeakObjectsMapTable];
     }
     return self;
 }
@@ -66,10 +59,8 @@
 
 - (NSArray *)indexPathsOfItem:(id)item
 {
-    id identifier = self.identifier(item);
-    id object = [self.itemItentifiers objectForKey:identifier];
-    if (object) {
-        NSUInteger index = [self.items indexOfObject:object];
+    if (item) {
+        NSUInteger index = [self.items indexOfObject:item];
         if (index != NSNotFound) {
             NSIndexPath *sectionIndexPath = [NSIndexPath indexPathWithIndex:0];
             return @[[sectionIndexPath indexPathByAddingIndex:index]];
@@ -102,7 +93,7 @@
     }
 }
 
-- (void)reloadWithItems:(NSArray *)sectionItems
+- (void)reloadWithItems:(NSArray *)items
       completionHandler:(void(^)(BOOL success, NSError *error))completionHandler
 {
     
@@ -114,13 +105,9 @@
     // --------------
     
     [self.items removeAllObjects];
-    [self.items addObjectsFromArray:sectionItems];
+    [self.items addObjectsFromArray:items];
     [self.items sortUsingComparator:self.comperator];
     
-    [self.itemItentifiers removeAllObjects];
-    [self.items enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        [self.itemItentifiers setObject:obj forKey:self.identifier(obj)];
-    }];
     
     // Tell all observers to relaod
     // ----------------------------
@@ -207,7 +194,7 @@
 {
     NSMutableIndexSet *itemsToDelete = [[NSMutableIndexSet alloc] init];
     [items enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        NSUInteger index = [self.items indexOfObject:[self.itemItentifiers objectForKey:self.identifier(obj)]];
+        NSUInteger index = [self.items indexOfObject:obj];
         [itemsToDelete addIndex:index];
     }];
     
@@ -243,7 +230,6 @@
     NSMutableIndexSet *itemsToInsert = [[NSMutableIndexSet alloc] init];
     
     [items enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        [self.itemItentifiers setObject:obj forKey:self.identifier(obj)];
         
         NSUInteger offset = [itemsToInsert lastIndex];
         if (offset == NSNotFound) {
@@ -296,9 +282,10 @@
     
     [items enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         
-        id identifier = [self.itemItentifiers objectForKey:self.identifier(obj)];
-        NSUInteger index = [self.items indexOfObject:identifier];
-        [self.items removeObjectAtIndex:index];
+        NSUInteger index = [self.items indexOfObject:obj];
+        if (index != NSNotFound) {
+            [self.items removeObjectAtIndex:index];
+        }
         
         NSUInteger newIndex = [self.items indexOfObject:obj
                                           inSortedRange:NSMakeRange(lastIndex, [self.items count] - lastIndex)
@@ -307,7 +294,6 @@
         [self.items insertObject:obj atIndex:newIndex];
         
         [updates addObject:@[@(index), @(newIndex)]];
-        [self.itemItentifiers setObject:obj forKey:self.identifier(obj)];
     }];
     
     return updates;

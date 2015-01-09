@@ -21,8 +21,6 @@ describe(@"FTDynamicDataSource", ^{
     beforeEach(^{
         dataSource = [[FTDynamicDataSource alloc] initWithComerator:^NSComparisonResult(NSDictionary *obj1, NSDictionary *obj2) {
             return [[obj1 valueForKey:@"value"] compare:[obj2 valueForKey:@"value"]];
-        } identifier:^id<NSObject>(NSDictionary *obj) {
-            return [obj valueForKey:@"identifier"];
         }];
     });
     

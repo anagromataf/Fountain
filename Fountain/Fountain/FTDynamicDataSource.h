@@ -10,13 +10,10 @@
 
 #import "FTDataSource.h"
 
-typedef id<NSObject>(^FTDynamicDataSourceItemIdentifier)(id);
-
 @interface FTDynamicDataSource : NSObject <FTDataSource>
 
 #pragma mark Life-cycle
-- (instancetype)initWithComerator:(NSComparator)comperator
-                       identifier:(FTDynamicDataSourceItemIdentifier)identifier;
+- (instancetype)initWithComerator:(NSComparator)comperator;
 
 #pragma mark Relaod
 - (void)reloadWithItems:(NSArray *)sectionItems
