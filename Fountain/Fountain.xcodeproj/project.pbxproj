@@ -11,6 +11,7 @@
 		F65B92811A38AC7600CEB22E /* FTComposedDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = F65B92801A38AC7600CEB22E /* FTComposedDataSource.m */; };
 		F65B92831A38D09700CEB22E /* FTComposedDataSourceSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = F65B92821A38D09700CEB22E /* FTComposedDataSourceSpec.m */; };
 		F661E8D31A5BF7B6000EB7AC /* FTTableViewAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = F661E8D21A5BF7B6000EB7AC /* FTTableViewAdapter.m */; };
+		F66AB2FE1A64340B00E343BF /* FTFetchedResultsDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = F66AB2FD1A64340B00E343BF /* FTFetchedResultsDataSource.m */; };
 		F67044F81A3B41E4003A44B2 /* FTDynamicDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = F67044F71A3B41E4003A44B2 /* FTDynamicDataSource.m */; };
 		F67044FA1A3B435B003A44B2 /* FTDynamicDataSourceSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = F67044F91A3B435B003A44B2 /* FTDynamicDataSourceSpec.m */; };
 		F6B215181A374F04003198D9 /* Fountain.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = F6B215171A374F04003198D9 /* Fountain.h */; };
@@ -51,6 +52,8 @@
 		F65B92821A38D09700CEB22E /* FTComposedDataSourceSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTComposedDataSourceSpec.m; sourceTree = "<group>"; };
 		F661E8D11A5BF7B6000EB7AC /* FTTableViewAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FTTableViewAdapter.h; sourceTree = "<group>"; };
 		F661E8D21A5BF7B6000EB7AC /* FTTableViewAdapter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTTableViewAdapter.m; sourceTree = "<group>"; };
+		F66AB2FC1A64340B00E343BF /* FTFetchedResultsDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FTFetchedResultsDataSource.h; sourceTree = "<group>"; };
+		F66AB2FD1A64340B00E343BF /* FTFetchedResultsDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTFetchedResultsDataSource.m; sourceTree = "<group>"; };
 		F67044F61A3B41E4003A44B2 /* FTDynamicDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FTDynamicDataSource.h; sourceTree = "<group>"; };
 		F67044F71A3B41E4003A44B2 /* FTDynamicDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTDynamicDataSource.m; sourceTree = "<group>"; };
 		F67044F91A3B435B003A44B2 /* FTDynamicDataSourceSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTDynamicDataSourceSpec.m; sourceTree = "<group>"; };
@@ -180,6 +183,8 @@
 				F65B92801A38AC7600CEB22E /* FTComposedDataSource.m */,
 				F67044F61A3B41E4003A44B2 /* FTDynamicDataSource.h */,
 				F67044F71A3B41E4003A44B2 /* FTDynamicDataSource.m */,
+				F66AB2FC1A64340B00E343BF /* FTFetchedResultsDataSource.h */,
+				F66AB2FD1A64340B00E343BF /* FTFetchedResultsDataSource.m */,
 			);
 			name = "Data Source";
 			sourceTree = "<group>";
@@ -326,6 +331,7 @@
 				F661E8D31A5BF7B6000EB7AC /* FTTableViewAdapter.m in Sources */,
 				F65B92811A38AC7600CEB22E /* FTComposedDataSource.m in Sources */,
 				F6B215361A3751CF003198D9 /* FTCollectionViewAdapter.m in Sources */,
+				F66AB2FE1A64340B00E343BF /* FTFetchedResultsDataSource.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
