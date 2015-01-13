@@ -27,6 +27,7 @@ typedef void(^FTTableViewAdapterCellPrepareBlock)(id cell, id item, NSIndexPath 
 @property (nonatomic, strong) id<FTDataSource> dataSource;
 
 #pragma mark Reload Behaviour
+@property (nonatomic, assign) UITableViewRowAnimation rowAnimation;
 @property (nonatomic, assign) BOOL reloadRowIfItemChanged;
 
 #pragma mark Estimated Heights

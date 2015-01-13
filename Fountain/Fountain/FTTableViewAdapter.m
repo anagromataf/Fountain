@@ -25,6 +25,7 @@
         _tableView = tableView;
         _tableView.dataSource = self;
         _tableView.delegate = self;
+        _rowAnimation = UITableViewRowAnimationAutomatic;
         _estimatedRowHeight = 30;
         _cellPrepareHandler = [[NSMutableArray alloc] init];
     }
@@ -191,21 +192,21 @@
 - (void)dataSource:(id<FTDataSource>)dataSource didInsertSections:(NSIndexSet *)sections
 {
     if (dataSource == self.dataSource) {
-        [self.tableView insertSections:sections withRowAnimation:UITableViewRowAnimationAutomatic];
+        [self.tableView insertSections:sections withRowAnimation:self.rowAnimation];
     }
 }
 
 - (void)dataSource:(id<FTDataSource>)dataSource didDeleteSections:(NSIndexSet *)sections
 {
     if (dataSource == self.dataSource) {
-        [self.tableView deleteSections:sections withRowAnimation:UITableViewRowAnimationAutomatic];
+        [self.tableView deleteSections:sections withRowAnimation:self.rowAnimation];
     }
 }
 
 - (void)dataSource:(id<FTDataSource>)dataSource didReloadSections:(NSIndexSet *)sections
 {
     if (dataSource == self.dataSource) {
-        [self.tableView reloadSections:sections withRowAnimation:UITableViewRowAnimationAutomatic];
+        [self.tableView reloadSections:sections withRowAnimation:self.rowAnimation];
     }
 }
 
@@ -221,21 +222,21 @@
 - (void)dataSource:(id<FTDataSource>)dataSource didInsertItemsAtIndexPaths:(NSArray *)indexPaths
 {
     if (dataSource == self.dataSource) {
-        [self.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
+        [self.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:self.rowAnimation];
     }
 }
 
 - (void)dataSource:(id<FTDataSource>)dataSource didDeleteItemsAtIndexPaths:(NSArray *)indexPaths
 {
     if (dataSource == self.dataSource) {
-        [self.tableView deleteRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
+        [self.tableView deleteRowsAtIndexPaths:indexPaths withRowAnimation:self.rowAnimation];
     }
 }
 
 - (void)dataSource:(id<FTDataSource>)dataSource didReloadItemsAtIndexPaths:(NSArray *)indexPaths
 {
     if (dataSource == self.dataSource && self.reloadRowIfItemChanged) {
-        [self.tableView reloadRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
+        [self.tableView reloadRowsAtIndexPaths:indexPaths withRowAnimation:self.rowAnimation];
     }
 }
 
