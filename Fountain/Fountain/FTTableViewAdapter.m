@@ -12,6 +12,8 @@
 
 @interface FTTableViewAdapter () <FTDataSourceObserver, UITableViewDataSource, UITableViewDelegate>
 @property (nonatomic, readonly) NSMutableArray *cellPrepareHandler;
+@property (nonatomic, readonly) NSMutableArray *headerPrepareHandler;
+@property (nonatomic, readonly) NSMutableArray *footerPrepareHandler;
 @end
 
 @implementation FTTableViewAdapter
@@ -27,7 +29,11 @@
         _tableView.delegate = self;
         _rowAnimation = UITableViewRowAnimationAutomatic;
         _estimatedRowHeight = 30;
+        _sectionHeaderHeight = UITableViewAutomaticDimension;
+        _sectionFooterHeight = UITableViewAutomaticDimension;
         _cellPrepareHandler = [[NSMutableArray alloc] init];
+        _headerPrepareHandler = [[NSMutableArray alloc] init];
+        _footerPrepareHandler = [[NSMutableArray alloc] init];
     }
     return self;
 }
@@ -62,6 +68,26 @@
     [self.cellPrepareHandler addObject:handler];
 }
 
+- (void)forHeaderMatchingPredicate:(NSPredicate *)predicate
+        useViewWithReuseIdentifier:(NSString *)reuseIdentifier
+                      prepareBlock:(FTTableViewAdapterHeaderFooterPrepareBlock)prepareBlock
+{
+    FTAdapterPrepareHandler *handler = [[FTAdapterPrepareHandler alloc] initWithPredicate:predicate
+                                                                          reuseIdentifier:reuseIdentifier
+                                                                                    block:prepareBlock];
+    [self.headerPrepareHandler addObject:handler];
+}
+
+- (void)forFooterMatchingPredicate:(NSPredicate *)predicate
+        useViewWithReuseIdentifier:(NSString *)reuseIdentifier
+                      prepareBlock:(FTTableViewAdapterHeaderFooterPrepareBlock)prepareBlock
+{
+    FTAdapterPrepareHandler *handler = [[FTAdapterPrepareHandler alloc] initWithPredicate:predicate
+                                                                          reuseIdentifier:reuseIdentifier
+                                                                                    block:prepareBlock];
+    [self.footerPrepareHandler addObject:handler];
+}
+
 #pragma mark UITableViewDelegate
 
 - (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -74,6 +100,170 @@
         }
     } else {
         return 0;
+    }
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    if (tableView == self.tableView) {
+        
+        if (self.sectionHeaderHeight != UITableViewAutomaticDimension) {
+            
+            return self.sectionHeaderHeight;
+            
+        } else {
+            
+            id item = [self.dataSource itemForSection:section];
+            __block FTAdapterPrepareHandler *handler = nil;
+            
+            NSDictionary *substitutionVariables = @{@"SECTION": @(section)};
+            
+            [self.headerPrepareHandler enumerateObjectsUsingBlock:^(FTAdapterPrepareHandler *h, NSUInteger idx, BOOL *stop) {
+                if ([h.predicate evaluateWithObject:item ? item : [NSNull null]
+                              substitutionVariables:substitutionVariables]) {
+                    *stop = YES;
+                    handler = h;
+                }
+            }];
+            
+            if (handler) {
+                if (handler.prototype == nil) {
+                    handler.prototype = [tableView dequeueReusableHeaderFooterViewWithIdentifier:handler.reuseIdentifier];
+                }
+                
+                FTTableViewAdapterHeaderFooterPrepareBlock prepareBlock = handler.block;
+                if (prepareBlock) {
+                    prepareBlock(handler.prototype, item, section, self.dataSource);
+                }
+                
+                CGSize size = [handler.prototype systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
+                
+                return size.height;
+                
+            } else {
+                return 0;
+            }
+        }
+    } else {
+        return 0;
+    }
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+{
+    if (tableView == self.tableView) {
+        
+        if (self.sectionFooterHeight != UITableViewAutomaticDimension) {
+            
+            return self.sectionFooterHeight;
+            
+        } else {
+            
+            id item = [self.dataSource itemForSection:section];
+            __block FTAdapterPrepareHandler *handler = nil;
+            
+            NSDictionary *substitutionVariables = @{@"SECTION": @(section)};
+            
+            [self.footerPrepareHandler enumerateObjectsUsingBlock:^(FTAdapterPrepareHandler *h, NSUInteger idx, BOOL *stop) {
+                if ([h.predicate evaluateWithObject:item ? item : [NSNull null]
+                              substitutionVariables:substitutionVariables]) {
+                    *stop = YES;
+                    handler = h;
+                }
+            }];
+            
+            if (handler) {
+                if (handler.prototype == nil) {
+                    handler.prototype = [tableView dequeueReusableHeaderFooterViewWithIdentifier:handler.reuseIdentifier];
+                }
+                
+                FTTableViewAdapterHeaderFooterPrepareBlock prepareBlock = handler.block;
+                if (prepareBlock) {
+                    prepareBlock(handler.prototype, item, section, self.dataSource);
+                }
+                
+                CGSize size = [handler.prototype systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
+                
+                return size.height;
+                
+            } else {
+                return 0;
+            }
+        }
+    } else {
+        return 0;
+    }
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    if (tableView == self.tableView) {
+        
+        id item = [self.dataSource itemForSection:section];
+        __block FTAdapterPrepareHandler *handler = nil;
+        
+        NSDictionary *substitutionVariables = @{@"SECTION": @(section)};
+        
+        [self.headerPrepareHandler enumerateObjectsUsingBlock:^(FTAdapterPrepareHandler *h, NSUInteger idx, BOOL *stop) {
+            if ([h.predicate evaluateWithObject:item ? item : [NSNull null]
+                          substitutionVariables:substitutionVariables]) {
+                *stop = YES;
+                handler = h;
+            }
+        }];
+        
+        if (handler) {
+            
+            UIView *view = [tableView dequeueReusableHeaderFooterViewWithIdentifier:handler.reuseIdentifier];
+            
+            FTTableViewAdapterHeaderFooterPrepareBlock prepareBlock = handler.block;
+            if (prepareBlock) {
+                prepareBlock(view, item, section, self.dataSource);
+            }
+            
+            return view;
+            
+        } else {
+            return nil;
+        }
+    } else {
+        return nil;
+    }
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
+{
+    if (tableView == self.tableView) {
+        
+        id item = [self.dataSource itemForSection:section];
+        __block FTAdapterPrepareHandler *handler = nil;
+        
+        NSDictionary *substitutionVariables = @{@"SECTION": @(section)};
+        
+        [self.footerPrepareHandler enumerateObjectsUsingBlock:^(FTAdapterPrepareHandler *h, NSUInteger idx, BOOL *stop) {
+            if ([h.predicate evaluateWithObject:item ? item : [NSNull null]
+                          substitutionVariables:substitutionVariables]) {
+                *stop = YES;
+                handler = h;
+            }
+        }];
+        
+        if (handler) {
+            
+            UIView *view = [tableView dequeueReusableHeaderFooterViewWithIdentifier:handler.reuseIdentifier];
+            
+            FTTableViewAdapterHeaderFooterPrepareBlock prepareBlock = handler.block;
+            if (prepareBlock) {
+                prepareBlock(view, item, section, self.dataSource);
+            }
+            
+            return view;
+            
+        } else {
+            return nil;
+        }
+    } else {
+        return nil;
     }
 }
 
@@ -179,12 +369,16 @@
 
 - (void)dataSourceWillChange:(id<FTDataSource>)dataSource
 {
-    [self.tableView beginUpdates];
+    if (dataSource == self.dataSource) {
+        [self.tableView beginUpdates];
+    }
 }
 
 - (void)dataSourceDidChange:(id<FTDataSource>)dataSource
 {
-    [self.tableView endUpdates];
+    if (dataSource == self.dataSource) {
+        [self.tableView endUpdates];
+    }
 }
 
 #pragma mark Manage Sections
