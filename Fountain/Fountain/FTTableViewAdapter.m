@@ -14,6 +14,7 @@
 @property (nonatomic, readonly) NSMutableArray *cellPrepareHandler;
 @property (nonatomic, readonly) NSMutableArray *headerPrepareHandler;
 @property (nonatomic, readonly) NSMutableArray *footerPrepareHandler;
+@property (nonatomic, assign) NSInteger userDrivenChangeCount;
 @end
 
 @implementation FTTableViewAdapter
@@ -34,6 +35,7 @@
         _cellPrepareHandler = [[NSMutableArray alloc] init];
         _headerPrepareHandler = [[NSMutableArray alloc] init];
         _footerPrepareHandler = [[NSMutableArray alloc] init];
+        _userDrivenChangeCount = 0;
     }
     return self;
 }
@@ -86,6 +88,23 @@
                                                                           reuseIdentifier:reuseIdentifier
                                                                                     block:prepareBlock];
     [self.footerPrepareHandler addObject:handler];
+}
+
+#pragma mark User-driven Changes
+
+- (BOOL)userDrivenChange
+{
+    return self.userDrivenChangeCount > 0;
+}
+
+- (void)beginUserDrivenChange
+{
+    self.userDrivenChangeCount += 1;
+}
+
+- (void)endUserDrivenChange
+{
+    self.userDrivenChangeCount -= 1;
 }
 
 #pragma mark UITableViewDelegate
@@ -369,14 +388,14 @@
 
 - (void)dataSourceWillChange:(id<FTDataSource>)dataSource
 {
-    if (dataSource == self.dataSource) {
+    if (dataSource == self.dataSource && self.userDrivenChange == NO) {
         [self.tableView beginUpdates];
     }
 }
 
 - (void)dataSourceDidChange:(id<FTDataSource>)dataSource
 {
-    if (dataSource == self.dataSource) {
+    if (dataSource == self.dataSource && self.userDrivenChange == NO) {
         [self.tableView endUpdates];
     }
 }
@@ -385,28 +404,28 @@
 
 - (void)dataSource:(id<FTDataSource>)dataSource didInsertSections:(NSIndexSet *)sections
 {
-    if (dataSource == self.dataSource) {
+    if (dataSource == self.dataSource && self.userDrivenChange == NO) {
         [self.tableView insertSections:sections withRowAnimation:self.rowAnimation];
     }
 }
 
 - (void)dataSource:(id<FTDataSource>)dataSource didDeleteSections:(NSIndexSet *)sections
 {
-    if (dataSource == self.dataSource) {
+    if (dataSource == self.dataSource && self.userDrivenChange == NO) {
         [self.tableView deleteSections:sections withRowAnimation:self.rowAnimation];
     }
 }
 
 - (void)dataSource:(id<FTDataSource>)dataSource didReloadSections:(NSIndexSet *)sections
 {
-    if (dataSource == self.dataSource) {
+    if (dataSource == self.dataSource && self.userDrivenChange == NO) {
         [self.tableView reloadSections:sections withRowAnimation:self.rowAnimation];
     }
 }
 
 - (void)dataSource:(id<FTDataSource>)dataSource didMoveSection:(NSInteger)section toSection:(NSInteger)newSection
 {
-    if (dataSource == self.dataSource) {
+    if (dataSource == self.dataSource && self.userDrivenChange == NO) {
         [self.tableView moveSection:section toSection:newSection];
     }
 }
@@ -415,28 +434,28 @@
 
 - (void)dataSource:(id<FTDataSource>)dataSource didInsertItemsAtIndexPaths:(NSArray *)indexPaths
 {
-    if (dataSource == self.dataSource) {
+    if (dataSource == self.dataSource && self.userDrivenChange == NO) {
         [self.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:self.rowAnimation];
     }
 }
 
 - (void)dataSource:(id<FTDataSource>)dataSource didDeleteItemsAtIndexPaths:(NSArray *)indexPaths
 {
-    if (dataSource == self.dataSource) {
+    if (dataSource == self.dataSource && self.userDrivenChange == NO) {
         [self.tableView deleteRowsAtIndexPaths:indexPaths withRowAnimation:self.rowAnimation];
     }
 }
 
 - (void)dataSource:(id<FTDataSource>)dataSource didReloadItemsAtIndexPaths:(NSArray *)indexPaths
 {
-    if (dataSource == self.dataSource && self.reloadRowIfItemChanged) {
+    if (dataSource == self.dataSource && self.reloadRowIfItemChanged && self.userDrivenChange == NO) {
         [self.tableView reloadRowsAtIndexPaths:indexPaths withRowAnimation:self.rowAnimation];
     }
 }
 
 - (void)dataSource:(id<FTDataSource>)dataSource didMoveItemAtIndexPath:(NSIndexPath *)indexPath toIndexPath:(NSIndexPath *)newIndexPath
 {
-    if (dataSource == self.dataSource) {
+    if (dataSource == self.dataSource && self.userDrivenChange == NO) {
         [self.tableView moveRowAtIndexPath:indexPath toIndexPath:newIndexPath];
     }
 }

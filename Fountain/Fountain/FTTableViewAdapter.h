@@ -49,5 +49,10 @@ typedef void(^FTTableViewAdapterHeaderFooterPrepareBlock)(id view, id item, NSUI
         useViewWithReuseIdentifier:(NSString *)reuseIdentifier
                       prepareBlock:(FTTableViewAdapterHeaderFooterPrepareBlock)prepareBlock;
 
+#pragma mark User-driven Changes
+@property (nonatomic, readonly) BOOL userDrivenChange;
+- (void)beginUserDrivenChange;
+- (void)endUserDrivenChange;
+
 @end
 
