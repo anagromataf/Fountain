@@ -112,13 +112,45 @@
 - (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (tableView == self.tableView) {
-        if ([self.delegate respondsToSelector:@selector(tableView:estimatedHeightForRowAtIndexPath:)]) {
-            return [self.delegate tableView:tableView estimatedHeightForRowAtIndexPath:indexPath];
+        
+        id item = [self.dataSource itemAtIndexPath:indexPath];
+        __block FTAdapterPrepareHandler *handler = nil;
+        
+        NSDictionary *substitutionVariables = @{@"SECTION": @(indexPath.section),
+                                                @"ITEM":    @(indexPath.item),
+                                                @"ROW":     @(indexPath.row)};
+        
+        [self.cellPrepareHandler enumerateObjectsUsingBlock:^(FTAdapterPrepareHandler *h, NSUInteger idx, BOOL *stop) {
+            handler = h;
+            if ([handler.predicate evaluateWithObject:item substitutionVariables:substitutionVariables]) {
+                *stop = YES;
+            }
+        }];
+        
+        if (handler) {
+            
+            if (handler.prototype == nil) {
+                handler.prototype = [tableView dequeueReusableCellWithIdentifier:handler.reuseIdentifier];
+            }
+            
+            FTTableViewAdapterCellPrepareBlock prepareBlock = handler.block;
+            if (prepareBlock) {
+                prepareBlock(handler.prototype, item, indexPath, self.dataSource);
+            }
+            
+            CGSize targetSize = CGSizeMake(CGRectGetWidth(tableView.bounds), 0);
+            
+            CGSize size = [handler.prototype systemLayoutSizeFittingSize:targetSize
+                                           withHorizontalFittingPriority:UILayoutPriorityFittingSizeLevel
+                                                 verticalFittingPriority:UILayoutPriorityFittingSizeLevel];
+            
+            return size.height;
         } else {
-            return self.estimatedRowHeight;
+            return tableView.estimatedRowHeight;
         }
+        
     } else {
-        return 0;
+        return tableView.estimatedRowHeight;
     }
 }
 
@@ -155,7 +187,11 @@
                     prepareBlock(handler.prototype, item, section, self.dataSource);
                 }
                 
-                CGSize size = [handler.prototype systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
+                CGSize targetSize = CGSizeMake(CGRectGetWidth(tableView.bounds), 0);
+                
+                CGSize size = [handler.prototype systemLayoutSizeFittingSize:targetSize
+                                               withHorizontalFittingPriority:UILayoutPriorityFittingSizeLevel
+                                                     verticalFittingPriority:UILayoutPriorityFittingSizeLevel];
                 
                 return size.height;
                 
@@ -201,7 +237,11 @@
                     prepareBlock(handler.prototype, item, section, self.dataSource);
                 }
                 
-                CGSize size = [handler.prototype systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
+                CGSize targetSize = CGSizeMake(CGRectGetWidth(tableView.bounds), 0);
+                
+                CGSize size = [handler.prototype systemLayoutSizeFittingSize:targetSize
+                                               withHorizontalFittingPriority:UILayoutPriorityFittingSizeLevel
+                                                     verticalFittingPriority:UILayoutPriorityFittingSizeLevel];
                 
                 return size.height;
                 
