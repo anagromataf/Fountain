@@ -15,4 +15,3 @@
 #import "FTCollectionViewAdapter.h"
 #import "FTTableViewAdapter.h"
 
-#import "FTReusableViewSizeCache.h"

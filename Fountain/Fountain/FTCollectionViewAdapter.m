@@ -7,7 +7,6 @@
 //
 
 #import "FTAdapterPrepareHandler.h"
-#import "FTReusableViewSizeCache.h"
 
 #import "FTCollectionViewAdapter.h"
 
