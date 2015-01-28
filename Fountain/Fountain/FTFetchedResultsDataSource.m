@@ -70,7 +70,7 @@ typedef enum {
     NSParameterAssert(attributeDescription.attributeType != NSDecimalAttributeType);
     NSParameterAssert([request.entityName isEqual:attributeDescription.entity.name]);
     
-    NSString *sectionKeyPath = [NSString stringWithFormat:@"NXFetchedCollectionViewDataSource_%@_%@", attributeDescription.entity.name, attributeDescription.name];
+    NSString *sectionKeyPath = [NSString stringWithFormat:@"FTFetchedResultsDataSource_%@_%@", attributeDescription.entity.name, attributeDescription.name];
     Class managedObjectClass = NSClassFromString([attributeDescription.entity managedObjectClassName]);
     SEL selector = NSSelectorFromString(sectionKeyPath);
     
@@ -139,7 +139,7 @@ typedef enum {
     NSParameterAssert([request.entityName isEqual:relationshipDescription.entity.name]);
     NSParameterAssert([relationshipDescription isToMany] == NO);
     
-    NSString *sectionKeyPath = [NSString stringWithFormat:@"NXFetchedCollectionViewDataSource_%@_%@", relationshipDescription.entity.name, relationshipDescription.name];
+    NSString *sectionKeyPath = [NSString stringWithFormat:@"FTFetchedResultsDataSource_%@_%@", relationshipDescription.entity.name, relationshipDescription.name];
     
     Class managedObjectClass = NSClassFromString([relationshipDescription.entity managedObjectClassName]);
     SEL selector = NSSelectorFromString(sectionKeyPath);
