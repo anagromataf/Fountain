@@ -29,7 +29,8 @@
         _tableView.dataSource = self;
         _tableView.delegate = self;
         _rowAnimation = UITableViewRowAnimationAutomatic;
-        _estimatedRowHeight = 30;
+        _estimatedRowHeight = UITableViewAutomaticDimension;
+        _rowHeight = UITableViewAutomaticDimension;
         _sectionHeaderHeight = UITableViewAutomaticDimension;
         _sectionFooterHeight = UITableViewAutomaticDimension;
         _cellPrepareHandler = [[NSMutableArray alloc] init];
@@ -113,44 +114,100 @@
 {
     if (tableView == self.tableView) {
         
-        id item = [self.dataSource itemAtIndexPath:indexPath];
-        __block FTAdapterPrepareHandler *handler = nil;
-        
-        NSDictionary *substitutionVariables = @{@"SECTION": @(indexPath.section),
-                                                @"ITEM":    @(indexPath.item),
-                                                @"ROW":     @(indexPath.row)};
-        
-        [self.cellPrepareHandler enumerateObjectsUsingBlock:^(FTAdapterPrepareHandler *h, NSUInteger idx, BOOL *stop) {
-            handler = h;
-            if ([handler.predicate evaluateWithObject:item substitutionVariables:substitutionVariables]) {
-                *stop = YES;
-            }
-        }];
-        
-        if (handler) {
+        if (self.estimatedRowHeight != UITableViewAutomaticDimension) {
             
-            if (handler.prototype == nil) {
-                handler.prototype = [tableView dequeueReusableCellWithIdentifier:handler.reuseIdentifier];
-            }
+            return self.estimatedRowHeight;
             
-            FTTableViewAdapterCellPrepareBlock prepareBlock = handler.block;
-            if (prepareBlock) {
-                prepareBlock(handler.prototype, item, indexPath, self.dataSource);
-            }
-            
-            CGSize targetSize = CGSizeMake(CGRectGetWidth(tableView.bounds), 0);
-            
-            CGSize size = [handler.prototype systemLayoutSizeFittingSize:targetSize
-                                           withHorizontalFittingPriority:UILayoutPriorityFittingSizeLevel
-                                                 verticalFittingPriority:UILayoutPriorityFittingSizeLevel];
-            
-            return size.height;
         } else {
-            return tableView.estimatedRowHeight;
+            
+            id item = [self.dataSource itemAtIndexPath:indexPath];
+            __block FTAdapterPrepareHandler *handler = nil;
+            
+            NSDictionary *substitutionVariables = @{@"SECTION": @(indexPath.section),
+                                                    @"ITEM":    @(indexPath.item),
+                                                    @"ROW":     @(indexPath.row)};
+            
+            [self.cellPrepareHandler enumerateObjectsUsingBlock:^(FTAdapterPrepareHandler *h, NSUInteger idx, BOOL *stop) {
+                handler = h;
+                if ([handler.predicate evaluateWithObject:item substitutionVariables:substitutionVariables]) {
+                    *stop = YES;
+                }
+            }];
+            
+            if (handler) {
+                
+                if (handler.prototype == nil) {
+                    handler.prototype = [tableView dequeueReusableCellWithIdentifier:handler.reuseIdentifier];
+                }
+                
+                FTTableViewAdapterCellPrepareBlock prepareBlock = handler.block;
+                if (prepareBlock) {
+                    prepareBlock(handler.prototype, item, indexPath, self.dataSource);
+                }
+                
+                CGSize targetSize = CGSizeMake(CGRectGetWidth(tableView.bounds), 0);
+                
+                CGSize size = [handler.prototype systemLayoutSizeFittingSize:targetSize];
+                
+                return size.height;
+            } else {
+                return UITableViewAutomaticDimension;
+            }
+            
         }
         
     } else {
         return tableView.estimatedRowHeight;
+    }
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (tableView == self.tableView) {
+        
+        if (self.rowHeight != UITableViewAutomaticDimension) {
+            
+            return self.rowHeight;
+            
+        } else {
+            
+            id item = [self.dataSource itemAtIndexPath:indexPath];
+            __block FTAdapterPrepareHandler *handler = nil;
+            
+            NSDictionary *substitutionVariables = @{@"SECTION": @(indexPath.section),
+                                                    @"ITEM":    @(indexPath.item),
+                                                    @"ROW":     @(indexPath.row)};
+            
+            [self.cellPrepareHandler enumerateObjectsUsingBlock:^(FTAdapterPrepareHandler *h, NSUInteger idx, BOOL *stop) {
+                handler = h;
+                if ([handler.predicate evaluateWithObject:item substitutionVariables:substitutionVariables]) {
+                    *stop = YES;
+                }
+            }];
+            
+            if (handler) {
+                
+                if (handler.prototype == nil) {
+                    handler.prototype = [tableView dequeueReusableCellWithIdentifier:handler.reuseIdentifier];
+                }
+                
+                FTTableViewAdapterCellPrepareBlock prepareBlock = handler.block;
+                if (prepareBlock) {
+                    prepareBlock(handler.prototype, item, indexPath, self.dataSource);
+                }
+                
+                CGSize targetSize = CGSizeMake(CGRectGetWidth(tableView.bounds), 0);
+                
+                CGSize size = [handler.prototype systemLayoutSizeFittingSize:targetSize];
+                
+                return size.height;
+            } else {
+                return UITableViewAutomaticDimension;
+            }
+        }
+        
+    } else {
+        return tableView.rowHeight;
     }
 }
 
@@ -167,7 +224,8 @@
             id item = [self.dataSource itemForSection:section];
             __block FTAdapterPrepareHandler *handler = nil;
             
-            NSDictionary *substitutionVariables = @{@"SECTION": @(section)};
+            NSDictionary *substitutionVariables = @{@"SECTION": @(section),
+                                                    @"ITEMS_COUNT": @([self.dataSource numberOfItemsInSection:section])};
             
             [self.headerPrepareHandler enumerateObjectsUsingBlock:^(FTAdapterPrepareHandler *h, NSUInteger idx, BOOL *stop) {
                 if ([h.predicate evaluateWithObject:item ? item : [NSNull null]
@@ -189,9 +247,7 @@
                 
                 CGSize targetSize = CGSizeMake(CGRectGetWidth(tableView.bounds), 0);
                 
-                CGSize size = [handler.prototype systemLayoutSizeFittingSize:targetSize
-                                               withHorizontalFittingPriority:UILayoutPriorityFittingSizeLevel
-                                                     verticalFittingPriority:UILayoutPriorityFittingSizeLevel];
+                CGSize size = [handler.prototype systemLayoutSizeFittingSize:targetSize];
                 
                 return size.height;
                 
@@ -217,7 +273,8 @@
             id item = [self.dataSource itemForSection:section];
             __block FTAdapterPrepareHandler *handler = nil;
             
-            NSDictionary *substitutionVariables = @{@"SECTION": @(section)};
+            NSDictionary *substitutionVariables = @{@"SECTION": @(section),
+                                                    @"ITEMS_COUNT": @([self.dataSource numberOfItemsInSection:section])};
             
             [self.footerPrepareHandler enumerateObjectsUsingBlock:^(FTAdapterPrepareHandler *h, NSUInteger idx, BOOL *stop) {
                 if ([h.predicate evaluateWithObject:item ? item : [NSNull null]
@@ -239,9 +296,7 @@
                 
                 CGSize targetSize = CGSizeMake(CGRectGetWidth(tableView.bounds), 0);
                 
-                CGSize size = [handler.prototype systemLayoutSizeFittingSize:targetSize
-                                               withHorizontalFittingPriority:UILayoutPriorityFittingSizeLevel
-                                                     verticalFittingPriority:UILayoutPriorityFittingSizeLevel];
+                CGSize size = [handler.prototype systemLayoutSizeFittingSize:targetSize];
                 
                 return size.height;
                 
@@ -261,7 +316,8 @@
         id item = [self.dataSource itemForSection:section];
         __block FTAdapterPrepareHandler *handler = nil;
         
-        NSDictionary *substitutionVariables = @{@"SECTION": @(section)};
+        NSDictionary *substitutionVariables = @{@"SECTION": @(section),
+                                                @"ITEMS_COUNT": @([self.dataSource numberOfItemsInSection:section])};
         
         [self.headerPrepareHandler enumerateObjectsUsingBlock:^(FTAdapterPrepareHandler *h, NSUInteger idx, BOOL *stop) {
             if ([h.predicate evaluateWithObject:item ? item : [NSNull null]
@@ -297,7 +353,8 @@
         id item = [self.dataSource itemForSection:section];
         __block FTAdapterPrepareHandler *handler = nil;
         
-        NSDictionary *substitutionVariables = @{@"SECTION": @(section)};
+        NSDictionary *substitutionVariables = @{@"SECTION": @(section),
+                                                @"ITEMS_COUNT": @([self.dataSource numberOfItemsInSection:section])};
         
         [self.footerPrepareHandler enumerateObjectsUsingBlock:^(FTAdapterPrepareHandler *h, NSUInteger idx, BOOL *stop) {
             if ([h.predicate evaluateWithObject:item ? item : [NSNull null]
