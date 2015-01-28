@@ -7,6 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0D512170FE19E8DF2E1B938C /* libPods-FountainTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F779017B90C1BE975E14DEA6 /* libPods-FountainTests.a */; };
+		F65B92811A38AC7600CEB22E /* FTComposedDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = F65B92801A38AC7600CEB22E /* FTComposedDataSource.m */; };
+		F65B92831A38D09700CEB22E /* FTComposedDataSourceSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = F65B92821A38D09700CEB22E /* FTComposedDataSourceSpec.m */; };
+		F661E8D31A5BF7B6000EB7AC /* FTTableViewAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = F661E8D21A5BF7B6000EB7AC /* FTTableViewAdapter.m */; };
+		F66AB2FE1A64340B00E343BF /* FTFetchedResultsDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = F66AB2FD1A64340B00E343BF /* FTFetchedResultsDataSource.m */; };
+		F67044F81A3B41E4003A44B2 /* FTDynamicDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = F67044F71A3B41E4003A44B2 /* FTDynamicDataSource.m */; };
+		F67044FA1A3B435B003A44B2 /* FTDynamicDataSourceSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = F67044F91A3B435B003A44B2 /* FTDynamicDataSourceSpec.m */; };
 		F6B215181A374F04003198D9 /* Fountain.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = F6B215171A374F04003198D9 /* Fountain.h */; };
 		F6B2151A1A374F04003198D9 /* Fountain.m in Sources */ = {isa = PBXBuildFile; fileRef = F6B215191A374F04003198D9 /* Fountain.m */; };
 		F6B215201A374F04003198D9 /* libFountain.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F6B215141A374F04003198D9 /* libFountain.a */; };
@@ -38,6 +45,18 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		3D244AADBBD64658A489925C /* Pods-FountainTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FountainTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-FountainTests/Pods-FountainTests.release.xcconfig"; sourceTree = "<group>"; };
+		870F95D674BAC412D768B177 /* Pods-FountainTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FountainTests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-FountainTests/Pods-FountainTests.debug.xcconfig"; sourceTree = "<group>"; };
+		F65B927F1A38AC7600CEB22E /* FTComposedDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FTComposedDataSource.h; sourceTree = "<group>"; };
+		F65B92801A38AC7600CEB22E /* FTComposedDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTComposedDataSource.m; sourceTree = "<group>"; };
+		F65B92821A38D09700CEB22E /* FTComposedDataSourceSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTComposedDataSourceSpec.m; sourceTree = "<group>"; };
+		F661E8D11A5BF7B6000EB7AC /* FTTableViewAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FTTableViewAdapter.h; sourceTree = "<group>"; };
+		F661E8D21A5BF7B6000EB7AC /* FTTableViewAdapter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTTableViewAdapter.m; sourceTree = "<group>"; };
+		F66AB2FC1A64340B00E343BF /* FTFetchedResultsDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FTFetchedResultsDataSource.h; sourceTree = "<group>"; };
+		F66AB2FD1A64340B00E343BF /* FTFetchedResultsDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTFetchedResultsDataSource.m; sourceTree = "<group>"; };
+		F67044F61A3B41E4003A44B2 /* FTDynamicDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FTDynamicDataSource.h; sourceTree = "<group>"; };
+		F67044F71A3B41E4003A44B2 /* FTDynamicDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTDynamicDataSource.m; sourceTree = "<group>"; };
+		F67044F91A3B435B003A44B2 /* FTDynamicDataSourceSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTDynamicDataSourceSpec.m; sourceTree = "<group>"; };
 		F6B215141A374F04003198D9 /* libFountain.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libFountain.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		F6B215171A374F04003198D9 /* Fountain.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Fountain.h; sourceTree = "<group>"; };
 		F6B215191A374F04003198D9 /* Fountain.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Fountain.m; sourceTree = "<group>"; };
@@ -48,6 +67,7 @@
 		F6B215351A3751CF003198D9 /* FTCollectionViewAdapter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTCollectionViewAdapter.m; sourceTree = "<group>"; };
 		F6B215371A375444003198D9 /* FTAdapterPrepareHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FTAdapterPrepareHandler.h; sourceTree = "<group>"; };
 		F6B215381A375444003198D9 /* FTAdapterPrepareHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTAdapterPrepareHandler.m; sourceTree = "<group>"; };
+		F779017B90C1BE975E14DEA6 /* libPods-FountainTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-FountainTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,18 +83,56 @@
 			buildActionMask = 2147483647;
 			files = (
 				F6B215201A374F04003198D9 /* libFountain.a in Frameworks */,
+				0D512170FE19E8DF2E1B938C /* libPods-FountainTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0CE55495E4914785B4E26E68 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				F779017B90C1BE975E14DEA6 /* libPods-FountainTests.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		27E18FC1D362F67418ED21A1 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				870F95D674BAC412D768B177 /* Pods-FountainTests.debug.xcconfig */,
+				3D244AADBBD64658A489925C /* Pods-FountainTests.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		F661E8CF1A5BF794000EB7AC /* Collection View */ = {
+			isa = PBXGroup;
+			children = (
+				F6B215341A3751CF003198D9 /* FTCollectionViewAdapter.h */,
+				F6B215351A3751CF003198D9 /* FTCollectionViewAdapter.m */,
+			);
+			name = "Collection View";
+			sourceTree = "<group>";
+		};
+		F661E8D01A5BF7A0000EB7AC /* Table View */ = {
+			isa = PBXGroup;
+			children = (
+				F661E8D11A5BF7B6000EB7AC /* FTTableViewAdapter.h */,
+				F661E8D21A5BF7B6000EB7AC /* FTTableViewAdapter.m */,
+			);
+			name = "Table View";
+			sourceTree = "<group>";
+		};
 		F6B2150B1A374F04003198D9 = {
 			isa = PBXGroup;
 			children = (
 				F6B215161A374F04003198D9 /* Fountain */,
 				F6B215231A374F04003198D9 /* FountainTests */,
 				F6B215151A374F04003198D9 /* Products */,
+				27E18FC1D362F67418ED21A1 /* Pods */,
+				0CE55495E4914785B4E26E68 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -101,6 +159,8 @@
 		F6B215231A374F04003198D9 /* FountainTests */ = {
 			isa = PBXGroup;
 			children = (
+				F65B92821A38D09700CEB22E /* FTComposedDataSourceSpec.m */,
+				F67044F91A3B435B003A44B2 /* FTDynamicDataSourceSpec.m */,
 				F6B215241A374F04003198D9 /* Supporting Files */,
 			);
 			path = FountainTests;
@@ -118,6 +178,12 @@
 			isa = PBXGroup;
 			children = (
 				F6B2152E1A374F5B003198D9 /* FTDataSource.h */,
+				F65B927F1A38AC7600CEB22E /* FTComposedDataSource.h */,
+				F65B92801A38AC7600CEB22E /* FTComposedDataSource.m */,
+				F67044F61A3B41E4003A44B2 /* FTDynamicDataSource.h */,
+				F67044F71A3B41E4003A44B2 /* FTDynamicDataSource.m */,
+				F66AB2FC1A64340B00E343BF /* FTFetchedResultsDataSource.h */,
+				F66AB2FD1A64340B00E343BF /* FTFetchedResultsDataSource.m */,
 			);
 			name = "Data Source";
 			sourceTree = "<group>";
@@ -125,10 +191,10 @@
 		F6B215301A374FDF003198D9 /* Adapter */ = {
 			isa = PBXGroup;
 			children = (
-				F6B215341A3751CF003198D9 /* FTCollectionViewAdapter.h */,
-				F6B215351A3751CF003198D9 /* FTCollectionViewAdapter.m */,
 				F6B215371A375444003198D9 /* FTAdapterPrepareHandler.h */,
 				F6B215381A375444003198D9 /* FTAdapterPrepareHandler.m */,
+				F661E8D01A5BF7A0000EB7AC /* Table View */,
+				F661E8CF1A5BF794000EB7AC /* Collection View */,
 			);
 			name = Adapter;
 			sourceTree = "<group>";
@@ -157,9 +223,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = F6B2152B1A374F04003198D9 /* Build configuration list for PBXNativeTarget "FountainTests" */;
 			buildPhases = (
+				9125D396A78994615C6CDA57 /* Check Pods Manifest.lock */,
 				F6B2151B1A374F04003198D9 /* Sources */,
 				F6B2151C1A374F04003198D9 /* Frameworks */,
 				F6B2151D1A374F04003198D9 /* Resources */,
+				7CF25BBE76EBCA74E14435CA /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -217,14 +285,51 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		7CF25BBE76EBCA74E14435CA /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-FountainTests/Pods-FountainTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		9125D396A78994615C6CDA57 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		F6B215101A374F04003198D9 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				F6B215391A375445003198D9 /* FTAdapterPrepareHandler.m in Sources */,
+				F67044F81A3B41E4003A44B2 /* FTDynamicDataSource.m in Sources */,
 				F6B2151A1A374F04003198D9 /* Fountain.m in Sources */,
+				F661E8D31A5BF7B6000EB7AC /* FTTableViewAdapter.m in Sources */,
+				F65B92811A38AC7600CEB22E /* FTComposedDataSource.m in Sources */,
 				F6B215361A3751CF003198D9 /* FTCollectionViewAdapter.m in Sources */,
+				F66AB2FE1A64340B00E343BF /* FTFetchedResultsDataSource.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -232,6 +337,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F67044FA1A3B435B003A44B2 /* FTDynamicDataSourceSpec.m in Sources */,
+				F65B92831A38D09700CEB22E /* FTComposedDataSourceSpec.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -340,6 +447,7 @@
 		};
 		F6B2152C1A374F04003198D9 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 870F95D674BAC412D768B177 /* Pods-FountainTests.debug.xcconfig */;
 			buildSettings = {
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
@@ -357,6 +465,7 @@
 		};
 		F6B2152D1A374F04003198D9 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3D244AADBBD64658A489925C /* Pods-FountainTests.release.xcconfig */;
 			buildSettings = {
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
@@ -387,6 +496,7 @@
 				F6B2152A1A374F04003198D9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		F6B2152B1A374F04003198D9 /* Build configuration list for PBXNativeTarget "FountainTests" */ = {
 			isa = XCConfigurationList;
@@ -395,6 +505,7 @@
 				F6B2152D1A374F04003198D9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

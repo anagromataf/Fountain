@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 Tobias Kräntzer. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 @interface FTAdapterPrepareHandler : NSObject
 
@@ -19,5 +19,6 @@
 @property (nonatomic, readonly) NSString *reuseIdentifier;
 @property (nonatomic, readonly) NSPredicate *predicate;
 @property (nonatomic, readonly) id block;
+@property (nonatomic, strong) id prototype;
 
 @end

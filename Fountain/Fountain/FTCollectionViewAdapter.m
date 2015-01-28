@@ -10,9 +10,23 @@
 
 #import "FTCollectionViewAdapter.h"
 
-@interface FTCollectionViewAdapter () <FTDataSourceObserver, UICollectionViewDataSource, UICollectionViewDelegate>
+@interface UICollectionReusableView ()
+- (void)setPreferredMaxLayoutWidth:(CGFloat)width;
+@end
+
+@interface FTCollectionViewAdapter () <FTDataSourceObserver, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
 @property (nonatomic, readonly) NSMutableArray *cellPrepareHandler;
 @property (nonatomic, readonly) NSMutableDictionary *supplementaryElementPrepareHandler;
+
+#pragma mark Data Source Changes
+@property (nonatomic, readonly) NSMutableIndexSet *insertedSections;
+@property (nonatomic, readonly) NSMutableIndexSet *deletedSections;
+@property (nonatomic, readonly) NSMutableIndexSet *reloadedSections;
+@property (nonatomic, readonly) NSMutableArray *movedSections;
+@property (nonatomic, readonly) NSMutableArray *insertedItems;
+@property (nonatomic, readonly) NSMutableArray *deletedItems;
+@property (nonatomic, readonly) NSMutableArray *reloadedItems;
+@property (nonatomic, readonly) NSMutableArray *movedItems;
 @end
 
 @implementation FTCollectionViewAdapter
@@ -29,6 +43,16 @@
         
         _cellPrepareHandler = [[NSMutableArray alloc] init];
         _supplementaryElementPrepareHandler = [[NSMutableDictionary alloc] init];
+        
+        _insertedSections = [[NSMutableIndexSet alloc] init];
+        _deletedSections = [[NSMutableIndexSet alloc] init];
+        _movedSections = [[NSMutableArray alloc] init];
+        _reloadedSections = [[NSMutableIndexSet alloc] init];
+        
+        _insertedItems = [[NSMutableArray alloc] init];
+        _deletedItems = [[NSMutableArray alloc] init];
+        _movedItems = [[NSMutableArray alloc] init];
+        _reloadedItems = [[NSMutableArray alloc] init];
         
         [_collectionView reloadData];
     }
@@ -125,6 +149,8 @@
             if (prepareBlock) {
                 prepareBlock(cell, item, indexPath, self.dataSource);
             }
+            
+            return cell;
         }
     }
     return nil;
@@ -160,14 +186,16 @@
         }];
         
         if (handler) {
-            UICollectionViewCell *cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:handler.reuseIdentifier
-                                                                                        forIndexPath:indexPath];
-            FTCollectionViewAdapterCellPrepareBlock prepareBlock = handler.block;
+            id view = [self.collectionView dequeueReusableSupplementaryViewOfKind:kind
+                                                              withReuseIdentifier:handler.reuseIdentifier
+                                                                     forIndexPath:indexPath];
+            FTCollectionViewAdapterSupplementaryViewPrepareBlock prepareBlock = handler.block;
             if (prepareBlock) {
-                prepareBlock(cell, item, indexPath, self.dataSource);
+                prepareBlock(view, item, indexPath, self.dataSource);
             }
+            
+            return view;
         }
-        
     }
     return nil;
 }
@@ -199,26 +227,128 @@
     return self.delegate;
 }
 
-#pragma mark UICollectionViewDelegate
-
 #pragma mark - FTDataSourceObserver
 
 #pragma mark Reload
-- (void)reload { [self.collectionView reloadData]; }
 
-#pragma mark Perform Batch Update
-- (void)performBatchUpdate:(void (^)(void))update { [self.collectionView performBatchUpdates:update completion:nil]; }
+- (void)dataSourceWillReload:(id<FTDataSource>)dataSource
+{
+}
+
+- (void)dataSourceDidReload:(id<FTDataSource>)dataSource
+{
+    if (dataSource == self.dataSource) {
+        [self.collectionView reloadData];
+    }
+}
+
+#pragma mark Begin End Updates
+
+- (void)dataSourceWillChange:(id<FTDataSource>)dataSource
+{
+    [self.insertedSections removeAllIndexes];
+    [self.deletedSections removeAllIndexes];
+    [self.reloadedSections removeAllIndexes];
+    [self.movedSections removeAllObjects];
+    [self.insertedItems removeAllObjects];
+    [self.deletedItems removeAllObjects];
+    [self.movedItems removeAllObjects];
+    [self.reloadedItems removeAllObjects];
+}
+
+- (void)dataSourceDidChange:(id<FTDataSource>)dataSource
+{
+    [self.collectionView performBatchUpdates:^{
+        [self.collectionView deleteSections:self.deletedSections];
+        [self.collectionView insertSections:self.insertedSections];
+        [self.collectionView reloadSections:self.reloadedSections];
+        
+        [self.movedSections enumerateObjectsUsingBlock:^(NSArray *indexes, NSUInteger idx, BOOL *stop) {
+            [self.collectionView moveSection:[[indexes firstObject] integerValue]
+                                   toSection:[[indexes lastObject] integerValue]];
+        }];
+        
+        [self.collectionView insertItemsAtIndexPaths:self.insertedItems];
+        [self.collectionView deleteItemsAtIndexPaths:self.deletedItems];
+        [self.collectionView reloadItemsAtIndexPaths:self.reloadedItems];
+        
+        [self.movedItems enumerateObjectsUsingBlock:^(NSArray *indexPaths, NSUInteger idx, BOOL *stop) {
+            [self.collectionView moveItemAtIndexPath:[indexPaths firstObject]
+                                         toIndexPath:[indexPaths lastObject]];
+        }];
+        
+    } completion:^(BOOL finished) {
+        
+    }];
+    
+    [self.insertedSections removeAllIndexes];
+    [self.deletedSections removeAllIndexes];
+    [self.reloadedSections removeAllIndexes];
+    [self.movedSections removeAllObjects];
+    [self.insertedItems removeAllObjects];
+    [self.deletedItems removeAllObjects];
+    [self.movedItems removeAllObjects];
+    [self.reloadedItems removeAllObjects];
+}
 
 #pragma mark Manage Sections
-- (void)insertSections:(NSIndexSet *)sections { [self.collectionView insertSections:sections]; }
-- (void)deleteSections:(NSIndexSet *)sections { [self.collectionView deleteSections:sections]; }
-- (void)reloadSections:(NSIndexSet *)sections { [self.collectionView reloadSections:sections]; }
-- (void)moveSection:(NSInteger)section toSection:(NSInteger)newSection { [self.collectionView moveSection:section toSection:newSection]; }
+
+- (void)dataSource:(id<FTDataSource>)dataSource didInsertSections:(NSIndexSet *)sections
+{
+    if (dataSource == self.dataSource) {
+        [self.insertedSections addIndexes:sections];
+    }
+}
+
+- (void)dataSource:(id<FTDataSource>)dataSource didDeleteSections:(NSIndexSet *)sections
+{
+    if (dataSource == self.dataSource) {
+        [self.deletedSections addIndexes:sections];
+    }
+}
+
+- (void)dataSource:(id<FTDataSource>)dataSource didReloadSections:(NSIndexSet *)sections
+{
+    if (dataSource == self.dataSource) {
+        [self.reloadedSections addIndexes:sections];
+    }
+}
+
+- (void)dataSource:(id<FTDataSource>)dataSource didMoveSection:(NSInteger)section toSection:(NSInteger)newSection
+{
+    if (dataSource == self.dataSource) {
+        [self.movedSections addObject:@[@(section), @(newSection)]];
+    }
+}
 
 #pragma mark Manage Items
-- (void)insertItemsAtIndexPaths:(NSArray *)indexPaths { [self.collectionView insertItemsAtIndexPaths:indexPaths]; }
-- (void)deleteItemsAtIndexPaths:(NSArray *)indexPaths { [self.collectionView deleteItemsAtIndexPaths:indexPaths]; }
-- (void)reloadItemsAtIndexPaths:(NSArray *)indexPaths { [self.collectionView reloadItemsAtIndexPaths:indexPaths]; }
-- (void)moveItemAtIndexPath:(NSIndexPath *)indexPath toIndexPath:(NSIndexPath *)newIndexPath { [self.collectionView moveItemAtIndexPath:indexPath toIndexPath:newIndexPath]; }
+
+- (void)dataSource:(id<FTDataSource>)dataSource didInsertItemsAtIndexPaths:(NSArray *)indexPaths
+{
+    if (dataSource == self.dataSource) {
+        [self.insertedItems addObjectsFromArray:indexPaths];
+    }
+}
+
+- (void)dataSource:(id<FTDataSource>)dataSource didDeleteItemsAtIndexPaths:(NSArray *)indexPaths
+{
+    if (dataSource == self.dataSource) {
+        [self.deletedItems addObjectsFromArray:indexPaths];
+    }
+}
+
+- (void)dataSource:(id<FTDataSource>)dataSource didReloadItemsAtIndexPaths:(NSArray *)indexPaths
+{
+    if (dataSource == self.dataSource) {
+        [self.reloadedItems addObjectsFromArray:indexPaths];
+    }
+}
+
+- (void)dataSource:(id<FTDataSource>)dataSource didMoveItemAtIndexPath:(NSIndexPath *)indexPath toIndexPath:(NSIndexPath *)newIndexPath
+{
+    if (dataSource == self.dataSource) {
+        [self.movedItems addObject:@[indexPath, newIndexPath]];
+    }
+}
 
 @end

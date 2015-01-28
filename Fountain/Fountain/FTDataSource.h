@@ -8,26 +8,29 @@
 
 #import <Foundation/Foundation.h>
 
+@protocol FTDataSource;
+
 @protocol FTDataSourceObserver <NSObject>
-@optional
+
+#pragma mark Begin End Updates
+- (void)dataSourceWillChange:(id<FTDataSource>)dataSource;
+- (void)dataSourceDidChange:(id<FTDataSource>)dataSource;
 
 #pragma mark Reload
-- (void)reload;
-
-#pragma mark Perform Batch Update
-- (void)performBatchUpdate:(void (^)(void))update;
+- (void)dataSourceWillReload:(id<FTDataSource>)dataSource;
+- (void)dataSourceDidReload:(id<FTDataSource>)dataSource;
 
 #pragma mark Manage Sections
-- (void)insertSections:(NSIndexSet *)sections;
-- (void)deleteSections:(NSIndexSet *)sections;
-- (void)reloadSections:(NSIndexSet *)sections;
-- (void)moveSection:(NSInteger)section toSection:(NSInteger)newSection;
+- (void)dataSource:(id<FTDataSource>)dataSource didInsertSections:(NSIndexSet *)sections;
+- (void)dataSource:(id<FTDataSource>)dataSource didDeleteSections:(NSIndexSet *)sections;
+- (void)dataSource:(id<FTDataSource>)dataSource didReloadSections:(NSIndexSet *)sections;
+- (void)dataSource:(id<FTDataSource>)dataSource didMoveSection:(NSInteger)section toSection:(NSInteger)newSection;
 
 #pragma mark Manage Items
-- (void)insertItemsAtIndexPaths:(NSArray *)indexPaths;
-- (void)deleteItemsAtIndexPaths:(NSArray *)indexPaths;
-- (void)reloadItemsAtIndexPaths:(NSArray *)indexPaths;
-- (void)moveItemAtIndexPath:(NSIndexPath *)indexPath toIndexPath:(NSIndexPath *)newIndexPath;
+- (void)dataSource:(id<FTDataSource>)dataSource didInsertItemsAtIndexPaths:(NSArray *)indexPaths;
+- (void)dataSource:(id<FTDataSource>)dataSource didDeleteItemsAtIndexPaths:(NSArray *)indexPaths;
+- (void)dataSource:(id<FTDataSource>)dataSource didReloadItemsAtIndexPaths:(NSArray *)indexPaths;
+- (void)dataSource:(id<FTDataSource>)dataSource didMoveItemAtIndexPath:(NSIndexPath *)indexPath toIndexPath:(NSIndexPath *)newIndexPath;
 
 @end
 
@@ -45,6 +48,7 @@
 
 #pragma mark Getting Section Item
 - (id)itemForSection:(NSInteger)section;
+- (NSIndexSet *)sectionsForItem:(id)item;
 
 #pragma mark Reload
 - (void)reloadWithCompletionHandler:(void(^)(BOOL success, NSError *error))completionHandler;
