@@ -124,9 +124,15 @@
 
 - (void)loadNextPageCompletionHandler:(void(^)(BOOL success, NSError *error))completionHandler
 {
-    NSUInteger limit = self.pageSize;
-    NSUInteger offset = [self.items count];
-    [self loadItemsWithOffset:offset limit:limit reset:NO completion:completionHandler];
+    if (self.hasMoreItems) {
+        NSUInteger limit = self.pageSize;
+        NSUInteger offset = [self.items count];
+        [self loadItemsWithOffset:offset limit:limit reset:NO completion:completionHandler];
+    } else {
+        if (completionHandler) {
+            completionHandler(YES, nil);
+        }
+    }
 }
 
 - (id<FTPagingDataSourceOperation>)fetchItemsWithOffset:(NSUInteger)offset
@@ -172,9 +178,28 @@
     if (self.loadingOperation == nil) {
         
         if (limit == 0) {
+            
+            if (reset) {
+                [[self.observers allObjects] enumerateObjectsUsingBlock:^(id<FTDataSourceObserver> observer, NSUInteger idx, BOOL *stop) {
+                    [observer dataSourceWillChange:self];
+                }];
+                
+                [self willChangeValueForKey:@"hasMoreItems"];
+                [self.items removeAllObjects];
+                self.totalNumberOfItems = 0;
+                
+                [self didChangeValueForKey:@"hasMoreItems"];
+                
+                [[self.observers allObjects] enumerateObjectsUsingBlock:^(id<FTDataSourceObserver> observer, NSUInteger idx, BOOL *stop) {
+                    [observer dataSource:self didReloadSections:[NSIndexSet indexSetWithIndex:0]];
+                    [observer dataSourceDidChange:self];
+                }];
+            }
+            
             for (void(^completion)(BOOL success, NSError *error) in self.completionHandler) {
                 completion(YES, nil);
             }
+            
         } else {
             self.loadingOperation = [self fetchItemsWithOffset:offset
                                                          limit:limit
