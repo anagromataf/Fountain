@@ -200,6 +200,27 @@
     return nil;
 }
 
+- (void)collectionView:(UICollectionView *)collectionView willDisplayCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (collectionView == self.collectionView) {
+        if ([self.delegate respondsToSelector:@selector(collectionView:willDisplayCell:forItemAtIndexPath:)]) {
+            [self.delegate collectionView:collectionView willDisplayCell:cell forItemAtIndexPath:indexPath];
+        }
+        
+        if (self.shouldLoadNextPage == YES &&
+            [self.dataSource respondsToSelector:@selector(loadNextPageCompletionHandler:)] &&
+            indexPath.section == [self.dataSource numberOfSections] - 1 &&
+            indexPath.row == [self.dataSource numberOfItemsInSection:indexPath.section] - 1) {
+            
+            id<FTPagingDataSource> dataSource = (id<FTPagingDataSource>)(self.dataSource);
+            
+            [dataSource loadNextPageCompletionHandler:^(BOOL success, NSError *error) {
+                
+            }];
+        }
+    }
+}
+
 #pragma mark Delegate Forwarding
 
 - (void)setDelegate:(id<UICollectionViewDelegate>)delegate
@@ -209,6 +230,8 @@
         
         self.collectionView.delegate = nil;
         self.collectionView.delegate = self;
+        self.collectionView.dataSource = nil;
+        self.collectionView.dataSource = self;
     }
 }
 

@@ -19,6 +19,7 @@
 		F6B215201A374F04003198D9 /* libFountain.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F6B215141A374F04003198D9 /* libFountain.a */; };
 		F6B215361A3751CF003198D9 /* FTCollectionViewAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = F6B215351A3751CF003198D9 /* FTCollectionViewAdapter.m */; };
 		F6B215391A375445003198D9 /* FTAdapterPrepareHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = F6B215381A375444003198D9 /* FTAdapterPrepareHandler.m */; };
+		F6D313671A7A9EC400785507 /* FTBasePagingDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = F6D313661A7A9EC400785507 /* FTBasePagingDataSource.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -67,6 +68,8 @@
 		F6B215351A3751CF003198D9 /* FTCollectionViewAdapter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTCollectionViewAdapter.m; sourceTree = "<group>"; };
 		F6B215371A375444003198D9 /* FTAdapterPrepareHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FTAdapterPrepareHandler.h; sourceTree = "<group>"; };
 		F6B215381A375444003198D9 /* FTAdapterPrepareHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTAdapterPrepareHandler.m; sourceTree = "<group>"; };
+		F6D313651A7A9EC400785507 /* FTBasePagingDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FTBasePagingDataSource.h; sourceTree = "<group>"; };
+		F6D313661A7A9EC400785507 /* FTBasePagingDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTBasePagingDataSource.m; sourceTree = "<group>"; };
 		F779017B90C1BE975E14DEA6 /* libPods-FountainTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-FountainTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -184,6 +187,8 @@
 				F67044F71A3B41E4003A44B2 /* FTDynamicDataSource.m */,
 				F66AB2FC1A64340B00E343BF /* FTFetchedResultsDataSource.h */,
 				F66AB2FD1A64340B00E343BF /* FTFetchedResultsDataSource.m */,
+				F6D313651A7A9EC400785507 /* FTBasePagingDataSource.h */,
+				F6D313661A7A9EC400785507 /* FTBasePagingDataSource.m */,
 			);
 			name = "Data Source";
 			sourceTree = "<group>";
@@ -324,6 +329,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F6B215391A375445003198D9 /* FTAdapterPrepareHandler.m in Sources */,
+				F6D313671A7A9EC400785507 /* FTBasePagingDataSource.m in Sources */,
 				F67044F81A3B41E4003A44B2 /* FTDynamicDataSource.m in Sources */,
 				F6B2151A1A374F04003198D9 /* Fountain.m in Sources */,
 				F661E8D31A5BF7B6000EB7AC /* FTTableViewAdapter.m in Sources */,

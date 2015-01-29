@@ -31,6 +31,9 @@ typedef void(^FTTableViewAdapterHeaderFooterPrepareBlock)(id view, id item, NSUI
 @property (nonatomic, assign) UITableViewRowAnimation rowAnimation;
 @property (nonatomic, assign) BOOL reloadRowIfItemChanged;
 
+#pragma mark Paging
+@property (nonatomic, assign) BOOL shouldLoadNextPage;
+
 #pragma mark Heights
 @property (nonatomic, assign) CGFloat estimatedRowHeight;
 

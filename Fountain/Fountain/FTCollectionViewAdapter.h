@@ -27,6 +27,9 @@ typedef void(^FTCollectionViewAdapterSupplementaryViewPrepareBlock)(id view, id 
 #pragma mark Data Source
 @property (nonatomic, strong) id<FTDataSource> dataSource;
 
+#pragma mark Paging
+@property (nonatomic, assign) BOOL shouldLoadNextPage;
+
 #pragma mark Prepare Handler
 - (void)forItemsMatchingPredicate:(NSPredicate *)predicate
        useCellWithReuseIdentifier:(NSString *)reuseIdentifier

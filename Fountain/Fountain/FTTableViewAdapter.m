@@ -383,6 +383,27 @@
     }
 }
 
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (tableView == self.tableView) {
+        if ([self.delegate respondsToSelector:@selector(tableView:willDisplayCell:forRowAtIndexPath:)]) {
+            [self.delegate tableView:tableView willDisplayCell:cell forRowAtIndexPath:indexPath];
+        }
+        
+        if (self.shouldLoadNextPage == YES &&
+            [self.dataSource respondsToSelector:@selector(loadNextPageCompletionHandler:)] &&
+            indexPath.section == [self.dataSource numberOfSections] - 1 &&
+            indexPath.row == [self.dataSource numberOfItemsInSection:indexPath.section] - 1) {
+            
+            id<FTPagingDataSource> dataSource = (id<FTPagingDataSource>)(self.dataSource);
+            
+            [dataSource loadNextPageCompletionHandler:^(BOOL success, NSError *error) {
+                
+            }];
+        }
+    }
+}
+
 #pragma mark UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
