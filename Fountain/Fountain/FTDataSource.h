@@ -58,3 +58,10 @@
 - (void)removeObserver:(id<FTDataSourceObserver>)observer;
 
 @end
+
+@protocol FTPagingDataSource <FTDataSource>
+
+@property (nonatomic, readonly) BOOL hasMoreItems;
+- (void)loadNextPageCompletionHandler:(void(^)(BOOL success, NSError *error))completionHandler;
+
+@end
