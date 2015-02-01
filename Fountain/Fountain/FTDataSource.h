@@ -60,8 +60,19 @@
 @end
 
 @protocol FTPagingDataSource <FTDataSource>
-
 @property (nonatomic, readonly) BOOL hasMoreItems;
 - (void)loadNextPageCompletionHandler:(void(^)(BOOL success, NSError *error))completionHandler;
+@end
 
+@protocol FTMutableDataSource <FTDataSource>
+@property (nonatomic, readonly) BOOL hasChanges;
+#pragma mark Apply Changes
+- (void)applyChangesWithCompletionHandler:(void(^)(BOOL success, NSError *error))completionHandler;
+@end
+
+@protocol FTReorderableDataSource <FTMutableDataSource>
+- (BOOL)canMoveItemAtIndexPath:(NSIndexPath *)indexPath;
+- (NSIndexPath *)targetIndexPathForMoveFromItemAtIndexPath:(NSIndexPath *)sourceIndexPath
+                                       toProposedIndexPath:(NSIndexPath *)proposedDestinationIndexPath;
+- (void)moveItemAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath;
 @end

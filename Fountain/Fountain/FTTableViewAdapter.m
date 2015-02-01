@@ -404,6 +404,30 @@
     }
 }
 
+- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return UITableViewCellEditingStyleNone;
+}
+
+- (BOOL)tableView:(UITableView *)tableView shouldIndentWhileEditingRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return NO;
+}
+
+- (NSIndexPath *)tableView:(UITableView *)tableView targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath toProposedIndexPath:(NSIndexPath *)proposedDestinationIndexPath
+{
+    if (tableView == self.tableView) {
+        if ([self.dataSource conformsToProtocol:@protocol(FTReorderableDataSource)]) {
+            return [(id<FTReorderableDataSource>)self.dataSource targetIndexPathForMoveFromItemAtIndexPath:sourceIndexPath
+                                                                                      toProposedIndexPath:proposedDestinationIndexPath];
+        } else {
+            return proposedDestinationIndexPath;
+        }
+    } else {
+        return proposedDestinationIndexPath;
+    }
+}
+
 #pragma mark UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -457,6 +481,28 @@
         
     } else {
         return nil;
+    }
+}
+
+- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (tableView == self.tableView) {
+        if ([self.dataSource conformsToProtocol:@protocol(FTReorderableDataSource)]) {
+            return [(id<FTReorderableDataSource>)self.dataSource canMoveItemAtIndexPath:indexPath];
+        } else {
+            return NO;
+        }
+    } else {
+        return NO;
+    }
+}
+
+- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath
+{
+    if (tableView == self.tableView) {
+        if ([self.dataSource conformsToProtocol:@protocol(FTReorderableDataSource)]) {
+            [(id<FTReorderableDataSource>)self.dataSource moveItemAtIndexPath:sourceIndexPath toIndexPath:destinationIndexPath];
+        }
     }
 }
 
