@@ -9,7 +9,7 @@
 #import "FTStaticDataSource.h"
 
 @interface FTStaticDataSource ()
-@property (nonatomic, readonly) NSMutableArray *items;
+@property (nonatomic, strong) NSArray *items;
 @property (nonatomic, readonly) NSHashTable *observers;
 @end
 
@@ -88,11 +88,10 @@
         [observer dataSourceWillReload:self];
     }
     
-    // Sort new items
-    // --------------
+    // Set the Items
+    // -------------
     
-    [self.items removeAllObjects];
-    [self.items addObjectsFromArray:items];
+    self.items = [items copy];
     
     
     // Tell all observers to relaod
