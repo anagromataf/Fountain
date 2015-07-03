@@ -79,11 +79,33 @@
 
 #pragma mark Prepare Handler
 
+- (void)forItemsKindOfClass:(Class)aClass
+ useCellWithReuseIdentifier:(NSString *)reuseIdentifier
+               prepareBlock:(FTCollectionViewAdapterCellPrepareBlock)prepareBlock
+{
+    NSPredicate *predicate = [NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
+        return [evaluatedObject isKindOfClass:aClass];
+    }];
+    
+    [self forItemsMatchingPredicate:predicate useCellWithReuseIdentifier:reuseIdentifier prepareBlock:prepareBlock];
+}
+
+- (void)forItemsConformingToProtocol:(Protocol *)aProtocol
+          useCellWithReuseIdentifier:(NSString *)reuseIdentifier
+                        prepareBlock:(FTCollectionViewAdapterCellPrepareBlock)prepareBlock
+{
+    NSPredicate *predicate = [NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
+        return [evaluatedObject conformsToProtocol:aProtocol];
+    }];
+    
+    [self forItemsMatchingPredicate:predicate useCellWithReuseIdentifier:reuseIdentifier prepareBlock:prepareBlock];
+}
+
 - (void)forItemsMatchingPredicate:(NSPredicate *)predicate
        useCellWithReuseIdentifier:(NSString *)reuseIdentifier
                      prepareBlock:(FTCollectionViewAdapterCellPrepareBlock)prepareBlock
 {
-    FTAdapterPrepareHandler *handler = [[FTAdapterPrepareHandler alloc] initWithPredicate:predicate
+    FTAdapterPrepareHandler *handler = [[FTAdapterPrepareHandler alloc] initWithPredicate:predicate ?: [NSPredicate predicateWithValue:YES]
                                                                           reuseIdentifier:reuseIdentifier
                                                                                     block:prepareBlock];
     [self.cellPrepareHandler addObject:handler];
@@ -100,7 +122,7 @@
         [self.supplementaryElementPrepareHandler setObject:handlers forKey:kind];
     }
     
-    FTAdapterPrepareHandler *handler = [[FTAdapterPrepareHandler alloc] initWithPredicate:predicate
+    FTAdapterPrepareHandler *handler = [[FTAdapterPrepareHandler alloc] initWithPredicate:predicate ?: [NSPredicate predicateWithValue:YES]
                                                                           reuseIdentifier:reuseIdentifier
                                                                                     block:prepareBlock];
     [handlers addObject:handler];

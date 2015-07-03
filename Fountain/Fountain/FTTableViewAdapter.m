@@ -61,11 +61,33 @@
 
 #pragma mark Prepare Handler
 
+- (void)forRowsKindOfClass:(Class)aClass
+useCellWithReuseIdentifier:(NSString *)reuseIdentifier
+              prepareBlock:(FTTableViewAdapterCellPrepareBlock)prepareBlock
+{
+    NSPredicate *predicate = [NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
+        return [evaluatedObject isKindOfClass:aClass];
+    }];
+    
+    [self forRowsMatchingPredicate:predicate useCellWithReuseIdentifier:reuseIdentifier prepareBlock:prepareBlock];
+}
+
+- (void)forRowsConformingToProtocol:(Protocol *)aProtocol
+         useCellWithReuseIdentifier:(NSString *)reuseIdentifier
+                       prepareBlock:(FTTableViewAdapterCellPrepareBlock)prepareBlock
+{
+    NSPredicate *predicate = [NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
+        return [evaluatedObject conformsToProtocol:aProtocol];
+    }];
+    
+    [self forRowsMatchingPredicate:predicate useCellWithReuseIdentifier:reuseIdentifier prepareBlock:prepareBlock];
+}
+
 - (void)forRowsMatchingPredicate:(NSPredicate *)predicate
       useCellWithReuseIdentifier:(NSString *)reuseIdentifier
                     prepareBlock:(FTTableViewAdapterCellPrepareBlock)prepareBlock
 {
-    FTAdapterPrepareHandler *handler = [[FTAdapterPrepareHandler alloc] initWithPredicate:predicate
+    FTAdapterPrepareHandler *handler = [[FTAdapterPrepareHandler alloc] initWithPredicate:predicate ?: [NSPredicate predicateWithValue:YES]
                                                                           reuseIdentifier:reuseIdentifier
                                                                                     block:prepareBlock];
     [self.cellPrepareHandler addObject:handler];
@@ -75,7 +97,7 @@
         useViewWithReuseIdentifier:(NSString *)reuseIdentifier
                       prepareBlock:(FTTableViewAdapterHeaderFooterPrepareBlock)prepareBlock
 {
-    FTAdapterPrepareHandler *handler = [[FTAdapterPrepareHandler alloc] initWithPredicate:predicate
+    FTAdapterPrepareHandler *handler = [[FTAdapterPrepareHandler alloc] initWithPredicate:predicate ?: [NSPredicate predicateWithValue:YES]
                                                                           reuseIdentifier:reuseIdentifier
                                                                                     block:prepareBlock];
     [self.headerPrepareHandler addObject:handler];
@@ -85,7 +107,7 @@
         useViewWithReuseIdentifier:(NSString *)reuseIdentifier
                       prepareBlock:(FTTableViewAdapterHeaderFooterPrepareBlock)prepareBlock
 {
-    FTAdapterPrepareHandler *handler = [[FTAdapterPrepareHandler alloc] initWithPredicate:predicate
+    FTAdapterPrepareHandler *handler = [[FTAdapterPrepareHandler alloc] initWithPredicate:predicate ?: [NSPredicate predicateWithValue:YES]
                                                                           reuseIdentifier:reuseIdentifier
                                                                                     block:prepareBlock];
     [self.footerPrepareHandler addObject:handler];
