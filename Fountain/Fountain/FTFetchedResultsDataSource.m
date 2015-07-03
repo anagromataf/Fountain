@@ -18,14 +18,15 @@ typedef enum {
 
 @interface FTFetchedResultsDataSource () <NSFetchedResultsControllerDelegate>
 @property (nonatomic, readonly) NSFetchedResultsController *fetchedResultsController;
-@property (nonatomic, readonly) NSHashTable *observers;
 
 #pragma mark Section Behaviour
 @property (nonatomic, readonly) FTFetchedResultsDataSourceSectionBehaviour sectionBehaviour;
 @property (nonatomic, readonly) NSAttributeDescription *sectionAttributeDescription;
 @end
 
-@implementation FTFetchedResultsDataSource
+@implementation FTFetchedResultsDataSource {
+    NSHashTable *_observers;
+}
 
 #pragma mark Life-cycle
 
@@ -46,6 +47,7 @@ typedef enum {
 {
     self = [super init];
     if (self) {
+        _observers = [NSHashTable weakObjectsHashTable];
         _context = context;
         _request = request;
         _sectionBehaviour = sectionBehaviour;
@@ -271,23 +273,19 @@ typedef enum {
 
 #pragma mark Observer
 
-@synthesize observers = _observers;
-- (NSHashTable *)observers
+- (NSArray *)observers
 {
-    if (_observers == nil) {
-        _observers = [NSHashTable weakObjectsHashTable];
-    }
-    return _observers;
+    return [_observers allObjects];
 }
 
 - (void)addObserver:(id<FTDataSourceObserver>)observer
 {
-    [self.observers addObject:observer];
+    [_observers addObject:observer];
 }
 
 - (void)removeObserver:(id<FTDataSourceObserver>)observer
 {
-    [self.observers removeObject:observer];
+    [_observers removeObject:observer];
 }
 
 #pragma mark NSFetchedResultsControllerDelegate

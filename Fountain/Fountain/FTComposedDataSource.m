@@ -10,11 +10,12 @@
 
 @interface FTComposedDataSource () <FTDataSourceObserver>
 @property (nonatomic, assign) BOOL updating;
-@property (nonatomic, readonly) NSHashTable *observers;
 @property (nonatomic, readonly) NSMapTable *sectionDataSources;
 @end
 
-@implementation FTComposedDataSource
+@implementation FTComposedDataSource {
+    NSHashTable *_observers;
+}
 
 #pragma mark Life-cycle
 
@@ -22,6 +23,7 @@
 {
     self = [super init];
     if (self) {
+        _observers = [NSHashTable weakObjectsHashTable];
         _sectionDataSource = sectionDataSource;
         _sectionDataSources = [NSMapTable strongToStrongObjectsMapTable];
         [_sectionDataSource addObserver:self];
@@ -136,23 +138,19 @@
 
 #pragma mark Observer
 
-@synthesize observers = _observers;
-- (NSHashTable *)observers
+- (NSArray *)observers
 {
-    if (_observers == nil) {
-        _observers = [NSHashTable weakObjectsHashTable];
-    }
-    return _observers;
+    return [_observers allObjects];
 }
 
 - (void)addObserver:(id<FTDataSourceObserver>)observer
 {
-    [self.observers addObject:observer];
+    [_observers addObject:observer];
 }
 
 - (void)removeObserver:(id<FTDataSourceObserver>)observer
 {
-    [self.observers removeObject:observer];
+    [_observers removeObject:observer];
 }
 
 #pragma mark - FTDataSourceObserver

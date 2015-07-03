@@ -11,10 +11,11 @@
 @interface FTDynamicDataSource ()
 @property (nonatomic, readonly) NSComparator comperator;
 @property (nonatomic, readonly) NSMutableArray *items;
-@property (nonatomic, readonly) NSHashTable *observers;
 @end
 
-@implementation FTDynamicDataSource
+@implementation FTDynamicDataSource {
+    NSHashTable *_observers;
+}
 
 #pragma mark Life-cycle
 
@@ -22,8 +23,8 @@
 {
     self = [super init];
     if (self) {
+        _observers = [NSHashTable weakObjectsHashTable];
         _comperator = comperator;
-        
         _items = [[NSMutableArray alloc] init];
     }
     return self;
@@ -301,23 +302,19 @@
 
 #pragma mark Observer
 
-@synthesize observers = _observers;
-- (NSHashTable *)observers
+- (NSArray *)observers
 {
-    if (_observers == nil) {
-        _observers = [NSHashTable weakObjectsHashTable];
-    }
-    return _observers;
+    return [_observers allObjects];
 }
 
 - (void)addObserver:(id<FTDataSourceObserver>)observer
 {
-    [self.observers addObject:observer];
+    [_observers addObject:observer];
 }
 
 - (void)removeObserver:(id<FTDataSourceObserver>)observer
 {
-    [self.observers removeObject:observer];
+    [_observers removeObject:observer];
 }
 
 @end

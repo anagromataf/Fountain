@@ -11,13 +11,14 @@
 @interface FTBasePagingDataSource ()
 @property (nonatomic, readonly) NSMutableArray *items;
 @property (nonatomic, assign, readwrite) NSUInteger totalNumberOfItems;
-@property (nonatomic, readonly) NSHashTable *observers;
 
 @property (nonatomic, weak) id<FTPagingDataSourceOperation> loadingOperation;
 @property (nonatomic, readonly) NSMutableArray *completionHandler;
 @end
 
-@implementation FTBasePagingDataSource
+@implementation FTBasePagingDataSource {
+    NSHashTable *_observers;
+}
 
 + (NSSet *)keyPathsForValuesAffectingLoading
 {
@@ -149,14 +150,19 @@
 
 #pragma mark Observer
 
+- (NSArray *)observers
+{
+    return [_observers allObjects];
+}
+
 - (void)addObserver:(id<FTDataSourceObserver>)observer
 {
-    [self.observers addObject:observer];
+    [_observers addObject:observer];
 }
 
 - (void)removeObserver:(id<FTDataSourceObserver>)observer
 {
-    [self.observers removeObject:observer];
+    [_observers removeObject:observer];
 }
 
 #pragma mark Load Items
@@ -180,7 +186,7 @@
         if (limit == 0) {
             
             if (reset) {
-                [[self.observers allObjects] enumerateObjectsUsingBlock:^(id<FTDataSourceObserver> observer, NSUInteger idx, BOOL *stop) {
+                [self.observers enumerateObjectsUsingBlock:^(id<FTDataSourceObserver> observer, NSUInteger idx, BOOL *stop) {
                     [observer dataSourceWillChange:self];
                 }];
                 
@@ -190,7 +196,7 @@
                 
                 [self didChangeValueForKey:@"hasMoreItems"];
                 
-                [[self.observers allObjects] enumerateObjectsUsingBlock:^(id<FTDataSourceObserver> observer, NSUInteger idx, BOOL *stop) {
+                [self.observers enumerateObjectsUsingBlock:^(id<FTDataSourceObserver> observer, NSUInteger idx, BOOL *stop) {
                     [observer dataSource:self didReloadSections:[NSIndexSet indexSetWithIndex:0]];
                     [observer dataSourceDidChange:self];
                 }];
@@ -210,7 +216,7 @@
                                                                  NSError *error) {
                                                         if (items) {
                                                             
-                                                            [[self.observers allObjects] enumerateObjectsUsingBlock:^(id<FTDataSourceObserver> observer, NSUInteger idx, BOOL *stop) {
+                                                            [self.observers enumerateObjectsUsingBlock:^(id<FTDataSourceObserver> observer, NSUInteger idx, BOOL *stop) {
                                                                 [observer dataSourceWillChange:self];
                                                             }];
                                                             
@@ -225,7 +231,7 @@
                                                             
                                                             [self didChangeValueForKey:@"hasMoreItems"];
                                                             
-                                                            [[self.observers allObjects] enumerateObjectsUsingBlock:^(id<FTDataSourceObserver> observer, NSUInteger idx, BOOL *stop) {
+                                                            [self.observers enumerateObjectsUsingBlock:^(id<FTDataSourceObserver> observer, NSUInteger idx, BOOL *stop) {
                                                                 
                                                                 if (reset) {
                                                                     [observer dataSource:self didReloadSections:[NSIndexSet indexSetWithIndex:0]];

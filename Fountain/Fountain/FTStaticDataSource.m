@@ -10,11 +10,22 @@
 
 @interface FTStaticDataSource ()
 @property (nonatomic, strong) NSArray *items;
-@property (nonatomic, readonly) NSHashTable *observers;
 @end
 
-@implementation FTStaticDataSource
+@implementation FTStaticDataSource {
+    NSHashTable *_observers;
+}
 
+#pragma mark Life-cycle
+
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        _observers = [NSHashTable weakObjectsHashTable];
+    }
+    return self;
+}
 
 #pragma mark Getting Item and Section Metrics
 
@@ -111,23 +122,19 @@
 
 #pragma mark Observer
 
-@synthesize observers = _observers;
-- (NSHashTable *)observers
+- (NSArray *)observers
 {
-    if (_observers == nil) {
-        _observers = [NSHashTable weakObjectsHashTable];
-    }
-    return _observers;
+    return [_observers allObjects];
 }
 
 - (void)addObserver:(id<FTDataSourceObserver>)observer
 {
-    [self.observers addObject:observer];
+    [_observers addObject:observer];
 }
 
 - (void)removeObserver:(id<FTDataSourceObserver>)observer
 {
-    [self.observers removeObject:observer];
+    [_observers removeObject:observer];
 }
 
 @end

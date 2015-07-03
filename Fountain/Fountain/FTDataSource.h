@@ -54,6 +54,7 @@
 - (void)reloadWithCompletionHandler:(void(^)(BOOL success, NSError *error))completionHandler;
 
 #pragma mark Observer
+- (NSArray *)observers;
 - (void)addObserver:(id<FTDataSourceObserver>)observer;
 - (void)removeObserver:(id<FTDataSourceObserver>)observer;
 
