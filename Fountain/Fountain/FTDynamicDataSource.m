@@ -99,7 +99,9 @@
 {
     
     for (id<FTDataSourceObserver> observer in self.observers) {
-        [observer dataSourceWillReload:self];
+        if ([observer respondsToSelector:@selector(dataSourceWillReload:)]) {
+            [observer dataSourceWillReload:self];
+        }
     }
     
     // Sort new items
@@ -114,7 +116,9 @@
     // ----------------------------
     
     for (id<FTDataSourceObserver> observer in self.observers) {
-        [observer dataSourceDidReload:self];
+        if ([observer respondsToSelector:@selector(dataSourceDidReload:)]) {
+            [observer dataSourceDidReload:self];
+        }
     }
     
     // Call the completion handler
@@ -130,7 +134,9 @@
 - (void)updateWithDeletedItems:(NSArray *)deleted insertedItems:(NSArray *)inserted updatedItems:(NSArray *)updated
 {
     for (id<FTDataSourceObserver> observer in self.observers) {
-        [observer dataSourceWillChange:self];
+        if ([observer respondsToSelector:@selector(dataSourceWillChange:)]) {
+            [observer dataSourceWillChange:self];
+        }
     }
     
     NSIndexSet *itemsToDelete = [self _deleteItems:deleted];
@@ -150,8 +156,12 @@
     }];
     
     for (id<FTDataSourceObserver> observer in self.observers) {
-        [observer dataSource:self didDeleteItemsAtIndexPaths:indexPathsOfDeletedItems];
-        [observer dataSource:self didInsertItemsAtIndexPaths:indexPathsOfInsertedItems];
+        if ([observer respondsToSelector:@selector(dataSource:didDeleteItemsAtIndexPaths:)]) {
+            [observer dataSource:self didDeleteItemsAtIndexPaths:indexPathsOfDeletedItems];
+        }
+        if ([observer respondsToSelector:@selector(dataSource:didInsertItemsAtIndexPaths:)]) {
+            [observer dataSource:self didInsertItemsAtIndexPaths:indexPathsOfInsertedItems];
+        }
         
         [updates enumerateObjectsUsingBlock:^(NSArray *indexes, NSUInteger idx, BOOL *stop) {
             
@@ -159,22 +169,30 @@
             NSUInteger newIndex = [[indexes lastObject] unsignedIntegerValue];
             
             if (index == newIndex) {
-                [observer dataSource:self didReloadItemsAtIndexPaths:@[[section indexPathByAddingIndex:index]]];
+                if ([observer respondsToSelector:@selector(dataSource:didReloadItemsAtIndexPaths:)]) {
+                    [observer dataSource:self didReloadItemsAtIndexPaths:@[[section indexPathByAddingIndex:index]]];
+                }
             } else {
-                [observer dataSource:self
-              didMoveItemAtIndexPath:[section indexPathByAddingIndex:index]
-                         toIndexPath:[section indexPathByAddingIndex:newIndex]];
+                if ([observer respondsToSelector:@selector(dataSource:didMoveItemAtIndexPath:toIndexPath:)]) {
+                    [observer dataSource:self
+                  didMoveItemAtIndexPath:[section indexPathByAddingIndex:index]
+                             toIndexPath:[section indexPathByAddingIndex:newIndex]];
+                }
             }
             
         }];
-        [observer dataSourceDidChange:self];
+        if ([observer respondsToSelector:@selector(dataSourceDidChange:)]) {
+            [observer dataSourceDidChange:self];
+        }
     }
 }
 
 - (void)deleteItems:(NSArray *)items
 {
     for (id<FTDataSourceObserver> observer in self.observers) {
-        [observer dataSourceWillChange:self];
+        if ([observer respondsToSelector:@selector(dataSourceWillChange:)]) {
+            [observer dataSourceWillChange:self];
+        }
     }
     
     NSIndexSet *itemsToDelete = [self _deleteItems:items];
@@ -186,8 +204,12 @@
     }];
     
     for (id<FTDataSourceObserver> observer in self.observers) {
-        [observer dataSource:self didDeleteItemsAtIndexPaths:indexPaths];
-        [observer dataSourceDidChange:self];
+        if ([observer respondsToSelector:@selector(dataSource:didDeleteItemsAtIndexPaths:)]) {
+            [observer dataSource:self didDeleteItemsAtIndexPaths:indexPaths];
+        }
+        if ([observer respondsToSelector:@selector(dataSourceDidChange:)]) {
+            [observer dataSourceDidChange:self];
+        }
     }
 }
 
@@ -207,7 +229,9 @@
 - (void)insertItems:(NSArray *)items
 {
     for (id<FTDataSourceObserver> observer in self.observers) {
-        [observer dataSourceWillChange:self];
+        if ([observer respondsToSelector:@selector(dataSourceWillChange:)]) {
+            [observer dataSourceWillChange:self];
+        }
     }
     
     NSIndexSet *itemsToInsert = [self _insertItems:items];
@@ -219,8 +243,12 @@
     }];
     
     for (id<FTDataSourceObserver> observer in self.observers) {
-        [observer dataSource:self didInsertItemsAtIndexPaths:indexPaths];
-        [observer dataSourceDidChange:self];
+        if ([observer respondsToSelector:@selector(dataSource:didInsertItemsAtIndexPaths:)]) {
+            [observer dataSource:self didInsertItemsAtIndexPaths:indexPaths];
+        }
+        if ([observer respondsToSelector:@selector(dataSourceDidChange:)]) {
+            [observer dataSourceDidChange:self];
+        }
     }
 }
 
@@ -252,7 +280,9 @@
 - (void)updateItems:(NSArray *)items
 {
     for (id<FTDataSourceObserver> observer in self.observers) {
-        [observer dataSourceWillChange:self];
+        if ([observer respondsToSelector:@selector(dataSourceWillChange:)]) {
+            [observer dataSourceWillChange:self];
+        }
     }
     
     NSArray *updates = [self _updateItems:items];
@@ -264,12 +294,16 @@
             NSUInteger index = [[obj firstObject] unsignedIntegerValue];
             NSUInteger newIndex = [[obj lastObject] unsignedIntegerValue];
             if (index != newIndex) {
-                [observer dataSource:self
-              didMoveItemAtIndexPath:[sectionIndex indexPathByAddingIndex:index]
-                         toIndexPath:[sectionIndex indexPathByAddingIndex:newIndex]];
+                if ([observer respondsToSelector:@selector(dataSource:didMoveItemAtIndexPath:toIndexPath:)]) {
+                    [observer dataSource:self
+                  didMoveItemAtIndexPath:[sectionIndex indexPathByAddingIndex:index]
+                             toIndexPath:[sectionIndex indexPathByAddingIndex:newIndex]];
+                }
             }
         }];
-        [observer dataSourceDidChange:self];
+        if ([observer respondsToSelector:@selector(dataSourceDidChange:)]) {
+            [observer dataSourceDidChange:self];
+        }
     }
 }
 

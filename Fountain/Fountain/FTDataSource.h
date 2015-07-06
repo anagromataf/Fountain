@@ -11,6 +11,7 @@
 @protocol FTDataSource;
 
 @protocol FTDataSourceObserver <NSObject>
+@optional
 
 #pragma mark Begin End Updates
 - (void)dataSourceWillChange:(id<FTDataSource>)dataSource;

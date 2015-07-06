@@ -96,7 +96,9 @@
 {
     
     for (id<FTDataSourceObserver> observer in self.observers) {
-        [observer dataSourceWillReload:self];
+        if ([observer respondsToSelector:@selector(dataSourceWillReload:)]) {
+            [observer dataSourceWillReload:self];
+        }
     }
     
     // Set the Items
@@ -109,7 +111,9 @@
     // ----------------------------
     
     for (id<FTDataSourceObserver> observer in self.observers) {
-        [observer dataSourceDidReload:self];
+        if ([observer respondsToSelector:@selector(dataSourceDidReload:)]) {
+            [observer dataSourceDidReload:self];
+        }
     }
     
     // Call the completion handler

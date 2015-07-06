@@ -161,11 +161,15 @@
 {
     if (dataSource == self.sectionDataSource) {
         for (id<FTDataSourceObserver> observer in self.observers) {
-            [observer dataSourceWillReload:self];
+            if ([observer respondsToSelector:@selector(dataSourceWillReload:)]) {
+                [observer dataSourceWillReload:self];
+            }
         }
     } else {
         for (id<FTDataSourceObserver> observer in self.observers) {
-            [observer dataSourceWillChange:self];
+            if ([observer respondsToSelector:@selector(dataSourceWillChange:)]) {
+                [observer dataSourceWillChange:self];
+            }
         }
     }
 }
@@ -174,7 +178,9 @@
 {
     if (dataSource == self.sectionDataSource) {
         for (id<FTDataSourceObserver> observer in self.observers) {
-            [observer dataSourceDidReload:self];
+            if ([observer respondsToSelector:@selector(dataSourceDidReload:)]) {
+                [observer dataSourceDidReload:self];
+            }
         }
     } else {
         NSUInteger section = NSNotFound;
@@ -187,8 +193,12 @@
         
         if (section != NSNotFound) {
             for (id<FTDataSourceObserver> observer in self.observers) {
-                [observer dataSource:self didReloadSections:[NSIndexSet indexSetWithIndex:section]];
-                [observer dataSourceDidChange:self];
+                if ([observer respondsToSelector:@selector(dataSource:didReloadSections:)]) {
+                    [observer dataSource:self didReloadSections:[NSIndexSet indexSetWithIndex:section]];
+                }
+                if ([observer respondsToSelector:@selector(dataSourceDidChange:)]) {
+                    [observer dataSourceDidChange:self];
+                }
             }
         }
     }
@@ -201,7 +211,9 @@
     if (self.updating == NO) {
         self.updating = YES;
         for (id<FTDataSourceObserver> observer in self.observers) {
-            [observer dataSourceWillChange:self];
+            if ([observer respondsToSelector:@selector(dataSourceWillChange:)]) {
+                [observer dataSourceWillChange:self];
+            }
         }
     }
 }
@@ -210,7 +222,9 @@
 {
     if (self.updating == YES) {
         for (id<FTDataSourceObserver> observer in self.observers) {
-            [observer dataSourceDidChange:self];
+            if ([observer respondsToSelector:@selector(dataSourceDidChange:)]) {
+                [observer dataSourceDidChange:self];
+            }
         }
         self.updating = NO;
     }
@@ -261,7 +275,9 @@
         }
         
         for (id<FTDataSourceObserver> observer in self.observers) {
-            [observer dataSource:self didInsertSections:indexes];
+            if ([observer respondsToSelector:@selector(dataSource:didInsertSections:)]) {
+                [observer dataSource:self didInsertSections:indexes];
+            }
         }
     } else {
         NSUInteger section = NSNotFound;
@@ -284,7 +300,9 @@
             }
             
             for (id<FTDataSourceObserver> observer in self.observers) {
-                [observer dataSource:self didInsertItemsAtIndexPaths:translatedIndexPaths];
+                if ([observer respondsToSelector:@selector(dataSource:didInsertItemsAtIndexPaths:)]) {
+                    [observer dataSource:self didInsertItemsAtIndexPaths:translatedIndexPaths];
+                }
             }
         }
     }
@@ -304,7 +322,9 @@
         }
         
         for (id<FTDataSourceObserver> observer in self.observers) {
-            [observer dataSource:self didDeleteSections:indexes];
+            if ([observer respondsToSelector:@selector(dataSource:didDeleteSections:)]) {
+                [observer dataSource:self didDeleteSections:indexes];
+            }
         }
     } else {
         NSUInteger section = NSNotFound;
@@ -327,7 +347,9 @@
             }
             
             for (id<FTDataSourceObserver> observer in self.observers) {
-                [observer dataSource:self didDeleteItemsAtIndexPaths:translatedIndexPaths];
+                if ([observer respondsToSelector:@selector(dataSource:didDeleteItemsAtIndexPaths:)]) {
+                    [observer dataSource:self didDeleteItemsAtIndexPaths:translatedIndexPaths];
+                }
             }
         }
     }
@@ -358,7 +380,9 @@
             }
             
             for (id<FTDataSourceObserver> observer in self.observers) {
-                [observer dataSource:self didReloadItemsAtIndexPaths:translatedIndexPaths];
+                if ([observer respondsToSelector:@selector(dataSource:didReloadSections:)]) {
+                    [observer dataSource:self didReloadItemsAtIndexPaths:translatedIndexPaths];
+                }
             }
         }
     }
@@ -383,7 +407,9 @@
             }
             
             for (id<FTDataSourceObserver> observer in self.observers) {
-                [observer dataSource:self didMoveSection:index toSection:newIndex];
+                if ([observer respondsToSelector:@selector(dataSource:didMoveSection:toSection:)]) {
+                    [observer dataSource:self didMoveSection:index toSection:newIndex];
+                }
             }
         }
     } else {
@@ -408,9 +434,11 @@
                 NSUInteger newIndex = [newIndexPath indexAtPosition:1];
                 
                 for (id<FTDataSourceObserver> observer in self.observers) {
-                    [observer dataSource:self
-                  didMoveItemAtIndexPath:[sectionIndexPath indexPathByAddingIndex:index]
-                             toIndexPath:[sectionIndexPath indexPathByAddingIndex:newIndex]];
+                    if ([observer respondsToSelector:@selector(dataSource:didMoveItemAtIndexPath:toIndexPath:)]) {
+                        [observer dataSource:self
+                      didMoveItemAtIndexPath:[sectionIndexPath indexPathByAddingIndex:index]
+                                 toIndexPath:[sectionIndexPath indexPathByAddingIndex:newIndex]];
+                    }
                 }
             }
         }

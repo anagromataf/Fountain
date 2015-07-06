@@ -187,7 +187,9 @@
             
             if (reset) {
                 [self.observers enumerateObjectsUsingBlock:^(id<FTDataSourceObserver> observer, NSUInteger idx, BOOL *stop) {
-                    [observer dataSourceWillChange:self];
+                    if ([observer respondsToSelector:@selector(dataSourceWillChange:)]) {
+                        [observer dataSourceWillChange:self];
+                    }
                 }];
                 
                 [self willChangeValueForKey:@"hasMoreItems"];
@@ -197,8 +199,13 @@
                 [self didChangeValueForKey:@"hasMoreItems"];
                 
                 [self.observers enumerateObjectsUsingBlock:^(id<FTDataSourceObserver> observer, NSUInteger idx, BOOL *stop) {
-                    [observer dataSource:self didReloadSections:[NSIndexSet indexSetWithIndex:0]];
-                    [observer dataSourceDidChange:self];
+                    if ([observer respondsToSelector:@selector(dataSource:didReloadSections:)]) {
+                        [observer dataSource:self didReloadSections:[NSIndexSet indexSetWithIndex:0]];
+                    }
+                    
+                    if ([observer respondsToSelector:@selector(dataSourceDidChange:)]) {
+                        [observer dataSourceDidChange:self];
+                    }
                 }];
             }
             
@@ -217,7 +224,9 @@
                                                         if (items) {
                                                             
                                                             [self.observers enumerateObjectsUsingBlock:^(id<FTDataSourceObserver> observer, NSUInteger idx, BOOL *stop) {
-                                                                [observer dataSourceWillChange:self];
+                                                                if ([observer respondsToSelector:@selector(dataSourceWillChange:)]) {
+                                                                    [observer dataSourceWillChange:self];
+                                                                }
                                                             }];
                                                             
                                                             [self willChangeValueForKey:@"hasMoreItems"];
@@ -234,17 +243,23 @@
                                                             [self.observers enumerateObjectsUsingBlock:^(id<FTDataSourceObserver> observer, NSUInteger idx, BOOL *stop) {
                                                                 
                                                                 if (reset) {
-                                                                    [observer dataSource:self didReloadSections:[NSIndexSet indexSetWithIndex:0]];
+                                                                    if ([observer respondsToSelector:@selector(dataSource:didReloadSections:)]) {
+                                                                        [observer dataSource:self didReloadSections:[NSIndexSet indexSetWithIndex:0]];
+                                                                    }
                                                                 } else {
                                                                     NSMutableArray *indexPaths = [NSMutableArray array];
                                                                     NSIndexPath *section = [NSIndexPath indexPathWithIndex:0];
                                                                     for (NSUInteger i = offset; i < offset + [items count]; i++) {
                                                                         [indexPaths addObject:[section indexPathByAddingIndex:i]];
                                                                     }
-                                                                    [observer dataSource:self didInsertItemsAtIndexPaths:indexPaths];
+                                                                    if ([observer respondsToSelector:@selector(dataSource:didInsertItemsAtIndexPaths:)]) {
+                                                                        [observer dataSource:self didInsertItemsAtIndexPaths:indexPaths];
+                                                                    }
                                                                 }
                                                                 
-                                                                [observer dataSourceDidChange:self];
+                                                                if ([observer respondsToSelector:@selector(dataSourceDidChange:)]) {
+                                                                    [observer dataSourceDidChange:self];
+                                                                }
                                                             }];
                                                         }
                                                         

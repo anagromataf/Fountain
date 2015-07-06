@@ -256,14 +256,18 @@ typedef enum {
 - (void)reloadWithCompletionHandler:(void(^)(BOOL success, NSError *error))completionHandler
 {
     for (id<FTDataSourceObserver> observer in self.observers) {
-        [observer dataSourceWillReload:self];
+        if ([observer respondsToSelector:@selector(dataSourceWillReload:)]) {
+            [observer dataSourceWillReload:self];
+        }
     }
     
     NSError *error = nil;
     BOOL success = [self.fetchedResultsController performFetch:&error];
     
     for (id<FTDataSourceObserver> observer in self.observers) {
-        [observer dataSourceDidReload:self];
+        if ([observer respondsToSelector:@selector(dataSourceDidReload:)]) {
+            [observer dataSourceDidReload:self];
+        }
     }
     
     if (completionHandler) {
@@ -293,7 +297,9 @@ typedef enum {
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
 {
     for (id<FTDataSourceObserver> observer in self.observers) {
-        [observer dataSourceWillChange:self];
+        if ([observer respondsToSelector:@selector(dataSourceWillChange:)]) {
+            [observer dataSourceWillChange:self];
+        }
     }
 }
 
@@ -302,13 +308,17 @@ typedef enum {
     switch (type) {
         case NSFetchedResultsChangeInsert:
             for (id<FTDataSourceObserver> observer in self.observers) {
-                [observer dataSource:self didInsertSections:[NSIndexSet indexSetWithIndex:sectionIndex]];
+                if ([observer respondsToSelector:@selector(dataSource:didInsertSections:)]) {
+                    [observer dataSource:self didInsertSections:[NSIndexSet indexSetWithIndex:sectionIndex]];
+                }
             }
             break;
             
         case NSFetchedResultsChangeDelete:
             for (id<FTDataSourceObserver> observer in self.observers) {
-                [observer dataSource:self didInsertSections:[NSIndexSet indexSetWithIndex:sectionIndex]];
+                if ([observer respondsToSelector:@selector(dataSource:didDeleteSections:)]) {
+                    [observer dataSource:self didInsertSections:[NSIndexSet indexSetWithIndex:sectionIndex]];
+                }
             }
             break;
         
@@ -322,25 +332,33 @@ typedef enum {
     switch (type) {
         case NSFetchedResultsChangeInsert:
             for (id<FTDataSourceObserver> observer in self.observers) {
-                [observer dataSource:self didInsertItemsAtIndexPaths:@[newIndexPath]];
+                if ([observer respondsToSelector:@selector(dataSource:didInsertItemsAtIndexPaths:)]) {
+                    [observer dataSource:self didInsertItemsAtIndexPaths:@[newIndexPath]];
+                }
             }
             break;
             
         case NSFetchedResultsChangeMove:
             for (id<FTDataSourceObserver> observer in self.observers) {
-                [observer dataSource:self didMoveItemAtIndexPath:indexPath toIndexPath:newIndexPath];
+                if ([observer respondsToSelector:@selector(dataSource:didMoveItemAtIndexPath:toIndexPath:)]) {
+                    [observer dataSource:self didMoveItemAtIndexPath:indexPath toIndexPath:newIndexPath];
+                }
             }
             break;
             
         case NSFetchedResultsChangeDelete:
             for (id<FTDataSourceObserver> observer in self.observers) {
-                [observer dataSource:self didDeleteItemsAtIndexPaths:@[indexPath]];
+                if ([observer respondsToSelector:@selector(dataSource:didDeleteItemsAtIndexPaths:)]) {
+                    [observer dataSource:self didDeleteItemsAtIndexPaths:@[indexPath]];
+                }
             }
             break;
             
         case NSFetchedResultsChangeUpdate:
             for (id<FTDataSourceObserver> observer in self.observers) {
-                [observer dataSource:self didReloadItemsAtIndexPaths:@[indexPath]];
+                if ([observer respondsToSelector:@selector(dataSource:didReloadItemsAtIndexPaths:)]) {
+                    [observer dataSource:self didReloadItemsAtIndexPaths:@[indexPath]];
+                }
             }
             break;
             
@@ -352,7 +370,9 @@ typedef enum {
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
 {
     for (id<FTDataSourceObserver> observer in self.observers) {
-        [observer dataSourceDidChange:self];
+        if ([observer respondsToSelector:@selector(dataSourceDidChange:)]) {
+            [observer dataSourceDidChange:self];
+        }
     }
 }
 
