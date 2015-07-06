@@ -34,34 +34,17 @@ typedef void(^FTTableViewAdapterHeaderFooterPrepareBlock)(id view, id item, NSUI
 #pragma mark Paging
 @property (nonatomic, assign) BOOL shouldLoadNextPage;
 
-#pragma mark Heights
-@property (nonatomic, assign) CGFloat estimatedRowHeight;
-
-@property (nonatomic, assign) CGFloat rowHeight;
-@property (nonatomic, assign) CGFloat sectionHeaderHeight;
-@property (nonatomic, assign) CGFloat sectionFooterHeight;
-
 #pragma mark Prepare Handler
+- (void)forRowsKindOfClass:(Class)aClass useCellWithReuseIdentifier:(NSString *)reuseIdentifier prepareBlock:(FTTableViewAdapterCellPrepareBlock)prepareBlock;
+- (void)forRowsConformingToProtocol:(Protocol *)aProtocol useCellWithReuseIdentifier:(NSString *)reuseIdentifier prepareBlock:(FTTableViewAdapterCellPrepareBlock)prepareBlock;
+- (void)forRowsMatchingPredicate:(NSPredicate *)predicate useCellWithReuseIdentifier:(NSString *)reuseIdentifier prepareBlock:(FTTableViewAdapterCellPrepareBlock)prepareBlock;
 
-- (void)forRowsKindOfClass:(Class)aClass
-useCellWithReuseIdentifier:(NSString *)reuseIdentifier
-              prepareBlock:(FTTableViewAdapterCellPrepareBlock)prepareBlock;
+- (void)forHeaderMatchingPredicate:(NSPredicate *)predicate useViewWithReuseIdentifier:(NSString *)reuseIdentifier prepareBlock:(FTTableViewAdapterHeaderFooterPrepareBlock)prepareBlock;
+- (void)forFooterMatchingPredicate:(NSPredicate *)predicate useViewWithReuseIdentifier:(NSString *)reuseIdentifier prepareBlock:(FTTableViewAdapterHeaderFooterPrepareBlock)prepareBlock;
 
-- (void)forRowsConformingToProtocol:(Protocol *)aProtocol
-         useCellWithReuseIdentifier:(NSString *)reuseIdentifier
-                       prepareBlock:(FTTableViewAdapterCellPrepareBlock)prepareBlock;
-
-- (void)forRowsMatchingPredicate:(NSPredicate *)predicate
-      useCellWithReuseIdentifier:(NSString *)reuseIdentifier
-                    prepareBlock:(FTTableViewAdapterCellPrepareBlock)prepareBlock;
-
-- (void)forHeaderMatchingPredicate:(NSPredicate *)predicate
-        useViewWithReuseIdentifier:(NSString *)reuseIdentifier
-                      prepareBlock:(FTTableViewAdapterHeaderFooterPrepareBlock)prepareBlock;
-
-- (void)forFooterMatchingPredicate:(NSPredicate *)predicate
-        useViewWithReuseIdentifier:(NSString *)reuseIdentifier
-                      prepareBlock:(FTTableViewAdapterHeaderFooterPrepareBlock)prepareBlock;
+- (void)rowPreperationForItemAtIndexPath:(NSIndexPath *)indexPath withBlock:(void(^)(NSString *reuseIdentifier, FTTableViewAdapterCellPrepareBlock prepareBlock, id item))block;
+- (void)headerPreperationForSection:(NSUInteger)section withBlock:(void(^)(NSString *reuseIdentifier, FTTableViewAdapterHeaderFooterPrepareBlock prepareBlock, id item))block;
+- (void)footerPreperationForSection:(NSUInteger)section withBlock:(void(^)(NSString *reuseIdentifier, FTTableViewAdapterHeaderFooterPrepareBlock prepareBlock, id item))block;
 
 #pragma mark User-driven Changes
 @property (nonatomic, readonly) BOOL userDrivenChange;
