@@ -19,7 +19,7 @@ describe(@"FTDynamicDataSource", ^{
     __block FTDynamicDataSource *dataSource = nil;
     
     beforeEach(^{
-        dataSource = [[FTDynamicDataSource alloc] initWithComerator:^NSComparisonResult(NSDictionary *obj1, NSDictionary *obj2) {
+        dataSource = [[FTDynamicDataSource alloc] initWithComparator:^NSComparisonResult(NSDictionary *obj1, NSDictionary *obj2) {
             return [[obj1 valueForKey:@"value"] compare:[obj2 valueForKey:@"value"]];
         }];
     });
@@ -57,7 +57,7 @@ describe(@"FTDynamicDataSource", ^{
             });
         });
         
-        it(@"should contain the items ordered by the comperator", ^{
+        it(@"should contain the items ordered by the comparator", ^{
             assertThatInteger([dataSource numberOfItemsInSection:0], equalToInteger(10));
             
             NSIndexPath *sectionIndexPath = [NSIndexPath indexPathWithIndex:0];

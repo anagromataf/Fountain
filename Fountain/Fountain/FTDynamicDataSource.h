@@ -13,7 +13,7 @@
 @interface FTDynamicDataSource : NSObject <FTDataSource, FTReverseDataSource>
 
 #pragma mark Life-cycle
-- (instancetype)initWithComerator:(NSComparator)comperator;
+- (instancetype)initWithComparator:(NSComparator)comparator;
 
 #pragma mark Relaod
 - (void)reloadWithItems:(NSArray *)sectionItems

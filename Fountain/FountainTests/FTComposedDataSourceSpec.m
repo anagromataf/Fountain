@@ -26,7 +26,7 @@ describe(@"FTComposedDataSource", ^{
     __block FTComposedDataSource *dataSource = nil;
     
     beforeEach(^{
-        sections = [[FTDynamicDataSource alloc] initWithComerator:^NSComparisonResult(NSDictionary *obj1, NSDictionary *obj2) {
+        sections = [[FTDynamicDataSource alloc] initWithComparator:^NSComparisonResult(NSDictionary *obj1, NSDictionary *obj2) {
             return [[obj1 valueForKey:@"value"] compare:[obj2 valueForKey:@"value"]];
         }];
         
@@ -79,7 +79,7 @@ describe(@"FTComposedDataSource", ^{
             [verifyCount(observer, times(2)) dataSourceDidReload:dataSource];
         });
         
-        it(@"should contain the section items ordered by the comperator", ^{
+        it(@"should contain the section items ordered by the comparator", ^{
             assertThatInteger([dataSource numberOfSections], equalToInteger(10));
             
             assertThat([[dataSource itemForSection:0] valueForKey:@"value"], equalTo(@"a"));
@@ -279,7 +279,7 @@ SpecEnd
 
 - (id<FTDataSource>)createDataSourceWithSectionItem:(NSDictionary *)sectionItem
 {
-    FTDynamicDataSource *dataSource = [[FTDynamicDataSource alloc] initWithComerator:^NSComparisonResult(id obj1, id obj2) {
+    FTDynamicDataSource *dataSource = [[FTDynamicDataSource alloc] initWithComparator:^NSComparisonResult(id obj1, id obj2) {
         return [obj1 compare:obj2];
     }];
     
