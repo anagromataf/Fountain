@@ -10,7 +10,7 @@
 
 #import "FTDataSource.h"
 
-@interface FTDynamicDataSource : NSObject <FTDataSource>
+@interface FTDynamicDataSource : NSObject <FTDataSource, FTReverseDataSource>
 
 #pragma mark Life-cycle
 - (instancetype)initWithComerator:(NSComparator)comperator;
