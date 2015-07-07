@@ -23,10 +23,10 @@
 
 @property (nonatomic, assign) NSUInteger pageSize;
 
-- (void)resetCompletionHandler:(void(^)(BOOL success, NSError *error))completionHandler;
+- (void)resetCompletionHandler:(void (^)(BOOL success, NSError *error))completionHandler;
 
 - (id<FTPagingDataSourceOperation>)fetchItemsWithOffset:(NSUInteger)offset
                                                   limit:(NSUInteger)limit
-                                             completion:(void(^)(NSArray *items, NSUInteger offset, NSUInteger limit, NSUInteger total, NSError *error))completion;
+                                             completion:(void (^)(NSArray *items, NSUInteger offset, NSUInteger limit, NSUInteger total, NSError *error))completion;
 
 @end

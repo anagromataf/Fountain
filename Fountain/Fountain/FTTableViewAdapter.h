@@ -10,8 +10,8 @@
 
 #import "FTDataSource.h"
 
-typedef void(^FTTableViewAdapterCellPrepareBlock)(id cell, id item, NSIndexPath *indexPath, id<FTDataSource> dataSource);
-typedef void(^FTTableViewAdapterHeaderFooterPrepareBlock)(id view, id item, NSUInteger section, id<FTDataSource> dataSource);
+typedef void (^FTTableViewAdapterCellPrepareBlock)(id cell, id item, NSIndexPath *indexPath, id<FTDataSource> dataSource);
+typedef void (^FTTableViewAdapterHeaderFooterPrepareBlock)(id view, id item, NSUInteger section, id<FTDataSource> dataSource);
 
 @interface FTTableViewAdapter : NSObject
 
@@ -69,4 +69,3 @@ useCellWithReuseIdentifier:(NSString *)reuseIdentifier
 - (void)endUserDrivenChange;
 
 @end
-

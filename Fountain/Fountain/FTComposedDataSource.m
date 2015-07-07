@@ -100,11 +100,11 @@
 
 #pragma mark Reload
 
-- (void)reloadWithCompletionHandler:(void(^)(BOOL success, NSError *error))completionHandler
+- (void)reloadWithCompletionHandler:(void (^)(BOOL success, NSError *error))completionHandler
 {
     // Call the completion handler
     // ---------------------------
-    
+
     if (completionHandler) {
         completionHandler(YES, nil);
     }
@@ -128,11 +128,11 @@
             [self.sectionDataSources setObject:dataSource forKey:@(section)];
         }
     }
-    
+
     if (dataSource == nil) {
         [self.sectionDataSources setObject:[NSNull null] forKey:@(section)];
     }
-    
+
     return [dataSource isEqual:[NSNull null]] ? nil : dataSource;
 }
 
@@ -190,7 +190,7 @@
                 break;
             }
         }
-        
+
         if (section != NSNotFound) {
             for (id<FTDataSourceObserver> observer in self.observers) {
                 if ([observer respondsToSelector:@selector(dataSource:didReloadSections:)]) {
@@ -235,28 +235,24 @@
 - (void)dataSource:(id<FTDataSource>)dataSource didInsertSections:(NSIndexSet *)sections
 {
     if (dataSource == self.sectionDataSource) {
-        
     }
 }
 
 - (void)dataSource:(id<FTDataSource>)dataSource didDeleteSections:(NSIndexSet *)sections
 {
     if (dataSource == self.sectionDataSource) {
-        
     }
 }
 
 - (void)dataSource:(id<FTDataSource>)dataSource didReloadSections:(NSIndexSet *)sections
 {
     if (dataSource == self.sectionDataSource) {
-        
     }
 }
 
 - (void)dataSource:(id<FTDataSource>)dataSource didMoveSection:(NSInteger)section toSection:(NSInteger)newSection
 {
     if (dataSource == self.sectionDataSource) {
-        
     }
 }
 
@@ -266,14 +262,14 @@
 {
     if (dataSource == self.sectionDataSource) {
         NSMutableIndexSet *indexes = [[NSMutableIndexSet alloc] init];
-        
+
         for (NSIndexPath *indexPath in indexPaths) {
             if ([indexPath length] >= 2 && [indexPath indexAtPosition:0] == 0) {
                 NSUInteger index = [indexPath indexAtPosition:1];
                 [indexes addIndex:index];
             }
         }
-        
+
         for (id<FTDataSourceObserver> observer in self.observers) {
             if ([observer respondsToSelector:@selector(dataSource:didInsertSections:)]) {
                 [observer dataSource:self didInsertSections:indexes];
@@ -287,10 +283,10 @@
                 break;
             }
         }
-        
+
         if (section != NSNotFound) {
             NSIndexPath *sectionIndexPath = [NSIndexPath indexPathWithIndex:section];
-            
+
             NSMutableArray *translatedIndexPaths = [[NSMutableArray alloc] init];
             for (NSIndexPath *indexPath in indexPaths) {
                 if ([indexPath length] >= 2 && [indexPath indexAtPosition:0] == 0) {
@@ -298,7 +294,7 @@
                     [translatedIndexPaths addObject:[sectionIndexPath indexPathByAddingIndex:index]];
                 }
             }
-            
+
             for (id<FTDataSourceObserver> observer in self.observers) {
                 if ([observer respondsToSelector:@selector(dataSource:didInsertItemsAtIndexPaths:)]) {
                     [observer dataSource:self didInsertItemsAtIndexPaths:translatedIndexPaths];
@@ -312,7 +308,7 @@
 {
     if (dataSource == self.sectionDataSource) {
         NSMutableIndexSet *indexes = [[NSMutableIndexSet alloc] init];
-        
+
         for (NSIndexPath *indexPath in indexPaths) {
             if ([indexPath length] >= 2 && [indexPath indexAtPosition:0] == 0) {
                 NSUInteger index = [indexPath indexAtPosition:1];
@@ -320,7 +316,7 @@
                 [self.sectionDataSources removeObjectForKey:@(index)];
             }
         }
-        
+
         for (id<FTDataSourceObserver> observer in self.observers) {
             if ([observer respondsToSelector:@selector(dataSource:didDeleteSections:)]) {
                 [observer dataSource:self didDeleteSections:indexes];
@@ -334,10 +330,10 @@
                 break;
             }
         }
-        
+
         if (section != NSNotFound) {
             NSIndexPath *sectionIndexPath = [NSIndexPath indexPathWithIndex:section];
-            
+
             NSMutableArray *translatedIndexPaths = [[NSMutableArray alloc] init];
             for (NSIndexPath *indexPath in indexPaths) {
                 if ([indexPath length] >= 2 && [indexPath indexAtPosition:0] == 0) {
@@ -345,7 +341,7 @@
                     [translatedIndexPaths addObject:[sectionIndexPath indexPathByAddingIndex:index]];
                 }
             }
-            
+
             for (id<FTDataSourceObserver> observer in self.observers) {
                 if ([observer respondsToSelector:@selector(dataSource:didDeleteItemsAtIndexPaths:)]) {
                     [observer dataSource:self didDeleteItemsAtIndexPaths:translatedIndexPaths];
@@ -358,7 +354,7 @@
 - (void)dataSource:(id<FTDataSource>)dataSource didReloadItemsAtIndexPaths:(NSArray *)indexPaths
 {
     if (dataSource == self.sectionDataSource) {
-        
+
     } else {
         NSUInteger section = NSNotFound;
         for (id key in [self.sectionDataSources keyEnumerator]) {
@@ -367,10 +363,10 @@
                 break;
             }
         }
-        
+
         if (section != NSNotFound) {
             NSIndexPath *sectionIndexPath = [NSIndexPath indexPathWithIndex:section];
-            
+
             NSMutableArray *translatedIndexPaths = [[NSMutableArray alloc] init];
             for (NSIndexPath *indexPath in indexPaths) {
                 if ([indexPath length] >= 2 && [indexPath indexAtPosition:0] == 0) {
@@ -378,7 +374,7 @@
                     [translatedIndexPaths addObject:[sectionIndexPath indexPathByAddingIndex:index]];
                 }
             }
-            
+
             for (id<FTDataSourceObserver> observer in self.observers) {
                 if ([observer respondsToSelector:@selector(dataSource:didReloadSections:)]) {
                     [observer dataSource:self didReloadItemsAtIndexPaths:translatedIndexPaths];
@@ -395,17 +391,17 @@
             [newIndexPath length] >= 2 &&
             [indexPath indexAtPosition:0] == 0 &&
             [newIndexPath indexAtPosition:0] == 0) {
-            
+
             NSUInteger index = [indexPath indexAtPosition:1];
             NSUInteger newIndex = [newIndexPath indexAtPosition:1];
-            
+
             id<FTDataSource> sectionDataSource = [self.sectionDataSources objectForKey:@(index)];
             if (sectionDataSource) {
                 [self.sectionDataSources removeObjectForKey:@(index)];
                 [self.sectionDataSources setObject:sectionDataSource
                                             forKey:@(newIndex)];
             }
-            
+
             for (id<FTDataSourceObserver> observer in self.observers) {
                 if ([observer respondsToSelector:@selector(dataSource:didMoveSection:toSection:)]) {
                     [observer dataSource:self didMoveSection:index toSection:newIndex];
@@ -420,24 +416,24 @@
                 break;
             }
         }
-        
+
         if (section != NSNotFound) {
-            
+
             if ([indexPath length] >= 2 &&
                 [newIndexPath length] >= 2 &&
                 [indexPath indexAtPosition:0] == 0 &&
                 [newIndexPath indexAtPosition:0] == 0) {
-            
+
                 NSIndexPath *sectionIndexPath = [NSIndexPath indexPathWithIndex:section];
-                
+
                 NSUInteger index = [indexPath indexAtPosition:1];
                 NSUInteger newIndex = [newIndexPath indexAtPosition:1];
-                
+
                 for (id<FTDataSourceObserver> observer in self.observers) {
                     if ([observer respondsToSelector:@selector(dataSource:didMoveItemAtIndexPath:toIndexPath:)]) {
                         [observer dataSource:self
-                      didMoveItemAtIndexPath:[sectionIndexPath indexPathByAddingIndex:index]
-                                 toIndexPath:[sectionIndexPath indexPathByAddingIndex:newIndex]];
+                            didMoveItemAtIndexPath:[sectionIndexPath indexPathByAddingIndex:index]
+                                       toIndexPath:[sectionIndexPath indexPathByAddingIndex:newIndex]];
                     }
                 }
             }

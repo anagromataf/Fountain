@@ -52,7 +52,7 @@
 - (NSIndexSet *)sectionsForItem:(id)item;
 
 #pragma mark Reload
-- (void)reloadWithCompletionHandler:(void(^)(BOOL success, NSError *error))completionHandler;
+- (void)reloadWithCompletionHandler:(void (^)(BOOL success, NSError *error))completionHandler;
 
 #pragma mark Observer
 - (NSArray *)observers;
@@ -63,13 +63,13 @@
 
 @protocol FTPagingDataSource <FTDataSource>
 @property (nonatomic, readonly) BOOL hasMoreItems;
-- (void)loadNextPageCompletionHandler:(void(^)(BOOL success, NSError *error))completionHandler;
+- (void)loadNextPageCompletionHandler:(void (^)(BOOL success, NSError *error))completionHandler;
 @end
 
 @protocol FTMutableDataSource <FTDataSource>
 @property (nonatomic, readonly) BOOL hasChanges;
 #pragma mark Apply Changes
-- (void)applyChangesWithCompletionHandler:(void(^)(BOOL success, NSError *error))completionHandler;
+- (void)applyChangesWithCompletionHandler:(void (^)(BOOL success, NSError *error))completionHandler;
 @end
 
 @protocol FTReorderableDataSource <FTMutableDataSource>

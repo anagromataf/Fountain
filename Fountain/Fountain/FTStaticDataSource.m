@@ -61,7 +61,7 @@
         NSUInteger index = [self.items indexOfObject:item];
         if (index != NSNotFound) {
             NSIndexPath *sectionIndexPath = [NSIndexPath indexPathWithIndex:0];
-            return @[[sectionIndexPath indexPathByAddingIndex:index]];
+            return @[ [sectionIndexPath indexPathByAddingIndex:index] ];
         }
     }
     return @[];
@@ -81,44 +81,43 @@
 
 #pragma mark Relaod
 
-- (void)reloadWithCompletionHandler:(void(^)(BOOL success, NSError *error))completionHandler
+- (void)reloadWithCompletionHandler:(void (^)(BOOL success, NSError *error))completionHandler
 {
     // Call the completion handler
     // ---------------------------
-    
+
     if (completionHandler) {
         completionHandler(YES, nil);
     }
 }
 
 - (void)reloadWithItems:(NSArray *)items
-      completionHandler:(void(^)(BOOL success, NSError *error))completionHandler
+      completionHandler:(void (^)(BOOL success, NSError *error))completionHandler
 {
-    
+
     for (id<FTDataSourceObserver> observer in self.observers) {
         if ([observer respondsToSelector:@selector(dataSourceWillReload:)]) {
             [observer dataSourceWillReload:self];
         }
     }
-    
+
     // Set the Items
     // -------------
-    
+
     self.items = [items copy];
-    
-    
+
     // Tell all observers to relaod
     // ----------------------------
-    
+
     for (id<FTDataSourceObserver> observer in self.observers) {
         if ([observer respondsToSelector:@selector(dataSourceDidReload:)]) {
             [observer dataSourceDidReload:self];
         }
     }
-    
+
     // Call the completion handler
     // ---------------------------
-    
+
     if (completionHandler) {
         completionHandler(YES, nil);
     }

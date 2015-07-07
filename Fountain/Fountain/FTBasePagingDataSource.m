@@ -93,7 +93,7 @@
         NSUInteger index = [self.items indexOfObject:item];
         if (index != NSNotFound) {
             NSIndexPath *sectionIndexPath = [NSIndexPath indexPathWithIndex:0];
-            return @[[sectionIndexPath indexPathByAddingIndex:index]];
+            return @[ [sectionIndexPath indexPathByAddingIndex:index] ];
         }
     }
     return @[];
@@ -113,17 +113,17 @@
 
 #pragma mark Reload
 
-- (void)reloadWithCompletionHandler:(void(^)(BOOL success, NSError *error))completionHandler
+- (void)reloadWithCompletionHandler:(void (^)(BOOL success, NSError *error))completionHandler
 {
     [self loadItemsWithOffset:0 limit:self.pageSize reset:YES completion:completionHandler];
 }
 
-- (void)resetCompletionHandler:(void(^)(BOOL success, NSError *error))completionHandler
+- (void)resetCompletionHandler:(void (^)(BOOL success, NSError *error))completionHandler
 {
     [self loadItemsWithOffset:0 limit:0 reset:YES completion:completionHandler];
 }
 
-- (void)loadNextPageCompletionHandler:(void(^)(BOOL success, NSError *error))completionHandler
+- (void)loadNextPageCompletionHandler:(void (^)(BOOL success, NSError *error))completionHandler
 {
     if (self.hasMoreItems) {
         NSUInteger limit = self.pageSize;
@@ -138,13 +138,13 @@
 
 - (id<FTPagingDataSourceOperation>)fetchItemsWithOffset:(NSUInteger)offset
                                                   limit:(NSUInteger)limit
-                                             completion:(void(^)(NSArray *items, NSUInteger offset, NSUInteger limit, NSUInteger total, NSError *error))completion
+                                             completion:(void (^)(NSArray *items, NSUInteger offset, NSUInteger limit, NSUInteger total, NSError *error))completion
 {
-    
+
     if (completion) {
         completion(@[], offset, limit, 0, nil);
     }
-    
+
     return nil;
 }
 
@@ -170,7 +170,7 @@
 - (void)loadItemsWithOffset:(NSUInteger)offset
                       limit:(NSUInteger)limit
                       reset:(BOOL)reset
-                 completion:(void(^)(BOOL success, NSError *error))completion
+                 completion:(void (^)(BOOL success, NSError *error))completion
 {
     if (completion) {
         [self.completionHandler addObject:completion];
@@ -180,39 +180,39 @@
         [self.loadingOperation cancel];
         self.loadingOperation = nil;
     }
-    
+
     if (self.loadingOperation == nil) {
-        
+
         if (limit == 0) {
-            
+
             if (reset) {
                 [self.observers enumerateObjectsUsingBlock:^(id<FTDataSourceObserver> observer, NSUInteger idx, BOOL *stop) {
                     if ([observer respondsToSelector:@selector(dataSourceWillChange:)]) {
                         [observer dataSourceWillChange:self];
                     }
                 }];
-                
+
                 [self willChangeValueForKey:@"hasMoreItems"];
                 [self.items removeAllObjects];
                 self.totalNumberOfItems = 0;
-                
+
                 [self didChangeValueForKey:@"hasMoreItems"];
-                
+
                 [self.observers enumerateObjectsUsingBlock:^(id<FTDataSourceObserver> observer, NSUInteger idx, BOOL *stop) {
                     if ([observer respondsToSelector:@selector(dataSource:didReloadSections:)]) {
                         [observer dataSource:self didReloadSections:[NSIndexSet indexSetWithIndex:0]];
                     }
-                    
+
                     if ([observer respondsToSelector:@selector(dataSourceDidChange:)]) {
                         [observer dataSourceDidChange:self];
                     }
                 }];
             }
-            
-            for (void(^completion)(BOOL success, NSError *error) in self.completionHandler) {
+
+            for (void (^completion)(BOOL success, NSError *error) in self.completionHandler) {
                 completion(YES, nil);
             }
-            
+
         } else {
             self.loadingOperation = [self fetchItemsWithOffset:offset
                                                          limit:limit
@@ -222,26 +222,26 @@
                                                                  NSUInteger total,
                                                                  NSError *error) {
                                                         if (items) {
-                                                            
+
                                                             [self.observers enumerateObjectsUsingBlock:^(id<FTDataSourceObserver> observer, NSUInteger idx, BOOL *stop) {
                                                                 if ([observer respondsToSelector:@selector(dataSourceWillChange:)]) {
                                                                     [observer dataSourceWillChange:self];
                                                                 }
                                                             }];
-                                                            
+
                                                             [self willChangeValueForKey:@"hasMoreItems"];
-                                                            
+
                                                             if (reset) {
                                                                 [self.items removeAllObjects];
                                                             }
-                                                            
+
                                                             [self.items addObjectsFromArray:items];
                                                             self.totalNumberOfItems = total;
-                                                            
+
                                                             [self didChangeValueForKey:@"hasMoreItems"];
-                                                            
+
                                                             [self.observers enumerateObjectsUsingBlock:^(id<FTDataSourceObserver> observer, NSUInteger idx, BOOL *stop) {
-                                                                
+
                                                                 if (reset) {
                                                                     if ([observer respondsToSelector:@selector(dataSource:didReloadSections:)]) {
                                                                         [observer dataSource:self didReloadSections:[NSIndexSet indexSetWithIndex:0]];
@@ -256,14 +256,14 @@
                                                                         [observer dataSource:self didInsertItemsAtIndexPaths:indexPaths];
                                                                     }
                                                                 }
-                                                                
+
                                                                 if ([observer respondsToSelector:@selector(dataSourceDidChange:)]) {
                                                                     [observer dataSourceDidChange:self];
                                                                 }
                                                             }];
                                                         }
-                                                        
-                                                        for (void(^completion)(BOOL success, NSError *error) in self.completionHandler) {
+
+                                                        for (void (^completion)(BOOL success, NSError *error) in self.completionHandler) {
                                                             completion(items != nil, error);
                                                         }
                                                         [self.completionHandler removeAllObjects];
