@@ -14,6 +14,6 @@
 
 #pragma mark Relaod
 - (void)reloadWithItems:(NSArray *)sectionItems
-      completionHandler:(void(^)(BOOL success, NSError *error))completionHandler;
+      completionHandler:(void (^)(BOOL success, NSError *error))completionHandler;
 
 @end

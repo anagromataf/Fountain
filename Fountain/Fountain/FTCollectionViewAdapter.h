@@ -10,8 +10,8 @@
 
 #import "FTDataSource.h"
 
-typedef void(^FTCollectionViewAdapterCellPrepareBlock)(id cell, id item, NSIndexPath *indexPath, id<FTDataSource> dataSource);
-typedef void(^FTCollectionViewAdapterSupplementaryViewPrepareBlock)(id view, id item, NSIndexPath *indexPath, id<FTDataSource> dataSource);
+typedef void (^FTCollectionViewAdapterCellPrepareBlock)(id cell, id item, NSIndexPath *indexPath, id<FTDataSource> dataSource);
+typedef void (^FTCollectionViewAdapterSupplementaryViewPrepareBlock)(id view, id item, NSIndexPath *indexPath, id<FTDataSource> dataSource);
 
 @interface FTCollectionViewAdapter : NSObject
 
