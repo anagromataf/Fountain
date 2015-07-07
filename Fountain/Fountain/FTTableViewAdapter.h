@@ -35,10 +35,6 @@ typedef void (^FTTableViewAdapterHeaderFooterPrepareBlock)(id view, id item, NSU
 @property (nonatomic, assign) BOOL shouldLoadNextPage;
 
 #pragma mark Prepare Handler
-- (void)forRowsKindOfClass:(Class)aClass useCellWithReuseIdentifier:(NSString *)reuseIdentifier prepareBlock:(FTTableViewAdapterCellPrepareBlock)prepareBlock;
-- (void)forRowsConformingToProtocol:(Protocol *)aProtocol useCellWithReuseIdentifier:(NSString *)reuseIdentifier prepareBlock:(FTTableViewAdapterCellPrepareBlock)prepareBlock;
-- (void)forRowsMatchingPredicate:(NSPredicate *)predicate useCellWithReuseIdentifier:(NSString *)reuseIdentifier prepareBlock:(FTTableViewAdapterCellPrepareBlock)prepareBlock;
-
 - (void)forHeaderMatchingPredicate:(NSPredicate *)predicate useViewWithReuseIdentifier:(NSString *)reuseIdentifier prepareBlock:(FTTableViewAdapterHeaderFooterPrepareBlock)prepareBlock;
 - (void)forFooterMatchingPredicate:(NSPredicate *)predicate useViewWithReuseIdentifier:(NSString *)reuseIdentifier prepareBlock:(FTTableViewAdapterHeaderFooterPrepareBlock)prepareBlock;
 

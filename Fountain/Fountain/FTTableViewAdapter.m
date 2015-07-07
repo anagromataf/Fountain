@@ -57,28 +57,6 @@
 
 #pragma mark Prepare Handler
 
-- (void)forRowsKindOfClass:(Class)aClass
-useCellWithReuseIdentifier:(NSString *)reuseIdentifier
-              prepareBlock:(FTTableViewAdapterCellPrepareBlock)prepareBlock
-{
-    NSPredicate *predicate = [NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
-        return [evaluatedObject isKindOfClass:aClass];
-    }];
-    
-    [self forRowsMatchingPredicate:predicate useCellWithReuseIdentifier:reuseIdentifier prepareBlock:prepareBlock];
-}
-
-- (void)forRowsConformingToProtocol:(Protocol *)aProtocol
-         useCellWithReuseIdentifier:(NSString *)reuseIdentifier
-                       prepareBlock:(FTTableViewAdapterCellPrepareBlock)prepareBlock
-{
-    NSPredicate *predicate = [NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
-        return [evaluatedObject conformsToProtocol:aProtocol];
-    }];
-    
-    [self forRowsMatchingPredicate:predicate useCellWithReuseIdentifier:reuseIdentifier prepareBlock:prepareBlock];
-}
-
 - (void)forRowsMatchingPredicate:(NSPredicate *)predicate
       useCellWithReuseIdentifier:(NSString *)reuseIdentifier
                     prepareBlock:(FTTableViewAdapterCellPrepareBlock)prepareBlock
@@ -109,14 +87,14 @@ useCellWithReuseIdentifier:(NSString *)reuseIdentifier
     [self.footerPrepareHandler addObject:handler];
 }
 
--(void)rowPreperationForItemAtIndexPath:(NSIndexPath *)indexPath withBlock:(void(^)(NSString *reuseIdentifier, FTTableViewAdapterCellPrepareBlock prepareBlock, id item))block
+- (void)rowPreperationForItemAtIndexPath:(NSIndexPath *)indexPath withBlock:(void (^)(NSString *reuseIdentifier, FTTableViewAdapterCellPrepareBlock prepareBlock, id item))block
 {
     id item = [self.dataSource itemAtIndexPath:indexPath];
-    
-    NSDictionary *substitutionVariables = @{@"SECTION": @(indexPath.section),
-                                            @"ITEM":    @(indexPath.item),
-                                            @"ROW":     @(indexPath.row)};
-    
+
+    NSDictionary *substitutionVariables = @{ @"SECTION" : @(indexPath.section),
+                                             @"ITEM" : @(indexPath.item),
+                                             @"ROW" : @(indexPath.row) };
+
     [self.cellPrepareHandler enumerateObjectsUsingBlock:^(FTAdapterPrepareHandler *handler, NSUInteger idx, BOOL *stop) {
         if ([handler.predicate evaluateWithObject:item substitutionVariables:substitutionVariables]) {
             if (block) {
@@ -127,13 +105,13 @@ useCellWithReuseIdentifier:(NSString *)reuseIdentifier
     }];
 }
 
-- (void)headerPreperationForSection:(NSUInteger)section withBlock:(void(^)(NSString *reuseIdentifier, FTTableViewAdapterHeaderFooterPrepareBlock prepareBlock, id item))block
+- (void)headerPreperationForSection:(NSUInteger)section withBlock:(void (^)(NSString *reuseIdentifier, FTTableViewAdapterHeaderFooterPrepareBlock prepareBlock, id item))block
 {
     id item = [self.dataSource itemForSection:section];
-    
-    NSDictionary *substitutionVariables = @{@"SECTION": @(section),
-                                            @"ITEMS_COUNT": @([self.dataSource numberOfItemsInSection:section])};
-    
+
+    NSDictionary *substitutionVariables = @{ @"SECTION" : @(section),
+                                             @"ITEMS_COUNT" : @([self.dataSource numberOfItemsInSection:section]) };
+
     [self.headerPrepareHandler enumerateObjectsUsingBlock:^(FTAdapterPrepareHandler *handler, NSUInteger idx, BOOL *stop) {
         if ([handler.predicate evaluateWithObject:item ? item : [NSNull null] substitutionVariables:substitutionVariables]) {
             if (block) {
@@ -144,13 +122,13 @@ useCellWithReuseIdentifier:(NSString *)reuseIdentifier
     }];
 }
 
-- (void)footerPreperationForSection:(NSUInteger)section withBlock:(void(^)(NSString *reuseIdentifier, FTTableViewAdapterHeaderFooterPrepareBlock prepareBlock, id item))block
+- (void)footerPreperationForSection:(NSUInteger)section withBlock:(void (^)(NSString *reuseIdentifier, FTTableViewAdapterHeaderFooterPrepareBlock prepareBlock, id item))block
 {
     id item = [self.dataSource itemForSection:section];
-    
-    NSDictionary *substitutionVariables = @{@"SECTION": @(section),
-                                            @"ITEMS_COUNT": @([self.dataSource numberOfItemsInSection:section])};
-    
+
+    NSDictionary *substitutionVariables = @{ @"SECTION" : @(section),
+                                             @"ITEMS_COUNT" : @([self.dataSource numberOfItemsInSection:section]) };
+
     [self.footerPrepareHandler enumerateObjectsUsingBlock:^(FTAdapterPrepareHandler *handler, NSUInteger idx, BOOL *stop) {
         if ([handler.predicate evaluateWithObject:item ? item : [NSNull null] substitutionVariables:substitutionVariables]) {
             if (block) {
@@ -184,12 +162,13 @@ useCellWithReuseIdentifier:(NSString *)reuseIdentifier
 {
     if (tableView == self.tableView) {
         __block UIView *view = nil;
-        [self headerPreperationForSection:section withBlock:^(NSString *reuseIdentifier, FTTableViewAdapterHeaderFooterPrepareBlock prepareBlock, id item) {
-            view = [tableView dequeueReusableHeaderFooterViewWithIdentifier:reuseIdentifier];
-            if (prepareBlock) {
-                prepareBlock(view, item, section, self.dataSource);
-            }
-        }];
+        [self headerPreperationForSection:section
+                                withBlock:^(NSString *reuseIdentifier, FTTableViewAdapterHeaderFooterPrepareBlock prepareBlock, id item) {
+                                    view = [tableView dequeueReusableHeaderFooterViewWithIdentifier:reuseIdentifier];
+                                    if (prepareBlock) {
+                                        prepareBlock(view, item, section, self.dataSource);
+                                    }
+                                }];
         return view;
     } else {
         return nil;
@@ -200,12 +179,13 @@ useCellWithReuseIdentifier:(NSString *)reuseIdentifier
 {
     if (tableView == self.tableView) {
         __block UIView *view = nil;
-        [self footerPreperationForSection:section withBlock:^(NSString *reuseIdentifier, FTTableViewAdapterHeaderFooterPrepareBlock prepareBlock, id item) {
-            view = [tableView dequeueReusableHeaderFooterViewWithIdentifier:reuseIdentifier];
-            if (prepareBlock) {
-                prepareBlock(view, item, section, self.dataSource);
-            }
-        }];
+        [self footerPreperationForSection:section
+                                withBlock:^(NSString *reuseIdentifier, FTTableViewAdapterHeaderFooterPrepareBlock prepareBlock, id item) {
+                                    view = [tableView dequeueReusableHeaderFooterViewWithIdentifier:reuseIdentifier];
+                                    if (prepareBlock) {
+                                        prepareBlock(view, item, section, self.dataSource);
+                                    }
+                                }];
         return view;
     } else {
         return nil;
@@ -218,16 +198,16 @@ useCellWithReuseIdentifier:(NSString *)reuseIdentifier
         if ([self.delegate respondsToSelector:@selector(tableView:willDisplayCell:forRowAtIndexPath:)]) {
             [self.delegate tableView:tableView willDisplayCell:cell forRowAtIndexPath:indexPath];
         }
-        
+
         if (self.shouldLoadNextPage == YES &&
             [self.dataSource respondsToSelector:@selector(loadNextPageCompletionHandler:)] &&
             indexPath.section == [self.dataSource numberOfSections] - 1 &&
             indexPath.row == [self.dataSource numberOfItemsInSection:indexPath.section] - 1) {
-            
+
             id<FTPagingDataSource> dataSource = (id<FTPagingDataSource>)(self.dataSource);
-            
-            [dataSource loadNextPageCompletionHandler:^(BOOL success, NSError *error) {
-                
+
+            [dataSource loadNextPageCompletionHandler:^(BOOL success, NSError *error){
+
             }];
         }
     }
@@ -248,7 +228,7 @@ useCellWithReuseIdentifier:(NSString *)reuseIdentifier
     if (tableView == self.tableView) {
         if ([self.dataSource conformsToProtocol:@protocol(FTReorderableDataSource)]) {
             return [(id<FTReorderableDataSource>)self.dataSource targetIndexPathForMoveFromItemAtIndexPath:sourceIndexPath
-                                                                                      toProposedIndexPath:proposedDestinationIndexPath];
+                                                                                       toProposedIndexPath:proposedDestinationIndexPath];
         } else {
             return proposedDestinationIndexPath;
         }
@@ -281,15 +261,16 @@ useCellWithReuseIdentifier:(NSString *)reuseIdentifier
 {
     if (tableView == self.tableView) {
         __block UITableViewCell *cell = nil;
-        [self rowPreperationForItemAtIndexPath:indexPath withBlock:^(NSString *reuseIdentifier, FTTableViewAdapterCellPrepareBlock prepareBlock, id item) {
-            
-            UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:reuseIdentifier
-                                                                         forIndexPath:indexPath];
-            if (prepareBlock) {
-                prepareBlock(cell, item, indexPath, self.dataSource);
-            }
-            
-        }];
+        [self rowPreperationForItemAtIndexPath:indexPath
+                                     withBlock:^(NSString *reuseIdentifier, FTTableViewAdapterCellPrepareBlock prepareBlock, id item) {
+
+                                         UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:reuseIdentifier
+                                                                                                      forIndexPath:indexPath];
+                                         if (prepareBlock) {
+                                             prepareBlock(cell, item, indexPath, self.dataSource);
+                                         }
+
+                                     }];
         return cell;
     } else {
         return nil;
@@ -324,7 +305,7 @@ useCellWithReuseIdentifier:(NSString *)reuseIdentifier
 {
     if (_delegate != delegate) {
         _delegate = delegate;
-        
+
         self.tableView.delegate = nil;
         self.tableView.delegate = self;
     }

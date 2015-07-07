@@ -32,14 +32,6 @@ typedef void (^FTCollectionViewAdapterSupplementaryViewPrepareBlock)(id view, id
 
 #pragma mark Prepare Handler
 
-- (void)forItemsKindOfClass:(Class)aClass
- useCellWithReuseIdentifier:(NSString *)reuseIdentifier
-               prepareBlock:(FTCollectionViewAdapterCellPrepareBlock)prepareBlock;
-
-- (void)forItemsConformingToProtocol:(Protocol *)aProtocol
-          useCellWithReuseIdentifier:(NSString *)reuseIdentifier
-                        prepareBlock:(FTCollectionViewAdapterCellPrepareBlock)prepareBlock;
-
 - (void)forItemsMatchingPredicate:(NSPredicate *)predicate
        useCellWithReuseIdentifier:(NSString *)reuseIdentifier
                      prepareBlock:(FTCollectionViewAdapterCellPrepareBlock)prepareBlock;
