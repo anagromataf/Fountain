@@ -40,20 +40,20 @@
         _collectionView = collectionView;
         _collectionView.delegate = self;
         _collectionView.dataSource = self;
-        
+
         _cellPrepareHandler = [[NSMutableArray alloc] init];
         _supplementaryElementPrepareHandler = [[NSMutableDictionary alloc] init];
-        
+
         _insertedSections = [[NSMutableIndexSet alloc] init];
         _deletedSections = [[NSMutableIndexSet alloc] init];
         _movedSections = [[NSMutableArray alloc] init];
         _reloadedSections = [[NSMutableIndexSet alloc] init];
-        
+
         _insertedItems = [[NSMutableArray alloc] init];
         _deletedItems = [[NSMutableArray alloc] init];
         _movedItems = [[NSMutableArray alloc] init];
         _reloadedItems = [[NSMutableArray alloc] init];
-        
+
         [_collectionView reloadData];
     }
     return self;
@@ -79,11 +79,33 @@
 
 #pragma mark Prepare Handler
 
+- (void)forItemsKindOfClass:(Class)aClass
+ useCellWithReuseIdentifier:(NSString *)reuseIdentifier
+               prepareBlock:(FTCollectionViewAdapterCellPrepareBlock)prepareBlock
+{
+    NSPredicate *predicate = [NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
+        return [evaluatedObject isKindOfClass:aClass];
+    }];
+
+    [self forItemsMatchingPredicate:predicate useCellWithReuseIdentifier:reuseIdentifier prepareBlock:prepareBlock];
+}
+
+- (void)forItemsConformingToProtocol:(Protocol *)aProtocol
+          useCellWithReuseIdentifier:(NSString *)reuseIdentifier
+                        prepareBlock:(FTCollectionViewAdapterCellPrepareBlock)prepareBlock
+{
+    NSPredicate *predicate = [NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
+        return [evaluatedObject conformsToProtocol:aProtocol];
+    }];
+
+    [self forItemsMatchingPredicate:predicate useCellWithReuseIdentifier:reuseIdentifier prepareBlock:prepareBlock];
+}
+
 - (void)forItemsMatchingPredicate:(NSPredicate *)predicate
        useCellWithReuseIdentifier:(NSString *)reuseIdentifier
                      prepareBlock:(FTCollectionViewAdapterCellPrepareBlock)prepareBlock
 {
-    FTAdapterPrepareHandler *handler = [[FTAdapterPrepareHandler alloc] initWithPredicate:predicate
+    FTAdapterPrepareHandler *handler = [[FTAdapterPrepareHandler alloc] initWithPredicate:predicate ?: [NSPredicate predicateWithValue:YES]
                                                                           reuseIdentifier:reuseIdentifier
                                                                                     block:prepareBlock];
     [self.cellPrepareHandler addObject:handler];
@@ -99,8 +121,8 @@
         handlers = [[NSMutableArray alloc] init];
         [self.supplementaryElementPrepareHandler setObject:handlers forKey:kind];
     }
-    
-    FTAdapterPrepareHandler *handler = [[FTAdapterPrepareHandler alloc] initWithPredicate:predicate
+
+    FTAdapterPrepareHandler *handler = [[FTAdapterPrepareHandler alloc] initWithPredicate:predicate ?: [NSPredicate predicateWithValue:YES]
                                                                           reuseIdentifier:reuseIdentifier
                                                                                     block:prepareBlock];
     [handlers addObject:handler];
@@ -127,21 +149,21 @@
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     if (collectionView == self.collectionView) {
-        
+
         id item = [self.dataSource itemAtIndexPath:indexPath];
         __block FTAdapterPrepareHandler *handler = nil;
-        
-        NSDictionary *substitutionVariables = @{@"SECTION": @(indexPath.section),
-                                                @"ITEM":    @(indexPath.item),
-                                                @"ROW":     @(indexPath.row)};
-        
+
+        NSDictionary *substitutionVariables = @{ @"SECTION" : @(indexPath.section),
+                                                 @"ITEM" : @(indexPath.item),
+                                                 @"ROW" : @(indexPath.row) };
+
         [self.cellPrepareHandler enumerateObjectsUsingBlock:^(FTAdapterPrepareHandler *h, NSUInteger idx, BOOL *stop) {
             handler = h;
             if ([handler.predicate evaluateWithObject:item substitutionVariables:substitutionVariables]) {
                 *stop = YES;
             }
         }];
-        
+
         if (handler) {
             UICollectionViewCell *cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:handler.reuseIdentifier
                                                                                         forIndexPath:indexPath];
@@ -149,7 +171,7 @@
             if (prepareBlock) {
                 prepareBlock(cell, item, indexPath, self.dataSource);
             }
-            
+
             return cell;
         }
     }
@@ -162,29 +184,29 @@
 {
     NSMutableArray *handlers = [self.supplementaryElementPrepareHandler objectForKey:kind];
     if (handlers) {
-        
+
         NSDictionary *substitutionVariables = @{};
         id item = [NSNull null];
-        
+
         if ([indexPath length] == 1) {
             item = [self.dataSource itemForSection:indexPath.section];
-            substitutionVariables = @{@"SECTION": @(indexPath.section)};
+            substitutionVariables = @{ @"SECTION" : @(indexPath.section) };
         } else if ([indexPath length] == 2) {
             item = [self.dataSource itemAtIndexPath:indexPath];
-            substitutionVariables = @{@"SECTION": @(indexPath.section),
-                                      @"ITEM":    @(indexPath.item),
-                                      @"ROW":     @(indexPath.row)};
+            substitutionVariables = @{ @"SECTION" : @(indexPath.section),
+                                       @"ITEM" : @(indexPath.item),
+                                       @"ROW" : @(indexPath.row) };
         }
-        
+
         __block FTAdapterPrepareHandler *handler = nil;
-        
+
         [handlers enumerateObjectsUsingBlock:^(FTAdapterPrepareHandler *h, NSUInteger idx, BOOL *stop) {
             handler = h;
             if ([handler.predicate evaluateWithObject:item substitutionVariables:substitutionVariables]) {
                 *stop = YES;
             }
         }];
-        
+
         if (handler) {
             id view = [self.collectionView dequeueReusableSupplementaryViewOfKind:kind
                                                               withReuseIdentifier:handler.reuseIdentifier
@@ -193,11 +215,32 @@
             if (prepareBlock) {
                 prepareBlock(view, item, indexPath, self.dataSource);
             }
-            
+
             return view;
         }
     }
     return nil;
+}
+
+- (void)collectionView:(UICollectionView *)collectionView willDisplayCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (collectionView == self.collectionView) {
+        if ([self.delegate respondsToSelector:@selector(collectionView:willDisplayCell:forItemAtIndexPath:)]) {
+            [self.delegate collectionView:collectionView willDisplayCell:cell forItemAtIndexPath:indexPath];
+        }
+
+        if (self.shouldLoadNextPage == YES &&
+            [self.dataSource respondsToSelector:@selector(loadNextPageCompletionHandler:)] &&
+            indexPath.section == [self.dataSource numberOfSections] - 1 &&
+            indexPath.row == [self.dataSource numberOfItemsInSection:indexPath.section] - 1) {
+
+            id<FTPagingDataSource> dataSource = (id<FTPagingDataSource>)(self.dataSource);
+
+            [dataSource loadNextPageCompletionHandler:^(BOOL success, NSError *error){
+
+            }];
+        }
+    }
 }
 
 #pragma mark Delegate Forwarding
@@ -206,9 +249,11 @@
 {
     if (_delegate != delegate) {
         _delegate = delegate;
-        
+
         self.collectionView.delegate = nil;
         self.collectionView.delegate = self;
+        self.collectionView.dataSource = nil;
+        self.collectionView.dataSource = self;
     }
 }
 
@@ -262,25 +307,26 @@
         [self.collectionView deleteSections:self.deletedSections];
         [self.collectionView insertSections:self.insertedSections];
         [self.collectionView reloadSections:self.reloadedSections];
-        
+
         [self.movedSections enumerateObjectsUsingBlock:^(NSArray *indexes, NSUInteger idx, BOOL *stop) {
             [self.collectionView moveSection:[[indexes firstObject] integerValue]
                                    toSection:[[indexes lastObject] integerValue]];
         }];
-        
+
         [self.collectionView insertItemsAtIndexPaths:self.insertedItems];
         [self.collectionView deleteItemsAtIndexPaths:self.deletedItems];
         [self.collectionView reloadItemsAtIndexPaths:self.reloadedItems];
-        
+
         [self.movedItems enumerateObjectsUsingBlock:^(NSArray *indexPaths, NSUInteger idx, BOOL *stop) {
             [self.collectionView moveItemAtIndexPath:[indexPaths firstObject]
                                          toIndexPath:[indexPaths lastObject]];
         }];
-        
-    } completion:^(BOOL finished) {
-        
-    }];
-    
+
+    }
+        completion:^(BOOL finished){
+
+        }];
+
     [self.insertedSections removeAllIndexes];
     [self.deletedSections removeAllIndexes];
     [self.reloadedSections removeAllIndexes];
@@ -317,7 +363,7 @@
 - (void)dataSource:(id<FTDataSource>)dataSource didMoveSection:(NSInteger)section toSection:(NSInteger)newSection
 {
     if (dataSource == self.dataSource) {
-        [self.movedSections addObject:@[@(section), @(newSection)]];
+        [self.movedSections addObject:@[ @(section), @(newSection) ]];
     }
 }
 
@@ -347,7 +393,7 @@
 - (void)dataSource:(id<FTDataSource>)dataSource didMoveItemAtIndexPath:(NSIndexPath *)indexPath toIndexPath:(NSIndexPath *)newIndexPath
 {
     if (dataSource == self.dataSource) {
-        [self.movedItems addObject:@[indexPath, newIndexPath]];
+        [self.movedItems addObject:@[ indexPath, newIndexPath ]];
     }
 }
 

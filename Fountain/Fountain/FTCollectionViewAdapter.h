@@ -10,8 +10,8 @@
 
 #import "FTDataSource.h"
 
-typedef void(^FTCollectionViewAdapterCellPrepareBlock)(id cell, id item, NSIndexPath *indexPath, id<FTDataSource> dataSource);
-typedef void(^FTCollectionViewAdapterSupplementaryViewPrepareBlock)(id view, id item, NSIndexPath *indexPath, id<FTDataSource> dataSource);
+typedef void (^FTCollectionViewAdapterCellPrepareBlock)(id cell, id item, NSIndexPath *indexPath, id<FTDataSource> dataSource);
+typedef void (^FTCollectionViewAdapterSupplementaryViewPrepareBlock)(id view, id item, NSIndexPath *indexPath, id<FTDataSource> dataSource);
 
 @interface FTCollectionViewAdapter : NSObject
 
@@ -27,7 +27,19 @@ typedef void(^FTCollectionViewAdapterSupplementaryViewPrepareBlock)(id view, id 
 #pragma mark Data Source
 @property (nonatomic, strong) id<FTDataSource> dataSource;
 
+#pragma mark Paging
+@property (nonatomic, assign) BOOL shouldLoadNextPage;
+
 #pragma mark Prepare Handler
+
+- (void)forItemsKindOfClass:(Class)aClass
+ useCellWithReuseIdentifier:(NSString *)reuseIdentifier
+               prepareBlock:(FTCollectionViewAdapterCellPrepareBlock)prepareBlock;
+
+- (void)forItemsConformingToProtocol:(Protocol *)aProtocol
+          useCellWithReuseIdentifier:(NSString *)reuseIdentifier
+                        prepareBlock:(FTCollectionViewAdapterCellPrepareBlock)prepareBlock;
+
 - (void)forItemsMatchingPredicate:(NSPredicate *)predicate
        useCellWithReuseIdentifier:(NSString *)reuseIdentifier
                      prepareBlock:(FTCollectionViewAdapterCellPrepareBlock)prepareBlock;

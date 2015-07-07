@@ -17,7 +17,7 @@
 
 #pragma mark Relaod
 - (void)reloadWithItems:(NSArray *)sectionItems
-      completionHandler:(void(^)(BOOL success, NSError *error))completionHandler;
+      completionHandler:(void (^)(BOOL success, NSError *error))completionHandler;
 
 #pragma mark Updating
 - (void)updateWithDeletedItems:(NSArray *)deleted insertedItems:(NSArray *)inserted updatedItems:(NSArray *)updated;

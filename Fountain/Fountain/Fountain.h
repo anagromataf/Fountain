@@ -11,7 +11,8 @@
 #import "FTDynamicDataSource.h"
 #import "FTComposedDataSource.h"
 #import "FTFetchedResultsDataSource.h"
+#import "FTBasePagingDataSource.h"
 
+#import "FTStaticDataSource.h"
 #import "FTCollectionViewAdapter.h"
 #import "FTTableViewAdapter.h"
-

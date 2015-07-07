@@ -29,7 +29,8 @@
         _tableView.dataSource = self;
         _tableView.delegate = self;
         _rowAnimation = UITableViewRowAnimationAutomatic;
-        _estimatedRowHeight = 30;
+        _estimatedRowHeight = UITableViewAutomaticDimension;
+        _rowHeight = UITableViewAutomaticDimension;
         _sectionHeaderHeight = UITableViewAutomaticDimension;
         _sectionFooterHeight = UITableViewAutomaticDimension;
         _cellPrepareHandler = [[NSMutableArray alloc] init];
@@ -60,11 +61,33 @@
 
 #pragma mark Prepare Handler
 
+- (void)forRowsKindOfClass:(Class)aClass
+useCellWithReuseIdentifier:(NSString *)reuseIdentifier
+              prepareBlock:(FTTableViewAdapterCellPrepareBlock)prepareBlock
+{
+    NSPredicate *predicate = [NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
+        return [evaluatedObject isKindOfClass:aClass];
+    }];
+
+    [self forRowsMatchingPredicate:predicate useCellWithReuseIdentifier:reuseIdentifier prepareBlock:prepareBlock];
+}
+
+- (void)forRowsConformingToProtocol:(Protocol *)aProtocol
+         useCellWithReuseIdentifier:(NSString *)reuseIdentifier
+                       prepareBlock:(FTTableViewAdapterCellPrepareBlock)prepareBlock
+{
+    NSPredicate *predicate = [NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
+        return [evaluatedObject conformsToProtocol:aProtocol];
+    }];
+
+    [self forRowsMatchingPredicate:predicate useCellWithReuseIdentifier:reuseIdentifier prepareBlock:prepareBlock];
+}
+
 - (void)forRowsMatchingPredicate:(NSPredicate *)predicate
       useCellWithReuseIdentifier:(NSString *)reuseIdentifier
                     prepareBlock:(FTTableViewAdapterCellPrepareBlock)prepareBlock
 {
-    FTAdapterPrepareHandler *handler = [[FTAdapterPrepareHandler alloc] initWithPredicate:predicate
+    FTAdapterPrepareHandler *handler = [[FTAdapterPrepareHandler alloc] initWithPredicate:predicate ?: [NSPredicate predicateWithValue:YES]
                                                                           reuseIdentifier:reuseIdentifier
                                                                                     block:prepareBlock];
     [self.cellPrepareHandler addObject:handler];
@@ -74,7 +97,7 @@
         useViewWithReuseIdentifier:(NSString *)reuseIdentifier
                       prepareBlock:(FTTableViewAdapterHeaderFooterPrepareBlock)prepareBlock
 {
-    FTAdapterPrepareHandler *handler = [[FTAdapterPrepareHandler alloc] initWithPredicate:predicate
+    FTAdapterPrepareHandler *handler = [[FTAdapterPrepareHandler alloc] initWithPredicate:predicate ?: [NSPredicate predicateWithValue:YES]
                                                                           reuseIdentifier:reuseIdentifier
                                                                                     block:prepareBlock];
     [self.headerPrepareHandler addObject:handler];
@@ -84,7 +107,7 @@
         useViewWithReuseIdentifier:(NSString *)reuseIdentifier
                       prepareBlock:(FTTableViewAdapterHeaderFooterPrepareBlock)prepareBlock
 {
-    FTAdapterPrepareHandler *handler = [[FTAdapterPrepareHandler alloc] initWithPredicate:predicate
+    FTAdapterPrepareHandler *handler = [[FTAdapterPrepareHandler alloc] initWithPredicate:predicate ?: [NSPredicate predicateWithValue:YES]
                                                                           reuseIdentifier:reuseIdentifier
                                                                                     block:prepareBlock];
     [self.footerPrepareHandler addObject:handler];
@@ -112,63 +135,119 @@
 - (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (tableView == self.tableView) {
-        
-        id item = [self.dataSource itemAtIndexPath:indexPath];
-        __block FTAdapterPrepareHandler *handler = nil;
-        
-        NSDictionary *substitutionVariables = @{@"SECTION": @(indexPath.section),
-                                                @"ITEM":    @(indexPath.item),
-                                                @"ROW":     @(indexPath.row)};
-        
-        [self.cellPrepareHandler enumerateObjectsUsingBlock:^(FTAdapterPrepareHandler *h, NSUInteger idx, BOOL *stop) {
-            handler = h;
-            if ([handler.predicate evaluateWithObject:item substitutionVariables:substitutionVariables]) {
-                *stop = YES;
-            }
-        }];
-        
-        if (handler) {
-            
-            if (handler.prototype == nil) {
-                handler.prototype = [tableView dequeueReusableCellWithIdentifier:handler.reuseIdentifier];
-            }
-            
-            FTTableViewAdapterCellPrepareBlock prepareBlock = handler.block;
-            if (prepareBlock) {
-                prepareBlock(handler.prototype, item, indexPath, self.dataSource);
-            }
-            
-            CGSize targetSize = CGSizeMake(CGRectGetWidth(tableView.bounds), 0);
-            
-            CGSize size = [handler.prototype systemLayoutSizeFittingSize:targetSize
-                                           withHorizontalFittingPriority:UILayoutPriorityFittingSizeLevel
-                                                 verticalFittingPriority:UILayoutPriorityFittingSizeLevel];
-            
-            return size.height;
+
+        if (self.estimatedRowHeight != UITableViewAutomaticDimension) {
+
+            return self.estimatedRowHeight;
+
         } else {
-            return tableView.estimatedRowHeight;
+
+            id item = [self.dataSource itemAtIndexPath:indexPath];
+            __block FTAdapterPrepareHandler *handler = nil;
+
+            NSDictionary *substitutionVariables = @{ @"SECTION" : @(indexPath.section),
+                                                     @"ITEM" : @(indexPath.item),
+                                                     @"ROW" : @(indexPath.row) };
+
+            [self.cellPrepareHandler enumerateObjectsUsingBlock:^(FTAdapterPrepareHandler *h, NSUInteger idx, BOOL *stop) {
+                handler = h;
+                if ([handler.predicate evaluateWithObject:item substitutionVariables:substitutionVariables]) {
+                    *stop = YES;
+                }
+            }];
+
+            if (handler) {
+
+                if (handler.prototype == nil) {
+                    handler.prototype = [tableView dequeueReusableCellWithIdentifier:handler.reuseIdentifier];
+                }
+
+                FTTableViewAdapterCellPrepareBlock prepareBlock = handler.block;
+                if (prepareBlock) {
+                    prepareBlock(handler.prototype, item, indexPath, self.dataSource);
+                }
+
+                CGSize targetSize = CGSizeMake(CGRectGetWidth(tableView.bounds), 0);
+
+                CGSize size = [handler.prototype systemLayoutSizeFittingSize:targetSize];
+
+                return size.height;
+            } else {
+                return UITableViewAutomaticDimension;
+            }
         }
-        
+
     } else {
         return tableView.estimatedRowHeight;
+    }
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (tableView == self.tableView) {
+
+        if (self.rowHeight != UITableViewAutomaticDimension) {
+
+            return self.rowHeight;
+
+        } else {
+
+            id item = [self.dataSource itemAtIndexPath:indexPath];
+            __block FTAdapterPrepareHandler *handler = nil;
+
+            NSDictionary *substitutionVariables = @{ @"SECTION" : @(indexPath.section),
+                                                     @"ITEM" : @(indexPath.item),
+                                                     @"ROW" : @(indexPath.row) };
+
+            [self.cellPrepareHandler enumerateObjectsUsingBlock:^(FTAdapterPrepareHandler *h, NSUInteger idx, BOOL *stop) {
+                handler = h;
+                if ([handler.predicate evaluateWithObject:item substitutionVariables:substitutionVariables]) {
+                    *stop = YES;
+                }
+            }];
+
+            if (handler) {
+
+                if (handler.prototype == nil) {
+                    handler.prototype = [tableView dequeueReusableCellWithIdentifier:handler.reuseIdentifier];
+                }
+
+                FTTableViewAdapterCellPrepareBlock prepareBlock = handler.block;
+                if (prepareBlock) {
+                    prepareBlock(handler.prototype, item, indexPath, self.dataSource);
+                }
+
+                CGSize targetSize = CGSizeMake(CGRectGetWidth(tableView.bounds), 0);
+
+                CGSize size = [handler.prototype systemLayoutSizeFittingSize:targetSize];
+
+                return size.height;
+            } else {
+                return UITableViewAutomaticDimension;
+            }
+        }
+
+    } else {
+        return tableView.rowHeight;
     }
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
     if (tableView == self.tableView) {
-        
+
         if (self.sectionHeaderHeight != UITableViewAutomaticDimension) {
-            
+
             return self.sectionHeaderHeight;
-            
+
         } else {
-            
+
             id item = [self.dataSource itemForSection:section];
             __block FTAdapterPrepareHandler *handler = nil;
-            
-            NSDictionary *substitutionVariables = @{@"SECTION": @(section)};
-            
+
+            NSDictionary *substitutionVariables = @{ @"SECTION" : @(section),
+                                                     @"ITEMS_COUNT" : @([self.dataSource numberOfItemsInSection:section]) };
+
             [self.headerPrepareHandler enumerateObjectsUsingBlock:^(FTAdapterPrepareHandler *h, NSUInteger idx, BOOL *stop) {
                 if ([h.predicate evaluateWithObject:item ? item : [NSNull null]
                               substitutionVariables:substitutionVariables]) {
@@ -176,25 +255,23 @@
                     handler = h;
                 }
             }];
-            
+
             if (handler) {
                 if (handler.prototype == nil) {
                     handler.prototype = [tableView dequeueReusableHeaderFooterViewWithIdentifier:handler.reuseIdentifier];
                 }
-                
+
                 FTTableViewAdapterHeaderFooterPrepareBlock prepareBlock = handler.block;
                 if (prepareBlock) {
                     prepareBlock(handler.prototype, item, section, self.dataSource);
                 }
-                
+
                 CGSize targetSize = CGSizeMake(CGRectGetWidth(tableView.bounds), 0);
-                
-                CGSize size = [handler.prototype systemLayoutSizeFittingSize:targetSize
-                                               withHorizontalFittingPriority:UILayoutPriorityFittingSizeLevel
-                                                     verticalFittingPriority:UILayoutPriorityFittingSizeLevel];
-                
+
+                CGSize size = [handler.prototype systemLayoutSizeFittingSize:targetSize];
+
                 return size.height;
-                
+
             } else {
                 return 0;
             }
@@ -207,18 +284,19 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
 {
     if (tableView == self.tableView) {
-        
+
         if (self.sectionFooterHeight != UITableViewAutomaticDimension) {
-            
+
             return self.sectionFooterHeight;
-            
+
         } else {
-            
+
             id item = [self.dataSource itemForSection:section];
             __block FTAdapterPrepareHandler *handler = nil;
-            
-            NSDictionary *substitutionVariables = @{@"SECTION": @(section)};
-            
+
+            NSDictionary *substitutionVariables = @{ @"SECTION" : @(section),
+                                                     @"ITEMS_COUNT" : @([self.dataSource numberOfItemsInSection:section]) };
+
             [self.footerPrepareHandler enumerateObjectsUsingBlock:^(FTAdapterPrepareHandler *h, NSUInteger idx, BOOL *stop) {
                 if ([h.predicate evaluateWithObject:item ? item : [NSNull null]
                               substitutionVariables:substitutionVariables]) {
@@ -226,25 +304,23 @@
                     handler = h;
                 }
             }];
-            
+
             if (handler) {
                 if (handler.prototype == nil) {
                     handler.prototype = [tableView dequeueReusableHeaderFooterViewWithIdentifier:handler.reuseIdentifier];
                 }
-                
+
                 FTTableViewAdapterHeaderFooterPrepareBlock prepareBlock = handler.block;
                 if (prepareBlock) {
                     prepareBlock(handler.prototype, item, section, self.dataSource);
                 }
-                
+
                 CGSize targetSize = CGSizeMake(CGRectGetWidth(tableView.bounds), 0);
-                
-                CGSize size = [handler.prototype systemLayoutSizeFittingSize:targetSize
-                                               withHorizontalFittingPriority:UILayoutPriorityFittingSizeLevel
-                                                     verticalFittingPriority:UILayoutPriorityFittingSizeLevel];
-                
+
+                CGSize size = [handler.prototype systemLayoutSizeFittingSize:targetSize];
+
                 return size.height;
-                
+
             } else {
                 return 0;
             }
@@ -257,12 +333,13 @@
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     if (tableView == self.tableView) {
-        
+
         id item = [self.dataSource itemForSection:section];
         __block FTAdapterPrepareHandler *handler = nil;
-        
-        NSDictionary *substitutionVariables = @{@"SECTION": @(section)};
-        
+
+        NSDictionary *substitutionVariables = @{ @"SECTION" : @(section),
+                                                 @"ITEMS_COUNT" : @([self.dataSource numberOfItemsInSection:section]) };
+
         [self.headerPrepareHandler enumerateObjectsUsingBlock:^(FTAdapterPrepareHandler *h, NSUInteger idx, BOOL *stop) {
             if ([h.predicate evaluateWithObject:item ? item : [NSNull null]
                           substitutionVariables:substitutionVariables]) {
@@ -270,18 +347,18 @@
                 handler = h;
             }
         }];
-        
+
         if (handler) {
-            
+
             UIView *view = [tableView dequeueReusableHeaderFooterViewWithIdentifier:handler.reuseIdentifier];
-            
+
             FTTableViewAdapterHeaderFooterPrepareBlock prepareBlock = handler.block;
             if (prepareBlock) {
                 prepareBlock(view, item, section, self.dataSource);
             }
-            
+
             return view;
-            
+
         } else {
             return nil;
         }
@@ -293,12 +370,13 @@
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
 {
     if (tableView == self.tableView) {
-        
+
         id item = [self.dataSource itemForSection:section];
         __block FTAdapterPrepareHandler *handler = nil;
-        
-        NSDictionary *substitutionVariables = @{@"SECTION": @(section)};
-        
+
+        NSDictionary *substitutionVariables = @{ @"SECTION" : @(section),
+                                                 @"ITEMS_COUNT" : @([self.dataSource numberOfItemsInSection:section]) };
+
         [self.footerPrepareHandler enumerateObjectsUsingBlock:^(FTAdapterPrepareHandler *h, NSUInteger idx, BOOL *stop) {
             if ([h.predicate evaluateWithObject:item ? item : [NSNull null]
                           substitutionVariables:substitutionVariables]) {
@@ -306,23 +384,68 @@
                 handler = h;
             }
         }];
-        
+
         if (handler) {
-            
+
             UIView *view = [tableView dequeueReusableHeaderFooterViewWithIdentifier:handler.reuseIdentifier];
-            
+
             FTTableViewAdapterHeaderFooterPrepareBlock prepareBlock = handler.block;
             if (prepareBlock) {
                 prepareBlock(view, item, section, self.dataSource);
             }
-            
+
             return view;
-            
+
         } else {
             return nil;
         }
     } else {
         return nil;
+    }
+}
+
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (tableView == self.tableView) {
+        if ([self.delegate respondsToSelector:@selector(tableView:willDisplayCell:forRowAtIndexPath:)]) {
+            [self.delegate tableView:tableView willDisplayCell:cell forRowAtIndexPath:indexPath];
+        }
+
+        if (self.shouldLoadNextPage == YES &&
+            [self.dataSource respondsToSelector:@selector(loadNextPageCompletionHandler:)] &&
+            indexPath.section == [self.dataSource numberOfSections] - 1 &&
+            indexPath.row == [self.dataSource numberOfItemsInSection:indexPath.section] - 1) {
+
+            id<FTPagingDataSource> dataSource = (id<FTPagingDataSource>)(self.dataSource);
+
+            [dataSource loadNextPageCompletionHandler:^(BOOL success, NSError *error){
+
+            }];
+        }
+    }
+}
+
+- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return UITableViewCellEditingStyleNone;
+}
+
+- (BOOL)tableView:(UITableView *)tableView shouldIndentWhileEditingRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return NO;
+}
+
+- (NSIndexPath *)tableView:(UITableView *)tableView targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath toProposedIndexPath:(NSIndexPath *)proposedDestinationIndexPath
+{
+    if (tableView == self.tableView) {
+        if ([self.dataSource conformsToProtocol:@protocol(FTReorderableDataSource)]) {
+            return [(id<FTReorderableDataSource>)self.dataSource targetIndexPathForMoveFromItemAtIndexPath:sourceIndexPath
+                                                                                       toProposedIndexPath:proposedDestinationIndexPath];
+        } else {
+            return proposedDestinationIndexPath;
+        }
+    } else {
+        return proposedDestinationIndexPath;
     }
 }
 
@@ -349,21 +472,21 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (tableView == self.tableView) {
-        
+
         id item = [self.dataSource itemAtIndexPath:indexPath];
         __block FTAdapterPrepareHandler *handler = nil;
-        
-        NSDictionary *substitutionVariables = @{@"SECTION": @(indexPath.section),
-                                                @"ITEM":    @(indexPath.item),
-                                                @"ROW":     @(indexPath.row)};
-        
+
+        NSDictionary *substitutionVariables = @{ @"SECTION" : @(indexPath.section),
+                                                 @"ITEM" : @(indexPath.item),
+                                                 @"ROW" : @(indexPath.row) };
+
         [self.cellPrepareHandler enumerateObjectsUsingBlock:^(FTAdapterPrepareHandler *h, NSUInteger idx, BOOL *stop) {
             handler = h;
             if ([handler.predicate evaluateWithObject:item substitutionVariables:substitutionVariables]) {
                 *stop = YES;
             }
         }];
-        
+
         if (handler) {
             UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:handler.reuseIdentifier
                                                                          forIndexPath:indexPath];
@@ -371,14 +494,36 @@
             if (prepareBlock) {
                 prepareBlock(cell, item, indexPath, self.dataSource);
             }
-            
+
             return cell;
         } else {
             return nil;
         }
-        
+
     } else {
         return nil;
+    }
+}
+
+- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (tableView == self.tableView) {
+        if ([self.dataSource conformsToProtocol:@protocol(FTReorderableDataSource)]) {
+            return [(id<FTReorderableDataSource>)self.dataSource canMoveItemAtIndexPath:indexPath];
+        } else {
+            return NO;
+        }
+    } else {
+        return NO;
+    }
+}
+
+- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath
+{
+    if (tableView == self.tableView) {
+        if ([self.dataSource conformsToProtocol:@protocol(FTReorderableDataSource)]) {
+            [(id<FTReorderableDataSource>)self.dataSource moveItemAtIndexPath:sourceIndexPath toIndexPath:destinationIndexPath];
+        }
     }
 }
 
@@ -388,7 +533,7 @@
 {
     if (_delegate != delegate) {
         _delegate = delegate;
-        
+
         self.tableView.delegate = nil;
         self.tableView.delegate = self;
     }

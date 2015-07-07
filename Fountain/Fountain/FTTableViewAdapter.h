@@ -10,8 +10,8 @@
 
 #import "FTDataSource.h"
 
-typedef void(^FTTableViewAdapterCellPrepareBlock)(id cell, id item, NSIndexPath *indexPath, id<FTDataSource> dataSource);
-typedef void(^FTTableViewAdapterHeaderFooterPrepareBlock)(id view, id item, NSUInteger section, id<FTDataSource> dataSource);
+typedef void (^FTTableViewAdapterCellPrepareBlock)(id cell, id item, NSIndexPath *indexPath, id<FTDataSource> dataSource);
+typedef void (^FTTableViewAdapterHeaderFooterPrepareBlock)(id view, id item, NSUInteger section, id<FTDataSource> dataSource);
 
 @interface FTTableViewAdapter : NSObject
 
@@ -31,12 +31,26 @@ typedef void(^FTTableViewAdapterHeaderFooterPrepareBlock)(id view, id item, NSUI
 @property (nonatomic, assign) UITableViewRowAnimation rowAnimation;
 @property (nonatomic, assign) BOOL reloadRowIfItemChanged;
 
-#pragma mark Estimated Heights
+#pragma mark Paging
+@property (nonatomic, assign) BOOL shouldLoadNextPage;
+
+#pragma mark Heights
 @property (nonatomic, assign) CGFloat estimatedRowHeight;
+
+@property (nonatomic, assign) CGFloat rowHeight;
 @property (nonatomic, assign) CGFloat sectionHeaderHeight;
 @property (nonatomic, assign) CGFloat sectionFooterHeight;
 
 #pragma mark Prepare Handler
+
+- (void)forRowsKindOfClass:(Class)aClass
+useCellWithReuseIdentifier:(NSString *)reuseIdentifier
+              prepareBlock:(FTTableViewAdapterCellPrepareBlock)prepareBlock;
+
+- (void)forRowsConformingToProtocol:(Protocol *)aProtocol
+         useCellWithReuseIdentifier:(NSString *)reuseIdentifier
+                       prepareBlock:(FTTableViewAdapterCellPrepareBlock)prepareBlock;
+
 - (void)forRowsMatchingPredicate:(NSPredicate *)predicate
       useCellWithReuseIdentifier:(NSString *)reuseIdentifier
                     prepareBlock:(FTTableViewAdapterCellPrepareBlock)prepareBlock;
@@ -55,4 +69,3 @@ typedef void(^FTTableViewAdapterHeaderFooterPrepareBlock)(id view, id item, NSUI
 - (void)endUserDrivenChange;
 
 @end
-

@@ -11,6 +11,7 @@
 @protocol FTDataSource;
 
 @protocol FTDataSourceObserver <NSObject>
+@optional
 
 #pragma mark Begin End Updates
 - (void)dataSourceWillChange:(id<FTDataSource>)dataSource;
@@ -51,10 +52,29 @@
 - (NSIndexSet *)sectionsForItem:(id)item;
 
 #pragma mark Reload
-- (void)reloadWithCompletionHandler:(void(^)(BOOL success, NSError *error))completionHandler;
+- (void)reloadWithCompletionHandler:(void (^)(BOOL success, NSError *error))completionHandler;
 
 #pragma mark Observer
+- (NSArray *)observers;
 - (void)addObserver:(id<FTDataSourceObserver>)observer;
 - (void)removeObserver:(id<FTDataSourceObserver>)observer;
 
+@end
+
+@protocol FTPagingDataSource <FTDataSource>
+@property (nonatomic, readonly) BOOL hasMoreItems;
+- (void)loadNextPageCompletionHandler:(void (^)(BOOL success, NSError *error))completionHandler;
+@end
+
+@protocol FTMutableDataSource <FTDataSource>
+@property (nonatomic, readonly) BOOL hasChanges;
+#pragma mark Apply Changes
+- (void)applyChangesWithCompletionHandler:(void (^)(BOOL success, NSError *error))completionHandler;
+@end
+
+@protocol FTReorderableDataSource <FTMutableDataSource>
+- (BOOL)canMoveItemAtIndexPath:(NSIndexPath *)indexPath;
+- (NSIndexPath *)targetIndexPathForMoveFromItemAtIndexPath:(NSIndexPath *)sourceIndexPath
+                                       toProposedIndexPath:(NSIndexPath *)proposedDestinationIndexPath;
+- (void)moveItemAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath;
 @end

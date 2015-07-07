@@ -11,10 +11,11 @@
 @interface FTDynamicDataSource ()
 @property (nonatomic, readonly) NSComparator comperator;
 @property (nonatomic, readonly) NSMutableArray *items;
-@property (nonatomic, readonly) NSHashTable *observers;
 @end
 
-@implementation FTDynamicDataSource
+@implementation FTDynamicDataSource {
+    NSHashTable *_observers;
+}
 
 #pragma mark Life-cycle
 
@@ -22,8 +23,8 @@
 {
     self = [super init];
     if (self) {
+        _observers = [NSHashTable weakObjectsHashTable];
         _comperator = comperator;
-        
         _items = [[NSMutableArray alloc] init];
     }
     return self;
@@ -63,7 +64,7 @@
         NSUInteger index = [self.items indexOfObject:item];
         if (index != NSNotFound) {
             NSIndexPath *sectionIndexPath = [NSIndexPath indexPathWithIndex:0];
-            return @[[sectionIndexPath indexPathByAddingIndex:index]];
+            return @[ [sectionIndexPath indexPathByAddingIndex:index] ];
         }
     }
     return @[];
@@ -83,42 +84,45 @@
 
 #pragma mark Relaod
 
-- (void)reloadWithCompletionHandler:(void(^)(BOOL success, NSError *error))completionHandler
+- (void)reloadWithCompletionHandler:(void (^)(BOOL success, NSError *error))completionHandler
 {
     // Call the completion handler
     // ---------------------------
-    
+
     if (completionHandler) {
         completionHandler(YES, nil);
     }
 }
 
 - (void)reloadWithItems:(NSArray *)items
-      completionHandler:(void(^)(BOOL success, NSError *error))completionHandler
+      completionHandler:(void (^)(BOOL success, NSError *error))completionHandler
 {
-    
+
     for (id<FTDataSourceObserver> observer in self.observers) {
-        [observer dataSourceWillReload:self];
+        if ([observer respondsToSelector:@selector(dataSourceWillReload:)]) {
+            [observer dataSourceWillReload:self];
+        }
     }
-    
+
     // Sort new items
     // --------------
-    
+
     [self.items removeAllObjects];
     [self.items addObjectsFromArray:items];
     [self.items sortUsingComparator:self.comperator];
-    
-    
+
     // Tell all observers to relaod
     // ----------------------------
-    
+
     for (id<FTDataSourceObserver> observer in self.observers) {
-        [observer dataSourceDidReload:self];
+        if ([observer respondsToSelector:@selector(dataSourceDidReload:)]) {
+            [observer dataSourceDidReload:self];
+        }
     }
-    
+
     // Call the completion handler
     // ---------------------------
-    
+
     if (completionHandler) {
         completionHandler(YES, nil);
     }
@@ -129,64 +133,82 @@
 - (void)updateWithDeletedItems:(NSArray *)deleted insertedItems:(NSArray *)inserted updatedItems:(NSArray *)updated
 {
     for (id<FTDataSourceObserver> observer in self.observers) {
-        [observer dataSourceWillChange:self];
+        if ([observer respondsToSelector:@selector(dataSourceWillChange:)]) {
+            [observer dataSourceWillChange:self];
+        }
     }
-    
+
     NSIndexSet *itemsToDelete = [self _deleteItems:deleted];
     NSIndexSet *itemsToInsert = [self _insertItems:inserted];
     NSArray *updates = [self _updateItems:updated];
-    
+
     NSIndexPath *section = [NSIndexPath indexPathWithIndex:0];
-    
+
     NSMutableArray *indexPathsOfDeletedItems = [[NSMutableArray alloc] init];
     [itemsToDelete enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
         [indexPathsOfDeletedItems addObject:[section indexPathByAddingIndex:idx]];
     }];
-    
+
     NSMutableArray *indexPathsOfInsertedItems = [[NSMutableArray alloc] init];
     [itemsToInsert enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
         [indexPathsOfInsertedItems addObject:[section indexPathByAddingIndex:idx]];
     }];
-    
+
     for (id<FTDataSourceObserver> observer in self.observers) {
-        [observer dataSource:self didDeleteItemsAtIndexPaths:indexPathsOfDeletedItems];
-        [observer dataSource:self didInsertItemsAtIndexPaths:indexPathsOfInsertedItems];
-        
+        if ([observer respondsToSelector:@selector(dataSource:didDeleteItemsAtIndexPaths:)]) {
+            [observer dataSource:self didDeleteItemsAtIndexPaths:indexPathsOfDeletedItems];
+        }
+        if ([observer respondsToSelector:@selector(dataSource:didInsertItemsAtIndexPaths:)]) {
+            [observer dataSource:self didInsertItemsAtIndexPaths:indexPathsOfInsertedItems];
+        }
+
         [updates enumerateObjectsUsingBlock:^(NSArray *indexes, NSUInteger idx, BOOL *stop) {
-            
+
             NSUInteger index = [[indexes firstObject] unsignedIntegerValue];
             NSUInteger newIndex = [[indexes lastObject] unsignedIntegerValue];
-            
+
             if (index == newIndex) {
-                [observer dataSource:self didReloadItemsAtIndexPaths:@[[section indexPathByAddingIndex:index]]];
+                if ([observer respondsToSelector:@selector(dataSource:didReloadItemsAtIndexPaths:)]) {
+                    [observer dataSource:self didReloadItemsAtIndexPaths:@[ [section indexPathByAddingIndex:index] ]];
+                }
             } else {
-                [observer dataSource:self
-              didMoveItemAtIndexPath:[section indexPathByAddingIndex:index]
-                         toIndexPath:[section indexPathByAddingIndex:newIndex]];
+                if ([observer respondsToSelector:@selector(dataSource:didMoveItemAtIndexPath:toIndexPath:)]) {
+                    [observer dataSource:self
+                        didMoveItemAtIndexPath:[section indexPathByAddingIndex:index]
+                                   toIndexPath:[section indexPathByAddingIndex:newIndex]];
+                }
             }
-            
+
         }];
-        [observer dataSourceDidChange:self];
+        if ([observer respondsToSelector:@selector(dataSourceDidChange:)]) {
+            [observer dataSourceDidChange:self];
+        }
     }
 }
 
 - (void)deleteItems:(NSArray *)items
 {
     for (id<FTDataSourceObserver> observer in self.observers) {
-        [observer dataSourceWillChange:self];
+        if ([observer respondsToSelector:@selector(dataSourceWillChange:)]) {
+            [observer dataSourceWillChange:self];
+        }
     }
-    
+
     NSIndexSet *itemsToDelete = [self _deleteItems:items];
-    
+
     NSIndexPath *section = [NSIndexPath indexPathWithIndex:0];
     NSMutableArray *indexPaths = [[NSMutableArray alloc] init];
     [itemsToDelete enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
         [indexPaths addObject:[section indexPathByAddingIndex:idx]];
     }];
-    
+
     for (id<FTDataSourceObserver> observer in self.observers) {
-        [observer dataSource:self didDeleteItemsAtIndexPaths:indexPaths];
-        [observer dataSourceDidChange:self];
+        if ([observer respondsToSelector:@selector(dataSource:didDeleteItemsAtIndexPaths:)]) {
+            [observer dataSource:self didDeleteItemsAtIndexPaths:indexPaths];
+        }
+        if ([observer respondsToSelector:@selector(dataSourceDidChange:)]) {
+            [observer dataSourceDidChange:self];
+        }
     }
 }
 
@@ -197,127 +219,135 @@
         NSUInteger index = [self.items indexOfObject:obj];
         [itemsToDelete addIndex:index];
     }];
-    
+
     [self.items removeObjectsAtIndexes:itemsToDelete];
-    
+
     return itemsToDelete;
 }
 
 - (void)insertItems:(NSArray *)items
 {
     for (id<FTDataSourceObserver> observer in self.observers) {
-        [observer dataSourceWillChange:self];
+        if ([observer respondsToSelector:@selector(dataSourceWillChange:)]) {
+            [observer dataSourceWillChange:self];
+        }
     }
-    
+
     NSIndexSet *itemsToInsert = [self _insertItems:items];
-    
+
     NSIndexPath *section = [NSIndexPath indexPathWithIndex:0];
     NSMutableArray *indexPaths = [[NSMutableArray alloc] init];
     [itemsToInsert enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
         [indexPaths addObject:[section indexPathByAddingIndex:idx]];
     }];
-    
+
     for (id<FTDataSourceObserver> observer in self.observers) {
-        [observer dataSource:self didInsertItemsAtIndexPaths:indexPaths];
-        [observer dataSourceDidChange:self];
+        if ([observer respondsToSelector:@selector(dataSource:didInsertItemsAtIndexPaths:)]) {
+            [observer dataSource:self didInsertItemsAtIndexPaths:indexPaths];
+        }
+        if ([observer respondsToSelector:@selector(dataSourceDidChange:)]) {
+            [observer dataSourceDidChange:self];
+        }
     }
 }
 
 - (NSIndexSet *)_insertItems:(NSArray *)items
 {
     items = [items sortedArrayUsingComparator:self.comperator];
-    
+
     NSMutableIndexSet *itemsToInsert = [[NSMutableIndexSet alloc] init];
-    
+
     [items enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        
+
         NSUInteger offset = [itemsToInsert lastIndex];
         if (offset == NSNotFound) {
             offset = 0;
         }
-        
+
         NSUInteger index = [self.items indexOfObject:obj
                                        inSortedRange:NSMakeRange(offset, [self.items count] - offset)
                                              options:NSBinarySearchingInsertionIndex
                                      usingComparator:self.comperator];
         [itemsToInsert addIndex:index];
-        
+
         [self.items insertObject:obj atIndex:index];
     }];
-    
+
     return itemsToInsert;
 }
 
 - (void)updateItems:(NSArray *)items
 {
     for (id<FTDataSourceObserver> observer in self.observers) {
-        [observer dataSourceWillChange:self];
+        if ([observer respondsToSelector:@selector(dataSourceWillChange:)]) {
+            [observer dataSourceWillChange:self];
+        }
     }
-    
+
     NSArray *updates = [self _updateItems:items];
-    
+
     NSIndexPath *sectionIndex = [NSIndexPath indexPathWithIndex:0];
-    
+
     for (id<FTDataSourceObserver> observer in self.observers) {
         [updates enumerateObjectsUsingBlock:^(NSArray *obj, NSUInteger idx, BOOL *stop) {
             NSUInteger index = [[obj firstObject] unsignedIntegerValue];
             NSUInteger newIndex = [[obj lastObject] unsignedIntegerValue];
             if (index != newIndex) {
-                [observer dataSource:self
-              didMoveItemAtIndexPath:[sectionIndex indexPathByAddingIndex:index]
-                         toIndexPath:[sectionIndex indexPathByAddingIndex:newIndex]];
+                if ([observer respondsToSelector:@selector(dataSource:didMoveItemAtIndexPath:toIndexPath:)]) {
+                    [observer dataSource:self
+                        didMoveItemAtIndexPath:[sectionIndex indexPathByAddingIndex:index]
+                                   toIndexPath:[sectionIndex indexPathByAddingIndex:newIndex]];
+                }
             }
         }];
-        [observer dataSourceDidChange:self];
+        if ([observer respondsToSelector:@selector(dataSourceDidChange:)]) {
+            [observer dataSourceDidChange:self];
+        }
     }
 }
 
 - (NSArray *)_updateItems:(NSArray *)items
 {
     items = [items sortedArrayUsingComparator:self.comperator];
-    
+
     __block NSUInteger lastIndex = 0;
-    
+
     NSMutableArray *updates = [[NSMutableArray alloc] init];
-    
+
     [items enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        
+
         NSUInteger index = [self.items indexOfObject:obj];
         if (index != NSNotFound) {
             [self.items removeObjectAtIndex:index];
         }
-        
+
         NSUInteger newIndex = [self.items indexOfObject:obj
                                           inSortedRange:NSMakeRange(lastIndex, [self.items count] - lastIndex)
                                                 options:NSBinarySearchingInsertionIndex | NSBinarySearchingFirstEqual
                                         usingComparator:self.comperator];
         [self.items insertObject:obj atIndex:newIndex];
-        
-        [updates addObject:@[@(index), @(newIndex)]];
+
+        [updates addObject:@[ @(index), @(newIndex) ]];
     }];
-    
+
     return updates;
 }
 
 #pragma mark Observer
 
-@synthesize observers = _observers;
-- (NSHashTable *)observers
+- (NSArray *)observers
 {
-    if (_observers == nil) {
-        _observers = [NSHashTable weakObjectsHashTable];
-    }
-    return _observers;
+    return [_observers allObjects];
 }
 
 - (void)addObserver:(id<FTDataSourceObserver>)observer
 {
-    [self.observers addObject:observer];
+    [_observers addObject:observer];
 }
 
 - (void)removeObserver:(id<FTDataSourceObserver>)observer
 {
-    [self.observers removeObject:observer];
+    [_observers removeObject:observer];
 }
 
 @end
