@@ -29,10 +29,6 @@
         _tableView.dataSource = self;
         _tableView.delegate = self;
         _rowAnimation = UITableViewRowAnimationAutomatic;
-        _estimatedRowHeight = UITableViewAutomaticDimension;
-        _rowHeight = UITableViewAutomaticDimension;
-        _sectionHeaderHeight = UITableViewAutomaticDimension;
-        _sectionFooterHeight = UITableViewAutomaticDimension;
         _cellPrepareHandler = [[NSMutableArray alloc] init];
         _headerPrepareHandler = [[NSMutableArray alloc] init];
         _footerPrepareHandler = [[NSMutableArray alloc] init];
@@ -68,7 +64,7 @@ useCellWithReuseIdentifier:(NSString *)reuseIdentifier
     NSPredicate *predicate = [NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
         return [evaluatedObject isKindOfClass:aClass];
     }];
-
+    
     [self forRowsMatchingPredicate:predicate useCellWithReuseIdentifier:reuseIdentifier prepareBlock:prepareBlock];
 }
 
@@ -79,7 +75,7 @@ useCellWithReuseIdentifier:(NSString *)reuseIdentifier
     NSPredicate *predicate = [NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
         return [evaluatedObject conformsToProtocol:aProtocol];
     }];
-
+    
     [self forRowsMatchingPredicate:predicate useCellWithReuseIdentifier:reuseIdentifier prepareBlock:prepareBlock];
 }
 
@@ -113,6 +109,58 @@ useCellWithReuseIdentifier:(NSString *)reuseIdentifier
     [self.footerPrepareHandler addObject:handler];
 }
 
+-(void)rowPreperationForItemAtIndexPath:(NSIndexPath *)indexPath withBlock:(void(^)(NSString *reuseIdentifier, FTTableViewAdapterCellPrepareBlock prepareBlock, id item))block
+{
+    id item = [self.dataSource itemAtIndexPath:indexPath];
+    
+    NSDictionary *substitutionVariables = @{@"SECTION": @(indexPath.section),
+                                            @"ITEM":    @(indexPath.item),
+                                            @"ROW":     @(indexPath.row)};
+    
+    [self.cellPrepareHandler enumerateObjectsUsingBlock:^(FTAdapterPrepareHandler *handler, NSUInteger idx, BOOL *stop) {
+        if ([handler.predicate evaluateWithObject:item substitutionVariables:substitutionVariables]) {
+            if (block) {
+                block(handler.reuseIdentifier, handler.block, item);
+            }
+            *stop = YES;
+        }
+    }];
+}
+
+- (void)headerPreperationForSection:(NSUInteger)section withBlock:(void(^)(NSString *reuseIdentifier, FTTableViewAdapterHeaderFooterPrepareBlock prepareBlock, id item))block
+{
+    id item = [self.dataSource itemForSection:section];
+    
+    NSDictionary *substitutionVariables = @{@"SECTION": @(section),
+                                            @"ITEMS_COUNT": @([self.dataSource numberOfItemsInSection:section])};
+    
+    [self.headerPrepareHandler enumerateObjectsUsingBlock:^(FTAdapterPrepareHandler *handler, NSUInteger idx, BOOL *stop) {
+        if ([handler.predicate evaluateWithObject:item ? item : [NSNull null] substitutionVariables:substitutionVariables]) {
+            if (block) {
+                block(handler.reuseIdentifier, handler.block, item);
+            }
+            *stop = YES;
+        }
+    }];
+}
+
+- (void)footerPreperationForSection:(NSUInteger)section withBlock:(void(^)(NSString *reuseIdentifier, FTTableViewAdapterHeaderFooterPrepareBlock prepareBlock, id item))block
+{
+    id item = [self.dataSource itemForSection:section];
+    
+    NSDictionary *substitutionVariables = @{@"SECTION": @(section),
+                                            @"ITEMS_COUNT": @([self.dataSource numberOfItemsInSection:section])};
+    
+    [self.footerPrepareHandler enumerateObjectsUsingBlock:^(FTAdapterPrepareHandler *handler, NSUInteger idx, BOOL *stop) {
+        if ([handler.predicate evaluateWithObject:item ? item : [NSNull null] substitutionVariables:substitutionVariables]) {
+            if (block) {
+                block(handler.reuseIdentifier, handler.block, item);
+            }
+            *stop = YES;
+        }
+    }];
+}
+
 #pragma mark User-driven Changes
 
 - (BOOL)userDrivenChange
@@ -132,236 +180,17 @@ useCellWithReuseIdentifier:(NSString *)reuseIdentifier
 
 #pragma mark UITableViewDelegate
 
-- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (tableView == self.tableView) {
-
-        if (self.estimatedRowHeight != UITableViewAutomaticDimension) {
-
-            return self.estimatedRowHeight;
-
-        } else {
-
-            id item = [self.dataSource itemAtIndexPath:indexPath];
-            __block FTAdapterPrepareHandler *handler = nil;
-
-            NSDictionary *substitutionVariables = @{ @"SECTION" : @(indexPath.section),
-                                                     @"ITEM" : @(indexPath.item),
-                                                     @"ROW" : @(indexPath.row) };
-
-            [self.cellPrepareHandler enumerateObjectsUsingBlock:^(FTAdapterPrepareHandler *h, NSUInteger idx, BOOL *stop) {
-                handler = h;
-                if ([handler.predicate evaluateWithObject:item substitutionVariables:substitutionVariables]) {
-                    *stop = YES;
-                }
-            }];
-
-            if (handler) {
-
-                if (handler.prototype == nil) {
-                    handler.prototype = [tableView dequeueReusableCellWithIdentifier:handler.reuseIdentifier];
-                }
-
-                FTTableViewAdapterCellPrepareBlock prepareBlock = handler.block;
-                if (prepareBlock) {
-                    prepareBlock(handler.prototype, item, indexPath, self.dataSource);
-                }
-
-                CGSize targetSize = CGSizeMake(CGRectGetWidth(tableView.bounds), 0);
-
-                CGSize size = [handler.prototype systemLayoutSizeFittingSize:targetSize];
-
-                return size.height;
-            } else {
-                return UITableViewAutomaticDimension;
-            }
-        }
-
-    } else {
-        return tableView.estimatedRowHeight;
-    }
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (tableView == self.tableView) {
-
-        if (self.rowHeight != UITableViewAutomaticDimension) {
-
-            return self.rowHeight;
-
-        } else {
-
-            id item = [self.dataSource itemAtIndexPath:indexPath];
-            __block FTAdapterPrepareHandler *handler = nil;
-
-            NSDictionary *substitutionVariables = @{ @"SECTION" : @(indexPath.section),
-                                                     @"ITEM" : @(indexPath.item),
-                                                     @"ROW" : @(indexPath.row) };
-
-            [self.cellPrepareHandler enumerateObjectsUsingBlock:^(FTAdapterPrepareHandler *h, NSUInteger idx, BOOL *stop) {
-                handler = h;
-                if ([handler.predicate evaluateWithObject:item substitutionVariables:substitutionVariables]) {
-                    *stop = YES;
-                }
-            }];
-
-            if (handler) {
-
-                if (handler.prototype == nil) {
-                    handler.prototype = [tableView dequeueReusableCellWithIdentifier:handler.reuseIdentifier];
-                }
-
-                FTTableViewAdapterCellPrepareBlock prepareBlock = handler.block;
-                if (prepareBlock) {
-                    prepareBlock(handler.prototype, item, indexPath, self.dataSource);
-                }
-
-                CGSize targetSize = CGSizeMake(CGRectGetWidth(tableView.bounds), 0);
-
-                CGSize size = [handler.prototype systemLayoutSizeFittingSize:targetSize];
-
-                return size.height;
-            } else {
-                return UITableViewAutomaticDimension;
-            }
-        }
-
-    } else {
-        return tableView.rowHeight;
-    }
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
-{
-    if (tableView == self.tableView) {
-
-        if (self.sectionHeaderHeight != UITableViewAutomaticDimension) {
-
-            return self.sectionHeaderHeight;
-
-        } else {
-
-            id item = [self.dataSource itemForSection:section];
-            __block FTAdapterPrepareHandler *handler = nil;
-
-            NSDictionary *substitutionVariables = @{ @"SECTION" : @(section),
-                                                     @"ITEMS_COUNT" : @([self.dataSource numberOfItemsInSection:section]) };
-
-            [self.headerPrepareHandler enumerateObjectsUsingBlock:^(FTAdapterPrepareHandler *h, NSUInteger idx, BOOL *stop) {
-                if ([h.predicate evaluateWithObject:item ? item : [NSNull null]
-                              substitutionVariables:substitutionVariables]) {
-                    *stop = YES;
-                    handler = h;
-                }
-            }];
-
-            if (handler) {
-                if (handler.prototype == nil) {
-                    handler.prototype = [tableView dequeueReusableHeaderFooterViewWithIdentifier:handler.reuseIdentifier];
-                }
-
-                FTTableViewAdapterHeaderFooterPrepareBlock prepareBlock = handler.block;
-                if (prepareBlock) {
-                    prepareBlock(handler.prototype, item, section, self.dataSource);
-                }
-
-                CGSize targetSize = CGSizeMake(CGRectGetWidth(tableView.bounds), 0);
-
-                CGSize size = [handler.prototype systemLayoutSizeFittingSize:targetSize];
-
-                return size.height;
-
-            } else {
-                return 0;
-            }
-        }
-    } else {
-        return 0;
-    }
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
-{
-    if (tableView == self.tableView) {
-
-        if (self.sectionFooterHeight != UITableViewAutomaticDimension) {
-
-            return self.sectionFooterHeight;
-
-        } else {
-
-            id item = [self.dataSource itemForSection:section];
-            __block FTAdapterPrepareHandler *handler = nil;
-
-            NSDictionary *substitutionVariables = @{ @"SECTION" : @(section),
-                                                     @"ITEMS_COUNT" : @([self.dataSource numberOfItemsInSection:section]) };
-
-            [self.footerPrepareHandler enumerateObjectsUsingBlock:^(FTAdapterPrepareHandler *h, NSUInteger idx, BOOL *stop) {
-                if ([h.predicate evaluateWithObject:item ? item : [NSNull null]
-                              substitutionVariables:substitutionVariables]) {
-                    *stop = YES;
-                    handler = h;
-                }
-            }];
-
-            if (handler) {
-                if (handler.prototype == nil) {
-                    handler.prototype = [tableView dequeueReusableHeaderFooterViewWithIdentifier:handler.reuseIdentifier];
-                }
-
-                FTTableViewAdapterHeaderFooterPrepareBlock prepareBlock = handler.block;
-                if (prepareBlock) {
-                    prepareBlock(handler.prototype, item, section, self.dataSource);
-                }
-
-                CGSize targetSize = CGSizeMake(CGRectGetWidth(tableView.bounds), 0);
-
-                CGSize size = [handler.prototype systemLayoutSizeFittingSize:targetSize];
-
-                return size.height;
-
-            } else {
-                return 0;
-            }
-        }
-    } else {
-        return 0;
-    }
-}
-
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     if (tableView == self.tableView) {
-
-        id item = [self.dataSource itemForSection:section];
-        __block FTAdapterPrepareHandler *handler = nil;
-
-        NSDictionary *substitutionVariables = @{ @"SECTION" : @(section),
-                                                 @"ITEMS_COUNT" : @([self.dataSource numberOfItemsInSection:section]) };
-
-        [self.headerPrepareHandler enumerateObjectsUsingBlock:^(FTAdapterPrepareHandler *h, NSUInteger idx, BOOL *stop) {
-            if ([h.predicate evaluateWithObject:item ? item : [NSNull null]
-                          substitutionVariables:substitutionVariables]) {
-                *stop = YES;
-                handler = h;
-            }
-        }];
-
-        if (handler) {
-
-            UIView *view = [tableView dequeueReusableHeaderFooterViewWithIdentifier:handler.reuseIdentifier];
-
-            FTTableViewAdapterHeaderFooterPrepareBlock prepareBlock = handler.block;
+        __block UIView *view = nil;
+        [self headerPreperationForSection:section withBlock:^(NSString *reuseIdentifier, FTTableViewAdapterHeaderFooterPrepareBlock prepareBlock, id item) {
+            view = [tableView dequeueReusableHeaderFooterViewWithIdentifier:reuseIdentifier];
             if (prepareBlock) {
                 prepareBlock(view, item, section, self.dataSource);
             }
-
-            return view;
-
-        } else {
-            return nil;
-        }
+        }];
+        return view;
     } else {
         return nil;
     }
@@ -370,35 +199,14 @@ useCellWithReuseIdentifier:(NSString *)reuseIdentifier
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
 {
     if (tableView == self.tableView) {
-
-        id item = [self.dataSource itemForSection:section];
-        __block FTAdapterPrepareHandler *handler = nil;
-
-        NSDictionary *substitutionVariables = @{ @"SECTION" : @(section),
-                                                 @"ITEMS_COUNT" : @([self.dataSource numberOfItemsInSection:section]) };
-
-        [self.footerPrepareHandler enumerateObjectsUsingBlock:^(FTAdapterPrepareHandler *h, NSUInteger idx, BOOL *stop) {
-            if ([h.predicate evaluateWithObject:item ? item : [NSNull null]
-                          substitutionVariables:substitutionVariables]) {
-                *stop = YES;
-                handler = h;
-            }
-        }];
-
-        if (handler) {
-
-            UIView *view = [tableView dequeueReusableHeaderFooterViewWithIdentifier:handler.reuseIdentifier];
-
-            FTTableViewAdapterHeaderFooterPrepareBlock prepareBlock = handler.block;
+        __block UIView *view = nil;
+        [self footerPreperationForSection:section withBlock:^(NSString *reuseIdentifier, FTTableViewAdapterHeaderFooterPrepareBlock prepareBlock, id item) {
+            view = [tableView dequeueReusableHeaderFooterViewWithIdentifier:reuseIdentifier];
             if (prepareBlock) {
                 prepareBlock(view, item, section, self.dataSource);
             }
-
-            return view;
-
-        } else {
-            return nil;
-        }
+        }];
+        return view;
     } else {
         return nil;
     }
@@ -410,16 +218,16 @@ useCellWithReuseIdentifier:(NSString *)reuseIdentifier
         if ([self.delegate respondsToSelector:@selector(tableView:willDisplayCell:forRowAtIndexPath:)]) {
             [self.delegate tableView:tableView willDisplayCell:cell forRowAtIndexPath:indexPath];
         }
-
+        
         if (self.shouldLoadNextPage == YES &&
             [self.dataSource respondsToSelector:@selector(loadNextPageCompletionHandler:)] &&
             indexPath.section == [self.dataSource numberOfSections] - 1 &&
             indexPath.row == [self.dataSource numberOfItemsInSection:indexPath.section] - 1) {
-
+            
             id<FTPagingDataSource> dataSource = (id<FTPagingDataSource>)(self.dataSource);
-
-            [dataSource loadNextPageCompletionHandler:^(BOOL success, NSError *error){
-
+            
+            [dataSource loadNextPageCompletionHandler:^(BOOL success, NSError *error) {
+                
             }];
         }
     }
@@ -440,7 +248,7 @@ useCellWithReuseIdentifier:(NSString *)reuseIdentifier
     if (tableView == self.tableView) {
         if ([self.dataSource conformsToProtocol:@protocol(FTReorderableDataSource)]) {
             return [(id<FTReorderableDataSource>)self.dataSource targetIndexPathForMoveFromItemAtIndexPath:sourceIndexPath
-                                                                                       toProposedIndexPath:proposedDestinationIndexPath];
+                                                                                      toProposedIndexPath:proposedDestinationIndexPath];
         } else {
             return proposedDestinationIndexPath;
         }
@@ -472,34 +280,17 @@ useCellWithReuseIdentifier:(NSString *)reuseIdentifier
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (tableView == self.tableView) {
-
-        id item = [self.dataSource itemAtIndexPath:indexPath];
-        __block FTAdapterPrepareHandler *handler = nil;
-
-        NSDictionary *substitutionVariables = @{ @"SECTION" : @(indexPath.section),
-                                                 @"ITEM" : @(indexPath.item),
-                                                 @"ROW" : @(indexPath.row) };
-
-        [self.cellPrepareHandler enumerateObjectsUsingBlock:^(FTAdapterPrepareHandler *h, NSUInteger idx, BOOL *stop) {
-            handler = h;
-            if ([handler.predicate evaluateWithObject:item substitutionVariables:substitutionVariables]) {
-                *stop = YES;
-            }
-        }];
-
-        if (handler) {
-            UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:handler.reuseIdentifier
+        __block UITableViewCell *cell = nil;
+        [self rowPreperationForItemAtIndexPath:indexPath withBlock:^(NSString *reuseIdentifier, FTTableViewAdapterCellPrepareBlock prepareBlock, id item) {
+            
+            UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:reuseIdentifier
                                                                          forIndexPath:indexPath];
-            FTTableViewAdapterCellPrepareBlock prepareBlock = handler.block;
             if (prepareBlock) {
                 prepareBlock(cell, item, indexPath, self.dataSource);
             }
-
-            return cell;
-        } else {
-            return nil;
-        }
-
+            
+        }];
+        return cell;
     } else {
         return nil;
     }
@@ -533,7 +324,7 @@ useCellWithReuseIdentifier:(NSString *)reuseIdentifier
 {
     if (_delegate != delegate) {
         _delegate = delegate;
-
+        
         self.tableView.delegate = nil;
         self.tableView.delegate = self;
     }

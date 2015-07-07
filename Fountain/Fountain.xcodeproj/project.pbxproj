@@ -22,6 +22,7 @@
 		F6B215361A3751CF003198D9 /* FTCollectionViewAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = F6B215351A3751CF003198D9 /* FTCollectionViewAdapter.m */; };
 		F6B215391A375445003198D9 /* FTAdapterPrepareHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = F6B215381A375444003198D9 /* FTAdapterPrepareHandler.m */; };
 		F6D313671A7A9EC400785507 /* FTBasePagingDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = F6D313661A7A9EC400785507 /* FTBasePagingDataSource.m */; };
+		F6EAEB551B4B0A0D0078737A /* FTDynamicHeightTableViewAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = F6EAEB541B4B0A0D0078737A /* FTDynamicHeightTableViewAdapter.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -75,6 +76,8 @@
 		F6B215381A375444003198D9 /* FTAdapterPrepareHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTAdapterPrepareHandler.m; sourceTree = "<group>"; };
 		F6D313651A7A9EC400785507 /* FTBasePagingDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FTBasePagingDataSource.h; sourceTree = "<group>"; };
 		F6D313661A7A9EC400785507 /* FTBasePagingDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTBasePagingDataSource.m; sourceTree = "<group>"; };
+		F6EAEB531B4B0A0D0078737A /* FTDynamicHeightTableViewAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FTDynamicHeightTableViewAdapter.h; sourceTree = "<group>"; };
+		F6EAEB541B4B0A0D0078737A /* FTDynamicHeightTableViewAdapter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTDynamicHeightTableViewAdapter.m; sourceTree = "<group>"; };
 		F779017B90C1BE975E14DEA6 /* libPods-FountainTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-FountainTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -129,6 +132,8 @@
 			children = (
 				F661E8D11A5BF7B6000EB7AC /* FTTableViewAdapter.h */,
 				F661E8D21A5BF7B6000EB7AC /* FTTableViewAdapter.m */,
+				F6EAEB531B4B0A0D0078737A /* FTDynamicHeightTableViewAdapter.h */,
+				F6EAEB541B4B0A0D0078737A /* FTDynamicHeightTableViewAdapter.m */,
 			);
 			name = "Table View";
 			sourceTree = "<group>";
@@ -342,6 +347,7 @@
 				F6B2151A1A374F04003198D9 /* Fountain.m in Sources */,
 				F63794831ADBF97A00B0C36F /* FTStaticDataSource.m in Sources */,
 				F661E8D31A5BF7B6000EB7AC /* FTTableViewAdapter.m in Sources */,
+				F6EAEB551B4B0A0D0078737A /* FTDynamicHeightTableViewAdapter.m in Sources */,
 				F65B92811A38AC7600CEB22E /* FTComposedDataSource.m in Sources */,
 				F6B215361A3751CF003198D9 /* FTCollectionViewAdapter.m in Sources */,
 				F66AB2FE1A64340B00E343BF /* FTFetchedResultsDataSource.m in Sources */,
