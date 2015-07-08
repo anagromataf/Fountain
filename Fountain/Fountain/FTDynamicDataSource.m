@@ -9,7 +9,7 @@
 #import "FTDynamicDataSource.h"
 
 @interface FTDynamicDataSource ()
-@property (nonatomic, readonly) NSComparator comperator;
+@property (nonatomic, readonly) NSComparator comparator;
 @property (nonatomic, readonly) NSMutableArray *items;
 @end
 
@@ -19,12 +19,12 @@
 
 #pragma mark Life-cycle
 
-- (instancetype)initWithComerator:(NSComparator)comperator
+- (instancetype)initWithComparator:(NSComparator)comparator
 {
     self = [super init];
     if (self) {
         _observers = [NSHashTable weakObjectsHashTable];
-        _comperator = comperator;
+        _comparator = comparator;
         _items = [[NSMutableArray alloc] init];
     }
     return self;
@@ -109,7 +109,7 @@
 
     [self.items removeAllObjects];
     [self.items addObjectsFromArray:items];
-    [self.items sortUsingComparator:self.comperator];
+    [self.items sortUsingComparator:self.comparator];
 
     // Tell all observers to relaod
     // ----------------------------
@@ -253,7 +253,7 @@
 
 - (NSIndexSet *)_insertItems:(NSArray *)items
 {
-    items = [items sortedArrayUsingComparator:self.comperator];
+    items = [items sortedArrayUsingComparator:self.comparator];
 
     NSMutableIndexSet *itemsToInsert = [[NSMutableIndexSet alloc] init];
 
@@ -267,7 +267,7 @@
         NSUInteger index = [self.items indexOfObject:obj
                                        inSortedRange:NSMakeRange(offset, [self.items count] - offset)
                                              options:NSBinarySearchingInsertionIndex
-                                     usingComparator:self.comperator];
+                                     usingComparator:self.comparator];
         [itemsToInsert addIndex:index];
 
         [self.items insertObject:obj atIndex:index];
@@ -308,7 +308,7 @@
 
 - (NSArray *)_updateItems:(NSArray *)items
 {
-    items = [items sortedArrayUsingComparator:self.comperator];
+    items = [items sortedArrayUsingComparator:self.comparator];
 
     __block NSUInteger lastIndex = 0;
 
@@ -324,7 +324,7 @@
         NSUInteger newIndex = [self.items indexOfObject:obj
                                           inSortedRange:NSMakeRange(lastIndex, [self.items count] - lastIndex)
                                                 options:NSBinarySearchingInsertionIndex | NSBinarySearchingFirstEqual
-                                        usingComparator:self.comperator];
+                                        usingComparator:self.comparator];
         [self.items insertObject:obj atIndex:newIndex];
 
         [updates addObject:@[ @(index), @(newIndex) ]];
