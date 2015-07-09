@@ -6,6 +6,8 @@
 //  Copyright © 2015 Tobias Kräntzer. All rights reserved.
 //
 
+#import "FTTableViewAdapter+Subclassing.h"
+
 #import "FTDynamicHeightTableViewAdapter.h"
 
 @interface FTDynamicHeightTableViewAdapter ()

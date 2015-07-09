@@ -51,6 +51,7 @@
 /* Begin PBXFileReference section */
 		3D244AADBBD64658A489925C /* Pods-FountainTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FountainTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-FountainTests/Pods-FountainTests.release.xcconfig"; sourceTree = "<group>"; };
 		870F95D674BAC412D768B177 /* Pods-FountainTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FountainTests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-FountainTests/Pods-FountainTests.debug.xcconfig"; sourceTree = "<group>"; };
+		F610E2601B4F191700621BF8 /* FTTableViewAdapter+Subclassing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "FTTableViewAdapter+Subclassing.h"; sourceTree = "<group>"; };
 		F63794811ADBF97A00B0C36F /* FTStaticDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FTStaticDataSource.h; sourceTree = "<group>"; };
 		F63794821ADBF97A00B0C36F /* FTStaticDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTStaticDataSource.m; sourceTree = "<group>"; };
 		F63794841ADBFA6700B0C36F /* FTStaticDataSourceSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTStaticDataSourceSpec.m; sourceTree = "<group>"; };
@@ -132,6 +133,7 @@
 			children = (
 				F661E8D11A5BF7B6000EB7AC /* FTTableViewAdapter.h */,
 				F661E8D21A5BF7B6000EB7AC /* FTTableViewAdapter.m */,
+				F610E2601B4F191700621BF8 /* FTTableViewAdapter+Subclassing.h */,
 				F6EAEB531B4B0A0D0078737A /* FTDynamicHeightTableViewAdapter.h */,
 				F6EAEB541B4B0A0D0078737A /* FTDynamicHeightTableViewAdapter.m */,
 			);

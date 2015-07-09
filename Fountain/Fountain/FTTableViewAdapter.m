@@ -9,12 +9,14 @@
 #import "FTAdapterPrepareHandler.h"
 
 #import "FTTableViewAdapter.h"
+#import "FTTableViewAdapter+Subclassing.h"
 
 @interface FTTableViewAdapter () <FTDataSourceObserver, UITableViewDataSource, UITableViewDelegate>
 @property (nonatomic, readonly) NSMutableArray *cellPrepareHandler;
 @property (nonatomic, readonly) NSMutableArray *headerPrepareHandler;
 @property (nonatomic, readonly) NSMutableArray *footerPrepareHandler;
 @property (nonatomic, assign) NSInteger userDrivenChangeCount;
+@property (nonatomic, readwrite) BOOL loadingNextPage;
 @end
 
 @implementation FTTableViewAdapter
@@ -53,6 +55,23 @@
         [_dataSource addObserver:self];
         [self.tableView reloadData];
     }
+}
+
+#pragma mark User-driven Changes
+
+- (BOOL)userDrivenChange
+{
+    return self.userDrivenChangeCount > 0;
+}
+
+- (void)beginUserDrivenChange
+{
+    self.userDrivenChangeCount += 1;
+}
+
+- (void)endUserDrivenChange
+{
+    self.userDrivenChangeCount -= 1;
 }
 
 #pragma mark Prepare Handler
@@ -139,23 +158,6 @@
     }];
 }
 
-#pragma mark User-driven Changes
-
-- (BOOL)userDrivenChange
-{
-    return self.userDrivenChangeCount > 0;
-}
-
-- (void)beginUserDrivenChange
-{
-    self.userDrivenChangeCount += 1;
-}
-
-- (void)endUserDrivenChange
-{
-    self.userDrivenChangeCount -= 1;
-}
-
 #pragma mark UITableViewDelegate
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
@@ -202,12 +204,32 @@
         if (self.shouldLoadNextPage == YES &&
             [self.dataSource respondsToSelector:@selector(loadNextPageCompletionHandler:)] &&
             indexPath.section == [self.dataSource numberOfSections] - 1 &&
-            indexPath.row == [self.dataSource numberOfItemsInSection:indexPath.section] - 1) {
+            indexPath.row == [self.dataSource numberOfItemsInSection:indexPath.section] - 1 &&
+            self.loadingNextPage == NO) {
+
+            self.loadingNextPage = YES;
+
+            id<UITableViewDelegateAdapter> delegate = nil;
+            if ([self.delegate conformsToProtocol:@protocol(UITableViewDelegateAdapter)]) {
+                delegate = (id<UITableViewDelegateAdapter>)self.delegate;
+            }
+
+            if ([delegate respondsToSelector:@selector(tableViewWillLoadNextPage:)]) {
+                [delegate tableViewWillLoadNextPage:self.tableView];
+            }
 
             id<FTPagingDataSource> dataSource = (id<FTPagingDataSource>)(self.dataSource);
-
-            [dataSource loadNextPageCompletionHandler:^(BOOL success, NSError *error){
-
+            [dataSource loadNextPageCompletionHandler:^(BOOL success, NSError *error) {
+                if (success) {
+                    if ([delegate respondsToSelector:@selector(tableViewDidLoadNextPage:)]) {
+                        [delegate tableViewDidLoadNextPage:self.tableView];
+                    }
+                } else {
+                    if ([delegate respondsToSelector:@selector(tableView:didFailToLoadNextPageWithError:)]) {
+                        [delegate tableView:self.tableView didFailToLoadNextPageWithError:error];
+                    }
+                }
+                self.loadingNextPage = NO;
             }];
         }
     }
@@ -405,7 +427,7 @@
 
 - (void)dataSource:(id<FTDataSource>)dataSource didReloadItemsAtIndexPaths:(NSArray *)indexPaths
 {
-    if (dataSource == self.dataSource && self.reloadRowIfItemChanged && self.userDrivenChange == NO) {
+    if (dataSource == self.dataSource && self.reloadRowIfItemDidChange && self.userDrivenChange == NO) {
         [self.tableView reloadRowsAtIndexPaths:indexPaths withRowAnimation:self.rowAnimation];
     }
 }

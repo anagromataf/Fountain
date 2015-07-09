@@ -13,6 +13,13 @@
 typedef void (^FTTableViewAdapterCellPrepareBlock)(id cell, id item, NSIndexPath *indexPath, id<FTDataSource> dataSource);
 typedef void (^FTTableViewAdapterHeaderFooterPrepareBlock)(id view, id item, NSUInteger section, id<FTDataSource> dataSource);
 
+@protocol UITableViewDelegateAdapter <UITableViewDelegate>
+@optional
+- (void)tableViewWillLoadNextPage:(UITableView *)tableView;
+- (void)tableViewDidLoadNextPage:(UITableView *)tableView;
+- (void)tableView:(UITableView *)tableView didFailToLoadNextPageWithError:(NSError *)error;
+@end
+
 @interface FTTableViewAdapter : NSObject
 
 #pragma mark Life-cycle
@@ -29,22 +36,29 @@ typedef void (^FTTableViewAdapterHeaderFooterPrepareBlock)(id view, id item, NSU
 
 #pragma mark Reload Behaviour
 @property (nonatomic, assign) UITableViewRowAnimation rowAnimation;
-@property (nonatomic, assign) BOOL reloadRowIfItemChanged;
+@property (nonatomic, assign) BOOL reloadRowIfItemDidChange;
 
 #pragma mark Paging
 @property (nonatomic, assign) BOOL shouldLoadNextPage;
-
-#pragma mark Prepare Handler
-- (void)forHeaderMatchingPredicate:(NSPredicate *)predicate useViewWithReuseIdentifier:(NSString *)reuseIdentifier prepareBlock:(FTTableViewAdapterHeaderFooterPrepareBlock)prepareBlock;
-- (void)forFooterMatchingPredicate:(NSPredicate *)predicate useViewWithReuseIdentifier:(NSString *)reuseIdentifier prepareBlock:(FTTableViewAdapterHeaderFooterPrepareBlock)prepareBlock;
-
-- (void)rowPreperationForItemAtIndexPath:(NSIndexPath *)indexPath withBlock:(void (^)(NSString *reuseIdentifier, FTTableViewAdapterCellPrepareBlock prepareBlock, id item))block;
-- (void)headerPreperationForSection:(NSUInteger)section withBlock:(void (^)(NSString *reuseIdentifier, FTTableViewAdapterHeaderFooterPrepareBlock prepareBlock, id item))block;
-- (void)footerPreperationForSection:(NSUInteger)section withBlock:(void (^)(NSString *reuseIdentifier, FTTableViewAdapterHeaderFooterPrepareBlock prepareBlock, id item))block;
+@property (nonatomic, readonly, getter=isLoadingNextPage) BOOL loadingNextPage;
 
 #pragma mark User-driven Changes
 @property (nonatomic, readonly) BOOL userDrivenChange;
 - (void)beginUserDrivenChange;
 - (void)endUserDrivenChange;
+
+#pragma mark Prepare Handler
+
+- (void)forRowsMatchingPredicate:(NSPredicate *)predicate
+      useCellWithReuseIdentifier:(NSString *)reuseIdentifier
+                    prepareBlock:(FTTableViewAdapterCellPrepareBlock)prepareBlock;
+
+- (void)forHeaderMatchingPredicate:(NSPredicate *)predicate
+        useViewWithReuseIdentifier:(NSString *)reuseIdentifier
+                      prepareBlock:(FTTableViewAdapterHeaderFooterPrepareBlock)prepareBlock;
+
+- (void)forFooterMatchingPredicate:(NSPredicate *)predicate
+        useViewWithReuseIdentifier:(NSString *)reuseIdentifier
+                      prepareBlock:(FTTableViewAdapterHeaderFooterPrepareBlock)prepareBlock;
 
 @end
