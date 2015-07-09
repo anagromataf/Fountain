@@ -79,28 +79,6 @@
 
 #pragma mark Prepare Handler
 
-- (void)forItemsKindOfClass:(Class)aClass
- useCellWithReuseIdentifier:(NSString *)reuseIdentifier
-               prepareBlock:(FTCollectionViewAdapterCellPrepareBlock)prepareBlock
-{
-    NSPredicate *predicate = [NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
-        return [evaluatedObject isKindOfClass:aClass];
-    }];
-
-    [self forItemsMatchingPredicate:predicate useCellWithReuseIdentifier:reuseIdentifier prepareBlock:prepareBlock];
-}
-
-- (void)forItemsConformingToProtocol:(Protocol *)aProtocol
-          useCellWithReuseIdentifier:(NSString *)reuseIdentifier
-                        prepareBlock:(FTCollectionViewAdapterCellPrepareBlock)prepareBlock
-{
-    NSPredicate *predicate = [NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
-        return [evaluatedObject conformsToProtocol:aProtocol];
-    }];
-
-    [self forItemsMatchingPredicate:predicate useCellWithReuseIdentifier:reuseIdentifier prepareBlock:prepareBlock];
-}
-
 - (void)forItemsMatchingPredicate:(NSPredicate *)predicate
        useCellWithReuseIdentifier:(NSString *)reuseIdentifier
                      prepareBlock:(FTCollectionViewAdapterCellPrepareBlock)prepareBlock

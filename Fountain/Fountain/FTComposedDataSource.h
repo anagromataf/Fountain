@@ -10,7 +10,7 @@
 
 #import "FTDataSource.h"
 
-@interface FTComposedDataSource : NSObject <FTDataSource>
+@interface FTComposedDataSource : NSObject <FTDataSource, FTReverseDataSource>
 
 #pragma mark Life-cycle
 - (instancetype)initWithSectionDataSource:(id<FTDataSource>)sectionDataSource;

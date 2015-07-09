@@ -72,7 +72,21 @@
 
 - (NSArray *)indexPathsOfItem:(id)item
 {
-    return @[];
+    NSMutableArray *indexPaths = [[NSMutableArray alloc] init];
+    for (NSUInteger section = 0; section < self.numberOfSections; section++) {
+        id dataSource = [self dataSourceForSection:section];
+        if ([dataSource conformsToProtocol:@protocol(FTReverseDataSource)]) {
+            id<FTReverseDataSource> reverseDataSource = dataSource;
+            NSArray *childIndexPaths = [reverseDataSource indexPathsOfItem:item];
+            NSIndexPath *sectionIndexPath = [NSIndexPath indexPathWithIndex:section];
+            for (NSIndexPath *childIndexPath in childIndexPaths) {
+                if ([childIndexPath length] >= 2) {
+                    [indexPaths addObject:[sectionIndexPath indexPathByAddingIndex:[childIndexPath indexAtPosition:1]]];
+                }
+            }
+        }
+    }
+    return indexPaths;
 }
 
 #pragma mark Getting Section Item
@@ -88,13 +102,18 @@
 
 - (NSIndexSet *)sectionsForItem:(id)item
 {
-    NSArray *indexPaths = [self.sectionDataSource indexPathsOfItem:item];
     NSMutableIndexSet *indexes = [[NSMutableIndexSet alloc] init];
-    [indexPaths enumerateObjectsUsingBlock:^(NSIndexPath *indexPath, NSUInteger idx, BOOL *stop) {
-        if ([indexPath indexAtPosition:0] == 0) {
-            [indexes addIndex:[indexPath indexAtPosition:1]];
-        }
-    }];
+
+    if ([self.sectionDataSource conformsToProtocol:@protocol(FTReverseDataSource)]) {
+        id<FTReverseDataSource> sectionDataSource = (id<FTReverseDataSource>)self.sectionDataSource;
+        NSArray *indexPaths = [sectionDataSource indexPathsOfItem:item];
+        [indexPaths enumerateObjectsUsingBlock:^(NSIndexPath *indexPath, NSUInteger idx, BOOL *stop) {
+            if ([indexPath indexAtPosition:0] == 0) {
+                [indexes addIndex:[indexPath indexAtPosition:1]];
+            }
+        }];
+    }
+
     return indexes;
 }
 

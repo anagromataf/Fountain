@@ -13,6 +13,13 @@
 typedef void (^FTTableViewAdapterCellPrepareBlock)(id cell, id item, NSIndexPath *indexPath, id<FTDataSource> dataSource);
 typedef void (^FTTableViewAdapterHeaderFooterPrepareBlock)(id view, id item, NSUInteger section, id<FTDataSource> dataSource);
 
+@protocol UITableViewDelegateAdapter <UITableViewDelegate>
+@optional
+- (void)tableViewWillLoadNextPage:(UITableView *)tableView;
+- (void)tableViewDidLoadNextPage:(UITableView *)tableView;
+- (void)tableView:(UITableView *)tableView didFailToLoadNextPageWithError:(NSError *)error;
+@end
+
 @interface FTTableViewAdapter : NSObject
 
 #pragma mark Life-cycle
@@ -29,27 +36,18 @@ typedef void (^FTTableViewAdapterHeaderFooterPrepareBlock)(id view, id item, NSU
 
 #pragma mark Reload Behaviour
 @property (nonatomic, assign) UITableViewRowAnimation rowAnimation;
-@property (nonatomic, assign) BOOL reloadRowIfItemChanged;
+@property (nonatomic, assign) BOOL reloadRowIfItemDidChange;
 
 #pragma mark Paging
 @property (nonatomic, assign) BOOL shouldLoadNextPage;
+@property (nonatomic, readonly, getter=isLoadingNextPage) BOOL loadingNextPage;
 
-#pragma mark Heights
-@property (nonatomic, assign) CGFloat estimatedRowHeight;
-
-@property (nonatomic, assign) CGFloat rowHeight;
-@property (nonatomic, assign) CGFloat sectionHeaderHeight;
-@property (nonatomic, assign) CGFloat sectionFooterHeight;
+#pragma mark User-driven Changes
+@property (nonatomic, readonly) BOOL userDrivenChange;
+- (void)beginUserDrivenChange;
+- (void)endUserDrivenChange;
 
 #pragma mark Prepare Handler
-
-- (void)forRowsKindOfClass:(Class)aClass
-useCellWithReuseIdentifier:(NSString *)reuseIdentifier
-              prepareBlock:(FTTableViewAdapterCellPrepareBlock)prepareBlock;
-
-- (void)forRowsConformingToProtocol:(Protocol *)aProtocol
-         useCellWithReuseIdentifier:(NSString *)reuseIdentifier
-                       prepareBlock:(FTTableViewAdapterCellPrepareBlock)prepareBlock;
 
 - (void)forRowsMatchingPredicate:(NSPredicate *)predicate
       useCellWithReuseIdentifier:(NSString *)reuseIdentifier
@@ -62,10 +60,5 @@ useCellWithReuseIdentifier:(NSString *)reuseIdentifier
 - (void)forFooterMatchingPredicate:(NSPredicate *)predicate
         useViewWithReuseIdentifier:(NSString *)reuseIdentifier
                       prepareBlock:(FTTableViewAdapterHeaderFooterPrepareBlock)prepareBlock;
-
-#pragma mark User-driven Changes
-@property (nonatomic, readonly) BOOL userDrivenChange;
-- (void)beginUserDrivenChange;
-- (void)endUserDrivenChange;
 
 @end

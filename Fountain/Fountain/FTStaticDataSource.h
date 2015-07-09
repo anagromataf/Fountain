@@ -10,7 +10,7 @@
 
 #import "FTDataSource.h"
 
-@interface FTStaticDataSource : NSObject <FTDataSource>
+@interface FTStaticDataSource : NSObject <FTDataSource, FTReverseDataSource>
 
 #pragma mark Relaod
 - (void)reloadWithItems:(NSArray *)sectionItems

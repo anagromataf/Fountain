@@ -45,11 +45,9 @@
 
 #pragma mark Getting Items and Index Paths
 - (id)itemAtIndexPath:(NSIndexPath *)indexPath;
-- (NSArray *)indexPathsOfItem:(id)item;
 
 #pragma mark Getting Section Item
 - (id)itemForSection:(NSInteger)section;
-- (NSIndexSet *)sectionsForItem:(id)item;
 
 #pragma mark Reload
 - (void)reloadWithCompletionHandler:(void (^)(BOOL success, NSError *error))completionHandler;
@@ -58,23 +56,46 @@
 - (NSArray *)observers;
 - (void)addObserver:(id<FTDataSourceObserver>)observer;
 - (void)removeObserver:(id<FTDataSourceObserver>)observer;
-
 @end
+
+#pragma mark -
+
+@protocol FTReverseDataSource <FTDataSource>
+
+#pragma mark Getting Item Index Paths
+- (NSArray *)indexPathsOfItem:(id)item;
+
+#pragma mark Getting Section Indexes
+
+- (NSIndexSet *)sectionsForItem:(id)item;
+@end
+
+#pragma mark -
 
 @protocol FTPagingDataSource <FTDataSource>
+
 @property (nonatomic, readonly) BOOL hasMoreItems;
 - (void)loadNextPageCompletionHandler:(void (^)(BOOL success, NSError *error))completionHandler;
+
 @end
 
+#pragma mark -
+
 @protocol FTMutableDataSource <FTDataSource>
+
 @property (nonatomic, readonly) BOOL hasChanges;
 #pragma mark Apply Changes
 - (void)applyChangesWithCompletionHandler:(void (^)(BOOL success, NSError *error))completionHandler;
+
 @end
 
+#pragma mark -
+
 @protocol FTReorderableDataSource <FTMutableDataSource>
+
 - (BOOL)canMoveItemAtIndexPath:(NSIndexPath *)indexPath;
 - (NSIndexPath *)targetIndexPathForMoveFromItemAtIndexPath:(NSIndexPath *)sourceIndexPath
                                        toProposedIndexPath:(NSIndexPath *)proposedDestinationIndexPath;
 - (void)moveItemAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath;
+
 @end
