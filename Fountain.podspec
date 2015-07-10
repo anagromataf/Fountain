@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name                    = "Fountain"
-  s.version                 = "0.1-alpha3"
+  s.version                 = "0.1-alpha4"
   s.summary                 = "Pluggable data sources and adapters for representing content with table view, collection views or other custom elements."
   s.authors                 = { "Tobias Kräntzer" => "info@tobias-kraentzer.de" }
   s.license                 = { :type => 'BSD', :file => 'LICENSE.md' }
