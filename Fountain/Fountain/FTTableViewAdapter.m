@@ -15,6 +15,8 @@
 @property (nonatomic, readonly) NSMutableArray *cellPrepareHandler;
 @property (nonatomic, readonly) NSMutableArray *headerPrepareHandler;
 @property (nonatomic, readonly) NSMutableArray *footerPrepareHandler;
+@property (nonatomic, readonly) NSMapTable *headerPrototypes;
+@property (nonatomic, readonly) NSMapTable *footerPrototypes;
 @property (nonatomic, assign) NSInteger userDrivenChangeCount;
 @property (nonatomic, readwrite) BOOL loadingNextPage;
 @end
@@ -34,6 +36,8 @@
         _cellPrepareHandler = [[NSMutableArray alloc] init];
         _headerPrepareHandler = [[NSMutableArray alloc] init];
         _footerPrepareHandler = [[NSMutableArray alloc] init];
+        _headerPrototypes = [NSMapTable weakToStrongObjectsMapTable];
+        _footerPrototypes = [NSMapTable weakToStrongObjectsMapTable];
         _userDrivenChangeCount = 0;
     }
     return self;
@@ -160,6 +164,43 @@
 
 #pragma mark UITableViewDelegate
 
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    if (tableView == self.tableView) {
+
+        if (self.tableView.sectionHeaderHeight != UITableViewAutomaticDimension) {
+
+            return self.tableView.sectionHeaderHeight;
+
+        } else {
+
+            __block CGFloat height = 0;
+
+            [self headerPreperationForSection:section
+                                    withBlock:^(NSString *reuseIdentifier, FTTableViewAdapterHeaderFooterPrepareBlock prepareBlock, id item) {
+                                        if (prepareBlock) {
+
+                                            UIView *prototype = [self.headerPrototypes objectForKey:prepareBlock];
+
+                                            if (prototype == nil) {
+                                                prototype = [tableView dequeueReusableHeaderFooterViewWithIdentifier:reuseIdentifier];
+                                                [self.headerPrototypes setObject:prototype forKey:prepareBlock];
+                                            }
+
+                                            prepareBlock(prototype, item, section, self.dataSource);
+                                            CGSize targetSize = CGSizeMake(CGRectGetWidth(tableView.bounds), 0);
+                                            CGSize size = [prototype systemLayoutSizeFittingSize:targetSize];
+                                            height = size.height;
+                                        }
+                                    }];
+
+            return height;
+        }
+    } else {
+        return 0;
+    }
+}
+
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     if (tableView == self.tableView) {
@@ -174,6 +215,43 @@
         return view;
     } else {
         return nil;
+    }
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+{
+    if (tableView == self.tableView) {
+
+        if (self.tableView.sectionFooterHeight != UITableViewAutomaticDimension) {
+
+            return self.tableView.sectionFooterHeight;
+
+        } else {
+
+            __block CGFloat height = 0;
+
+            [self footerPreperationForSection:section
+                                    withBlock:^(NSString *reuseIdentifier, FTTableViewAdapterHeaderFooterPrepareBlock prepareBlock, id item) {
+                                        if (prepareBlock) {
+
+                                            UIView *prototype = [self.footerPrototypes objectForKey:prepareBlock];
+
+                                            if (prototype == nil) {
+                                                prototype = [tableView dequeueReusableHeaderFooterViewWithIdentifier:reuseIdentifier];
+                                                [self.footerPrototypes setObject:prototype forKey:prepareBlock];
+                                            }
+
+                                            prepareBlock(prototype, item, section, self.dataSource);
+                                            CGSize targetSize = CGSizeMake(CGRectGetWidth(tableView.bounds), 0);
+                                            CGSize size = [prototype systemLayoutSizeFittingSize:targetSize];
+                                            height = size.height;
+                                        }
+                                    }];
+
+            return height;
+        }
+    } else {
+        return 0;
     }
 }
 
@@ -286,8 +364,8 @@
         [self rowPreperationForItemAtIndexPath:indexPath
                                      withBlock:^(NSString *reuseIdentifier, FTTableViewAdapterCellPrepareBlock prepareBlock, id item) {
 
-                                         UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:reuseIdentifier
-                                                                                                      forIndexPath:indexPath];
+                                         cell = [self.tableView dequeueReusableCellWithIdentifier:reuseIdentifier
+                                                                                     forIndexPath:indexPath];
                                          if (prepareBlock) {
                                              prepareBlock(cell, item, indexPath, self.dataSource);
                                          }

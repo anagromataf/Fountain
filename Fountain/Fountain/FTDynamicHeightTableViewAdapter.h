@@ -12,9 +12,6 @@
 
 #pragma mark Heights
 @property (nonatomic, assign) CGFloat estimatedRowHeight;
-
 @property (nonatomic, assign) CGFloat rowHeight;
-@property (nonatomic, assign) CGFloat sectionHeaderHeight;
-@property (nonatomic, assign) CGFloat sectionFooterHeight;
 
 @end
