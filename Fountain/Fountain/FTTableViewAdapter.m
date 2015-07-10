@@ -286,8 +286,8 @@
         [self rowPreperationForItemAtIndexPath:indexPath
                                      withBlock:^(NSString *reuseIdentifier, FTTableViewAdapterCellPrepareBlock prepareBlock, id item) {
 
-                                         UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:reuseIdentifier
-                                                                                                      forIndexPath:indexPath];
+                                         cell = [self.tableView dequeueReusableCellWithIdentifier:reuseIdentifier
+                                                                                     forIndexPath:indexPath];
                                          if (prepareBlock) {
                                              prepareBlock(cell, item, indexPath, self.dataSource);
                                          }
