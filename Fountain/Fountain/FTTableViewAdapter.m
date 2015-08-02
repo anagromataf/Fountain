@@ -318,12 +318,20 @@
 
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return UITableViewCellEditingStyleNone;
+    if ([self.delegate respondsToSelector:@selector(tableView:editingStyleForRowAtIndexPath:)]) {
+        return [self.delegate tableView:tableView editingStyleForRowAtIndexPath:indexPath];
+    } else {
+        return UITableViewCellEditingStyleNone;
+    }
 }
 
 - (BOOL)tableView:(UITableView *)tableView shouldIndentWhileEditingRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return NO;
+    if ([self.delegate respondsToSelector:@selector(tableView:shouldIndentWhileEditingRowAtIndexPath:)]) {
+        return [self.delegate tableView:tableView shouldIndentWhileEditingRowAtIndexPath:indexPath];
+    } else {
+        return NO;
+    }
 }
 
 - (NSIndexPath *)tableView:(UITableView *)tableView targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath toProposedIndexPath:(NSIndexPath *)proposedDestinationIndexPath
@@ -399,6 +407,15 @@
         if ([self.dataSource conformsToProtocol:@protocol(FTReorderableDataSource)]) {
             [(id<FTReorderableDataSource>)self.dataSource moveItemAtIndexPath:sourceIndexPath toIndexPath:destinationIndexPath];
         }
+    }
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if ([self.delegate conformsToProtocol:@protocol(UITableViewDataSource)] &&
+        [self.delegate respondsToSelector:@selector(tableView:commitEditingStyle:forRowAtIndexPath:)]) {
+        id<UITableViewDataSource> ds = (id<UITableViewDataSource>)self.delegate;
+        [ds tableView:tableView commitEditingStyle:editingStyle forRowAtIndexPath:indexPath];
     }
 }
 
