@@ -279,36 +279,39 @@
             [self.delegate tableView:tableView willDisplayCell:cell forRowAtIndexPath:indexPath];
         }
 
-        if (self.shouldLoadNextPage == YES &&
-            [self.dataSource respondsToSelector:@selector(loadNextPageCompletionHandler:)] &&
+        if (self.loadingNextPage == NO &&
             indexPath.section == [self.dataSource numberOfSections] - 1 &&
             indexPath.row == [self.dataSource numberOfItemsInSection:indexPath.section] - 1 &&
-            self.loadingNextPage == NO) {
+            [self.dataSource conformsToProtocol:@protocol(FTPagingDataSource)]) {
 
-            self.loadingNextPage = YES;
+            id<FTPagingDataSource> pagingDataSource = (id<FTPagingDataSource>)self.dataSource;
 
-            id<UITableViewDelegateAdapter> delegate = nil;
-            if ([self.delegate conformsToProtocol:@protocol(UITableViewDelegateAdapter)]) {
-                delegate = (id<UITableViewDelegateAdapter>)self.delegate;
-            }
+            if ([pagingDataSource hasMoreItems] && self.shouldLoadNextPage) {
 
-            if ([delegate respondsToSelector:@selector(tableViewWillLoadNextPage:)]) {
-                [delegate tableViewWillLoadNextPage:self.tableView];
-            }
+                self.loadingNextPage = YES;
 
-            id<FTPagingDataSource> dataSource = (id<FTPagingDataSource>)(self.dataSource);
-            [dataSource loadNextPageCompletionHandler:^(BOOL success, NSError *error) {
-                if (success) {
-                    if ([delegate respondsToSelector:@selector(tableViewDidLoadNextPage:)]) {
-                        [delegate tableViewDidLoadNextPage:self.tableView];
-                    }
-                } else {
-                    if ([delegate respondsToSelector:@selector(tableView:didFailToLoadNextPageWithError:)]) {
-                        [delegate tableView:self.tableView didFailToLoadNextPageWithError:error];
-                    }
+                id<UITableViewDelegateAdapter> delegate = nil;
+                if ([self.delegate conformsToProtocol:@protocol(UITableViewDelegateAdapter)]) {
+                    delegate = (id<UITableViewDelegateAdapter>)self.delegate;
                 }
-                self.loadingNextPage = NO;
-            }];
+
+                if ([delegate respondsToSelector:@selector(tableViewWillLoadNextPage:)]) {
+                    [delegate tableViewWillLoadNextPage:self.tableView];
+                }
+
+                [pagingDataSource loadNextPageCompletionHandler:^(BOOL success, NSError *error) {
+                    if (success) {
+                        if ([delegate respondsToSelector:@selector(tableViewDidLoadNextPage:)]) {
+                            [delegate tableViewDidLoadNextPage:self.tableView];
+                        }
+                    } else {
+                        if ([delegate respondsToSelector:@selector(tableView:didFailToLoadNextPageWithError:)]) {
+                            [delegate tableView:self.tableView didFailToLoadNextPageWithError:error];
+                        }
+                    }
+                    self.loadingNextPage = NO;
+                }];
+            }
         }
     }
 }
