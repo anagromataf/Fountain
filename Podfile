@@ -1,10 +1,15 @@
 source 'https://github.com/CocoaPods/Specs.git'
 
-xcodeproj 'Fountain/Fountain.xcodeproj'
-platform :ios, :deployment_target => '8.0'
+xcodeproj 'FTFountain/FTFountain.xcodeproj'
 
-target :FountainTests, :exclusive => true do
-    pod 'Specta', :git => 'https://github.com/specta/specta.git', :tag => 'v0.3.0.beta1'
-    pod 'OCHamcrest', '~> 4.0.1'
-    pod 'OCMockito', '~> 1.3.1'
+target :iOSTests, :exclusive => true do
+    platform :ios, :deployment_target => '8.0'
+    
+    pod 'OCMockito', '~> 1.4.0'
+end
+
+target :OSXTests, :exclusive => true do
+    platform :osx, :deployment_target => '10.7'
+    
+    pod 'OCMockito', '~> 1.4.0'
 end
