@@ -32,4 +32,13 @@
     return self;
 }
 
+- (CGSize)systemLayoutSizeFittingSize:(CGSize)targetSize withHorizontalFittingPriority:(UILayoutPriority)horizontalFittingPriority verticalFittingPriority:(UILayoutPriority)verticalFittingPriority
+{
+    CGSize size = [super systemLayoutSizeFittingSize:targetSize
+                       withHorizontalFittingPriority:horizontalFittingPriority
+                             verticalFittingPriority:verticalFittingPriority];
+
+    return size;
+}
+
 @end

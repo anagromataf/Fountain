@@ -176,9 +176,21 @@
 
     adapter.dataSource = dataSource;
 
-    CGRect rect = [adapter.tableView rectForFooterInSection:0];
-    assertThatDouble(rect.size.width, equalToDouble(200));
-    assertThatDouble(rect.size.height, greaterThan(@(240))); // Still a problem on iOS 8
+    [adapter.tableView setNeedsLayout];
+    [adapter.tableView layoutIfNeeded];
+
+    FTSectionHeaderFooterView *footer = (FTSectionHeaderFooterView *)[adapter.tableView footerViewForSection:0];
+    assertThat(footer, isA([FTSectionHeaderFooterView class]));
+    assertThat(footer.label.text, startsWith(@"Lorem ipsum dolor sit amet,"));
+
+    // On iOS 8 UITableView does not call `systemLayoutSizeFittingSize:withHorizontalFittingPriority:verticalFittingPriority:`
+    // on the `UITableViewHeaderFooterView` if this is returned as a footer view (it gets called for the header view).
+
+    if ([[[UIDevice currentDevice] systemVersion] hasPrefix:@"9"]) {
+        CGRect rect = [adapter.tableView rectForFooterInSection:0];
+        assertThatDouble(rect.size.width, equalToDouble(200));
+        assertThatDouble(rect.size.height, greaterThan(@(240)));
+    }
 }
 
 #pragma mark Test Data Source Updates
