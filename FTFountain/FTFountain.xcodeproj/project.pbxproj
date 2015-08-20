@@ -45,6 +45,10 @@
 		F6A333F21B81DCFA00C77C58 /* FTMutableSetTests+Sectioning.m in Sources */ = {isa = PBXBuildFile; fileRef = F6A333F11B81DCFA00C77C58 /* FTMutableSetTests+Sectioning.m */; };
 		F6A333F31B81DCFA00C77C58 /* FTMutableSetTests+Sectioning.m in Sources */ = {isa = PBXBuildFile; fileRef = F6A333F11B81DCFA00C77C58 /* FTMutableSetTests+Sectioning.m */; };
 		F6AE695F1B7C985100F43CFF /* FTCollectionViewAdapter+Subclassing.h in Headers */ = {isa = PBXBuildFile; fileRef = F6AE695D1B7C985100F43CFF /* FTCollectionViewAdapter+Subclassing.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F6C7968A1B85E12D00B55B6B /* FTFetchedDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = F6C796881B85E12D00B55B6B /* FTFetchedDataSource.h */; };
+		F6C7968B1B85E12D00B55B6B /* FTFetchedDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = F6C796881B85E12D00B55B6B /* FTFetchedDataSource.h */; };
+		F6C7968C1B85E12D00B55B6B /* FTFetchedDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = F6C796891B85E12D00B55B6B /* FTFetchedDataSource.m */; };
+		F6C7968D1B85E12D00B55B6B /* FTFetchedDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = F6C796891B85E12D00B55B6B /* FTFetchedDataSource.m */; };
 		F6FEDF8D1B78FCBF00BAD0FF /* FTTableViewAdapter.h in Headers */ = {isa = PBXBuildFile; fileRef = F6FEDF8B1B78FCBF00BAD0FF /* FTTableViewAdapter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F6FEDF8E1B78FCBF00BAD0FF /* FTTableViewAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = F6FEDF8C1B78FCBF00BAD0FF /* FTTableViewAdapter.m */; };
 		F6FFB7A01B62C3F2007B9652 /* FTMutableArray.h in Headers */ = {isa = PBXBuildFile; fileRef = F6FFB79E1B62C3F2007B9652 /* FTMutableArray.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -112,6 +116,8 @@
 		F6A333EE1B81173900C77C58 /* FTMutableSetTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTMutableSetTests.m; sourceTree = "<group>"; };
 		F6A333F11B81DCFA00C77C58 /* FTMutableSetTests+Sectioning.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = "FTMutableSetTests+Sectioning.m"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		F6AE695D1B7C985100F43CFF /* FTCollectionViewAdapter+Subclassing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "FTCollectionViewAdapter+Subclassing.h"; sourceTree = "<group>"; };
+		F6C796881B85E12D00B55B6B /* FTFetchedDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FTFetchedDataSource.h; sourceTree = "<group>"; };
+		F6C796891B85E12D00B55B6B /* FTFetchedDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTFetchedDataSource.m; sourceTree = "<group>"; };
 		F6FEDF8B1B78FCBF00BAD0FF /* FTTableViewAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FTTableViewAdapter.h; sourceTree = "<group>"; };
 		F6FEDF8C1B78FCBF00BAD0FF /* FTTableViewAdapter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTTableViewAdapter.m; sourceTree = "<group>"; };
 		F6FFB79E1B62C3F2007B9652 /* FTMutableArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = FTMutableArray.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
@@ -276,6 +282,7 @@
 				F66C7ECB1B5AAC3B00662CD1 /* FTFountain.h */,
 				F66C7ED71B5AAC4400662CD1 /* Protocols */,
 				F66C7EDE1B5AAC5400662CD1 /* General Data Sources */,
+				F6C796871B85E10600B55B6B /* Core Data */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -332,6 +339,15 @@
 			name = "Collection View";
 			sourceTree = "<group>";
 		};
+		F6C796871B85E10600B55B6B /* Core Data */ = {
+			isa = PBXGroup;
+			children = (
+				F6C796881B85E12D00B55B6B /* FTFetchedDataSource.h */,
+				F6C796891B85E12D00B55B6B /* FTFetchedDataSource.m */,
+			);
+			name = "Core Data";
+			sourceTree = "<group>";
+		};
 		F6FEDF8F1B78FCC400BAD0FF /* Adapter */ = {
 			isa = PBXGroup;
 			children = (
@@ -352,6 +368,7 @@
 				F6FFB7A01B62C3F2007B9652 /* FTMutableArray.h in Headers */,
 				F66C7ED31B5AAC4100662CD1 /* FTReverseDataSource.h in Headers */,
 				F6AE695F1B7C985100F43CFF /* FTCollectionViewAdapter+Subclassing.h in Headers */,
+				F6C7968A1B85E12D00B55B6B /* FTFetchedDataSource.h in Headers */,
 				F61070391B7BD475009C2D40 /* FTTableViewAdapter+Subclassing.h in Headers */,
 				F61070441B7C05DD009C2D40 /* FTPagingDataSource.h in Headers */,
 				F66C7ED11B5AAC4100662CD1 /* FTDataSource.h in Headers */,
@@ -369,6 +386,7 @@
 			files = (
 				F6A333EB1B810F9D00C77C58 /* FTMutableSet.h in Headers */,
 				F61070451B7C05DD009C2D40 /* FTPagingDataSource.h in Headers */,
+				F6C7968B1B85E12D00B55B6B /* FTFetchedDataSource.h in Headers */,
 				F6FFB7A11B62C3F2007B9652 /* FTMutableArray.h in Headers */,
 				F66C7ED41B5AAC4100662CD1 /* FTReverseDataSource.h in Headers */,
 				F66C7ED21B5AAC4100662CD1 /* FTDataSource.h in Headers */,
@@ -607,6 +625,7 @@
 				F6A333EC1B810F9D00C77C58 /* FTMutableSet.m in Sources */,
 				F6FEDF8E1B78FCBF00BAD0FF /* FTTableViewAdapter.m in Sources */,
 				F610704A1B7C905E009C2D40 /* FTCollectionViewAdapter.m in Sources */,
+				F6C7968C1B85E12D00B55B6B /* FTFetchedDataSource.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -631,6 +650,7 @@
 			files = (
 				F6A333ED1B810F9D00C77C58 /* FTMutableSet.m in Sources */,
 				F6FFB7A31B62C3F2007B9652 /* FTMutableArray.m in Sources */,
+				F6C7968D1B85E12D00B55B6B /* FTFetchedDataSource.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
