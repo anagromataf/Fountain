@@ -15,13 +15,9 @@
 
 #import "FTFountain.h"
 
-#define IDX(item, section) [[NSIndexPath indexPathWithIndex:section] indexPathByAddingIndex:item]
-#define ITEM(value) [[TestItem alloc] initWithValue:value]
+#import "FTTestItem.h"
 
-@interface TestItem : NSObject
-- (instancetype)initWithValue:(NSInteger)value;
-@property (nonatomic, assign) NSInteger value;
-@end
+#define IDX(item, section) [[NSIndexPath indexPathWithIndex:section] indexPathByAddingIndex:item]
 
 @interface FTMutableSetTests_Sectioning : XCTestCase
 
@@ -32,7 +28,7 @@
 - (void)testAddItems
 {
     NSArray *sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:@"value" ascending:YES] ];
-    FTMutableSetClusterComperator clusterComperator = ^BOOL(TestItem *first __strong, TestItem *second __strong) {
+    FTMutableSetClusterComperator clusterComperator = ^BOOL(FTTestItem *first __strong, FTTestItem *second __strong) {
         return second.value - first.value < 10;
     };
 
@@ -65,17 +61,17 @@
     assertThatInteger([set numberOfItemsInSection:1], equalToInteger(3));
     assertThatInteger([set numberOfItemsInSection:2], equalToInteger(2));
 
-    assertThatInteger([(TestItem *)[set itemAtIndexPath:IDX(0, 0)] value], equalToInteger(1));
-    assertThatInteger([(TestItem *)[set itemAtIndexPath:IDX(1, 0)] value], equalToInteger(2));
-    assertThatInteger([(TestItem *)[set itemAtIndexPath:IDX(2, 0)] value], equalToInteger(3));
-    assertThatInteger([(TestItem *)[set itemAtIndexPath:IDX(3, 0)] value], equalToInteger(5));
+    assertThatInteger([(FTTestItem *)[set itemAtIndexPath:IDX(0, 0)] value], equalToInteger(1));
+    assertThatInteger([(FTTestItem *)[set itemAtIndexPath:IDX(1, 0)] value], equalToInteger(2));
+    assertThatInteger([(FTTestItem *)[set itemAtIndexPath:IDX(2, 0)] value], equalToInteger(3));
+    assertThatInteger([(FTTestItem *)[set itemAtIndexPath:IDX(3, 0)] value], equalToInteger(5));
 
-    assertThatInteger([(TestItem *)[set itemAtIndexPath:IDX(0, 1)] value], equalToInteger(16));
-    assertThatInteger([(TestItem *)[set itemAtIndexPath:IDX(1, 1)] value], equalToInteger(19));
-    assertThatInteger([(TestItem *)[set itemAtIndexPath:IDX(2, 1)] value], equalToInteger(20));
+    assertThatInteger([(FTTestItem *)[set itemAtIndexPath:IDX(0, 1)] value], equalToInteger(16));
+    assertThatInteger([(FTTestItem *)[set itemAtIndexPath:IDX(1, 1)] value], equalToInteger(19));
+    assertThatInteger([(FTTestItem *)[set itemAtIndexPath:IDX(2, 1)] value], equalToInteger(20));
 
-    assertThatInteger([(TestItem *)[set itemAtIndexPath:IDX(0, 2)] value], equalToInteger(32));
-    assertThatInteger([(TestItem *)[set itemAtIndexPath:IDX(1, 2)] value], equalToInteger(33));
+    assertThatInteger([(FTTestItem *)[set itemAtIndexPath:IDX(0, 2)] value], equalToInteger(32));
+    assertThatInteger([(FTTestItem *)[set itemAtIndexPath:IDX(1, 2)] value], equalToInteger(33));
 
     // TODO: Verify calling of the observer
 }
@@ -83,7 +79,7 @@
 - (void)testCombineClusterByAddingItems
 {
     NSArray *sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:@"value" ascending:YES] ];
-    FTMutableSetClusterComperator clusterComperator = ^BOOL(TestItem *first __strong, TestItem *second __strong) {
+    FTMutableSetClusterComperator clusterComperator = ^BOOL(FTTestItem *first __strong, FTTestItem *second __strong) {
         return second.value - first.value < 10;
     };
 
@@ -101,8 +97,8 @@
     assertThatInteger([set numberOfItemsInSection:0], equalToInteger(1));
     assertThatInteger([set numberOfItemsInSection:1], equalToInteger(1));
 
-    assertThatInteger([(TestItem *)[set itemAtIndexPath:IDX(0, 0)] value], equalToInteger(10));
-    assertThatInteger([(TestItem *)[set itemAtIndexPath:IDX(0, 1)] value], equalToInteger(25));
+    assertThatInteger([(FTTestItem *)[set itemAtIndexPath:IDX(0, 0)] value], equalToInteger(10));
+    assertThatInteger([(FTTestItem *)[set itemAtIndexPath:IDX(0, 1)] value], equalToInteger(25));
 
     [set addObject:ITEM(17)];
 
@@ -110,9 +106,9 @@
 
     assertThatInteger([set numberOfItemsInSection:0], equalToInteger(3));
 
-    assertThatInteger([(TestItem *)[set itemAtIndexPath:IDX(0, 0)] value], equalToInteger(10));
-    assertThatInteger([(TestItem *)[set itemAtIndexPath:IDX(1, 0)] value], equalToInteger(17));
-    assertThatInteger([(TestItem *)[set itemAtIndexPath:IDX(2, 0)] value], equalToInteger(25));
+    assertThatInteger([(FTTestItem *)[set itemAtIndexPath:IDX(0, 0)] value], equalToInteger(10));
+    assertThatInteger([(FTTestItem *)[set itemAtIndexPath:IDX(1, 0)] value], equalToInteger(17));
+    assertThatInteger([(FTTestItem *)[set itemAtIndexPath:IDX(2, 0)] value], equalToInteger(25));
 
     // TODO: Verify calling of the observer
 }
@@ -120,7 +116,7 @@
 - (void)testDevideClusterByRemovingItem
 {
     NSArray *sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:@"value" ascending:YES] ];
-    FTMutableSetClusterComperator clusterComperator = ^BOOL(TestItem *first __strong, TestItem *second __strong) {
+    FTMutableSetClusterComperator clusterComperator = ^BOOL(FTTestItem *first __strong, FTTestItem *second __strong) {
         return second.value - first.value < 10;
     };
 
@@ -137,9 +133,9 @@
 
     assertThatInteger([set numberOfItemsInSection:0], equalToInteger(3));
 
-    assertThatInteger([(TestItem *)[set itemAtIndexPath:IDX(0, 0)] value], equalToInteger(10));
-    assertThatInteger([(TestItem *)[set itemAtIndexPath:IDX(1, 0)] value], equalToInteger(17));
-    assertThatInteger([(TestItem *)[set itemAtIndexPath:IDX(2, 0)] value], equalToInteger(25));
+    assertThatInteger([(FTTestItem *)[set itemAtIndexPath:IDX(0, 0)] value], equalToInteger(10));
+    assertThatInteger([(FTTestItem *)[set itemAtIndexPath:IDX(1, 0)] value], equalToInteger(17));
+    assertThatInteger([(FTTestItem *)[set itemAtIndexPath:IDX(2, 0)] value], equalToInteger(25));
 
     [set removeObject:items[2]];
 
@@ -148,21 +144,10 @@
     assertThatInteger([set numberOfItemsInSection:0], equalToInteger(1));
     assertThatInteger([set numberOfItemsInSection:1], equalToInteger(1));
 
-    assertThatInteger([(TestItem *)[set itemAtIndexPath:IDX(0, 0)] value], equalToInteger(10));
-    assertThatInteger([(TestItem *)[set itemAtIndexPath:IDX(0, 1)] value], equalToInteger(25));
+    assertThatInteger([(FTTestItem *)[set itemAtIndexPath:IDX(0, 0)] value], equalToInteger(10));
+    assertThatInteger([(FTTestItem *)[set itemAtIndexPath:IDX(0, 1)] value], equalToInteger(25));
 
     // TODO: Verify calling of the observer
 }
 
-@end
-
-@implementation TestItem
-- (instancetype)initWithValue:(NSInteger)value
-{
-    self = [super init];
-    if (self) {
-        _value = value;
-    }
-    return self;
-}
 @end
