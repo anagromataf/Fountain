@@ -11,12 +11,13 @@
 
 #import "FTDataSource.h"
 
-@interface FTFetchedDataSource : NSObject <FTDataSource>
+@interface FTFetchedDataSource : NSObject <FTDataSource, FTReverseDataSource>
 
 #pragma mark Life-cycle
 - (instancetype)initWithManagedObjectContext:(NSManagedObjectContext *)context
                                       entity:(NSEntityDescription *)entity
-                             sortDescriptors:(NSArray *)sortDescriptors;
+                             sortDescriptors:(NSArray *)sortDescriptors
+                                   predicate:(NSPredicate *)predicate;
 
 #pragma mark Managed Object Context
 @property (nonatomic, readonly) NSManagedObjectContext *context;
@@ -24,9 +25,9 @@
 #pragma mark Request Parameters
 @property (nonatomic, readonly) NSEntityDescription *entity;
 @property (nonatomic, readonly) NSArray *sortDescriptors;
+@property (nonatomic, readonly) NSPredicate *predicate;
 
 #pragma mark Fetch Objects
-@property (nonatomic, readonly) NSCompoundPredicate *compoundPredicate;
-- (void)fetchObjectsMatchingPredicate:(NSPredicate *)predicate;
+- (void)fetchObjectsWithCompletion:(void(^)(BOOL success, NSError *error))completion;
 
 @end

@@ -45,8 +45,8 @@
 		F6A333F21B81DCFA00C77C58 /* FTMutableSetTests+Sectioning.m in Sources */ = {isa = PBXBuildFile; fileRef = F6A333F11B81DCFA00C77C58 /* FTMutableSetTests+Sectioning.m */; };
 		F6A333F31B81DCFA00C77C58 /* FTMutableSetTests+Sectioning.m in Sources */ = {isa = PBXBuildFile; fileRef = F6A333F11B81DCFA00C77C58 /* FTMutableSetTests+Sectioning.m */; };
 		F6AE695F1B7C985100F43CFF /* FTCollectionViewAdapter+Subclassing.h in Headers */ = {isa = PBXBuildFile; fileRef = F6AE695D1B7C985100F43CFF /* FTCollectionViewAdapter+Subclassing.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		F6C7968A1B85E12D00B55B6B /* FTFetchedDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = F6C796881B85E12D00B55B6B /* FTFetchedDataSource.h */; };
-		F6C7968B1B85E12D00B55B6B /* FTFetchedDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = F6C796881B85E12D00B55B6B /* FTFetchedDataSource.h */; };
+		F6C7968A1B85E12D00B55B6B /* FTFetchedDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = F6C796881B85E12D00B55B6B /* FTFetchedDataSource.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F6C7968B1B85E12D00B55B6B /* FTFetchedDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = F6C796881B85E12D00B55B6B /* FTFetchedDataSource.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F6C7968C1B85E12D00B55B6B /* FTFetchedDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = F6C796891B85E12D00B55B6B /* FTFetchedDataSource.m */; };
 		F6C7968D1B85E12D00B55B6B /* FTFetchedDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = F6C796891B85E12D00B55B6B /* FTFetchedDataSource.m */; };
 		F6FEDF8D1B78FCBF00BAD0FF /* FTTableViewAdapter.h in Headers */ = {isa = PBXBuildFile; fileRef = F6FEDF8B1B78FCBF00BAD0FF /* FTTableViewAdapter.h */; settings = {ATTRIBUTES = (Public, ); }; };

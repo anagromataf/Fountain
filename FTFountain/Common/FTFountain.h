@@ -17,3 +17,6 @@
 // Common Data Sources
 #import "FTMutableArray.h"
 #import "FTMutableSet.h"
+
+// CoreData Data Sources
+#import "FTFetchedDataSource.h"
