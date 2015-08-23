@@ -17,4 +17,5 @@ Pod::Spec.new do |s|
   s.ios.source_files        = 'FTFountain/iOS/**/*.{h,m,c}'
   s.osx.source_files        = 'FTFountain/OSX/**/*.{h,m,c}'
   
+  s.frameworks = 'CoreData'
 end
