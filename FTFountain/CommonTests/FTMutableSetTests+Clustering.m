@@ -1,5 +1,5 @@
 //
-//  FTMutableSetTests+Sectioning.m
+//  FTMutableSetTests+Clustering.m
 //  FTFountain
 //
 //  Created by Tobias Kraentzer on 17.08.15.
@@ -19,11 +19,11 @@
 
 #define IDX(item, section) [[NSIndexPath indexPathWithIndex:section] indexPathByAddingIndex:item]
 
-@interface FTMutableSetTests_Sectioning : XCTestCase
+@interface FTMutableSetTests_Clustering : XCTestCase
 
 @end
 
-@implementation FTMutableSetTests_Sectioning
+@implementation FTMutableSetTests_Clustering
 
 - (void)testAddItems
 {
@@ -34,6 +34,9 @@
 
     FTMutableSet *set = [[FTMutableSet alloc] initSortDescriptors:sortDescriptors
                                                 clusterComperator:clusterComperator];
+
+    id<FTDataSourceObserver> observer = mockProtocol(@protocol(FTDataSourceObserver));
+    [set addObserver:observer];
 
     // Adding items to the set. The items
     // 1 to 5 should be in the first section,
@@ -73,7 +76,8 @@
     assertThatInteger([(FTTestItem *)[set itemAtIndexPath:IDX(0, 2)] value], equalToInteger(32));
     assertThatInteger([(FTTestItem *)[set itemAtIndexPath:IDX(1, 2)] value], equalToInteger(33));
 
-    // TODO: Verify calling of the observer
+    [verifyCount(observer, times(1)) dataSourceWillReset:set];
+    [verifyCount(observer, times(1)) dataSourceDidReset:set];
 }
 
 - (void)testCombineClusterByAddingItems
@@ -100,6 +104,9 @@
     assertThatInteger([(FTTestItem *)[set itemAtIndexPath:IDX(0, 0)] value], equalToInteger(10));
     assertThatInteger([(FTTestItem *)[set itemAtIndexPath:IDX(0, 1)] value], equalToInteger(25));
 
+    id<FTDataSourceObserver> observer = mockProtocol(@protocol(FTDataSourceObserver));
+    [set addObserver:observer];
+
     [set addObject:ITEM(17)];
 
     assertThatInteger([set numberOfSections], equalToInteger(1));
@@ -110,7 +117,8 @@
     assertThatInteger([(FTTestItem *)[set itemAtIndexPath:IDX(1, 0)] value], equalToInteger(17));
     assertThatInteger([(FTTestItem *)[set itemAtIndexPath:IDX(2, 0)] value], equalToInteger(25));
 
-    // TODO: Verify calling of the observer
+    [verifyCount(observer, times(1)) dataSourceWillReset:set];
+    [verifyCount(observer, times(1)) dataSourceDidReset:set];
 }
 
 - (void)testDevideClusterByRemovingItem
@@ -137,6 +145,9 @@
     assertThatInteger([(FTTestItem *)[set itemAtIndexPath:IDX(1, 0)] value], equalToInteger(17));
     assertThatInteger([(FTTestItem *)[set itemAtIndexPath:IDX(2, 0)] value], equalToInteger(25));
 
+    id<FTDataSourceObserver> observer = mockProtocol(@protocol(FTDataSourceObserver));
+    [set addObserver:observer];
+
     [set removeObject:items[2]];
 
     assertThatInteger([set numberOfSections], equalToInteger(2));
@@ -147,7 +158,8 @@
     assertThatInteger([(FTTestItem *)[set itemAtIndexPath:IDX(0, 0)] value], equalToInteger(10));
     assertThatInteger([(FTTestItem *)[set itemAtIndexPath:IDX(0, 1)] value], equalToInteger(25));
 
-    // TODO: Verify calling of the observer
+    [verifyCount(observer, times(1)) dataSourceWillReset:set];
+    [verifyCount(observer, times(1)) dataSourceDidReset:set];
 }
 
 @end

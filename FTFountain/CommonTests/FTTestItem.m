@@ -9,6 +9,7 @@
 #import "FTTestItem.h"
 
 @implementation FTTestItem
+
 - (instancetype)initWithValue:(NSInteger)value
 {
     self = [super init];
@@ -17,4 +18,10 @@
     }
     return self;
 }
+
+- (NSString *)description
+{
+    return [NSString stringWithFormat:@"<FTTestItem: %p, value: %ld>", self, (long)_value];
+}
+
 @end

@@ -174,9 +174,7 @@
 
     [verifyCount(observer, times(1)) dataSourceWillChange:set];
     [verifyCount(observer, times(1)) dataSourceDidChange:set];
-    [verifyCount(observer, times(1)) dataSource:set didInsertItemsAtIndexPaths:@[ IDX(0, 0) ]];
-    [verifyCount(observer, times(1)) dataSource:set didInsertItemsAtIndexPaths:@[ IDX(1, 0) ]];
-    [verifyCount(observer, times(1)) dataSource:set didInsertItemsAtIndexPaths:@[ IDX(2, 0) ]];
+    [verifyCount(observer, times(1)) dataSource:set didInsertItemsAtIndexPaths:@[ IDX(0, 0), IDX(1, 0), IDX(2, 0) ]];
 }
 
 #pragma mark Test Remove Objects
