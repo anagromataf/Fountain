@@ -50,13 +50,13 @@
 
 #pragma mark Fetch Objects
 
-- (void)fetchObjectsWithCompletion:(void(^)(BOOL success, NSError *error))completion
+- (void)fetchObjectsWithCompletion:(void (^)(BOOL success, NSError *error))completion
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:_entity.name];
     request.predicate = _predicate;
-    
+
     NSPersistentStoreAsynchronousFetchResultCompletionBlock resultBlock = ^(NSAsynchronousFetchResult *result) {
-        
+
         for (id<FTDataSourceObserver> observer in self.observers) {
             if ([observer respondsToSelector:@selector(dataSourceWillReset:)]) {
                 [observer dataSourceWillReset:self];
@@ -64,17 +64,17 @@
         }
 
         [_fetchedObjects removeObserver:self];
-        
+
         _fetchedObjects = [[FTMutableSet alloc] initSortDescriptors:self.sortDescriptors];
         [_fetchedObjects addObjectsFromArray:result.finalResult];
         [_fetchedObjects addObserver:self];
-        
+
         for (id<FTDataSourceObserver> observer in self.observers) {
             if ([observer respondsToSelector:@selector(dataSourceDidReset:)]) {
                 [observer dataSourceDidReset:self];
             }
         }
-        
+
         if (completion) {
             completion(YES, nil);
         }
@@ -98,7 +98,43 @@
 
 - (void)managedObjectContextObjectsDidChange:(NSNotification *)notification
 {
-    
+    NSPredicate *entityPredicate = [NSPredicate predicateWithBlock:^BOOL(NSManagedObject *evaluatedObject, NSDictionary<NSString *, id> *_Nullable bindings) {
+        return [evaluatedObject.entity isKindOfEntity:self.entity];
+    }];
+
+    for (id<FTDataSourceObserver> observer in self.observers) {
+        if ([observer respondsToSelector:@selector(dataSourceWillChange:)]) {
+            [observer dataSourceWillChange:self];
+        }
+    }
+
+    // Deleted Object
+
+    NSSet *deletedObjects = [notification.userInfo[NSDeletedObjectsKey] filteredSetUsingPredicate:entityPredicate];
+    [_fetchedObjects minusSet:deletedObjects];
+
+    // Inserted Objects
+
+    NSSet *insertedObjects = [notification.userInfo[NSInsertedObjectsKey] filteredSetUsingPredicate:entityPredicate];
+    insertedObjects = [insertedObjects filteredSetUsingPredicate:self.predicate];
+    [_fetchedObjects unionSet:insertedObjects];
+
+    // Updates
+
+    NSSet *updatedObjects = [notification.userInfo[NSUpdatedObjectsKey] filteredSetUsingPredicate:entityPredicate];
+    NSSet *updatedObjectsToInsert = [updatedObjects filteredSetUsingPredicate:self.predicate];
+
+    NSMutableSet *updatedObjectsToRemove = [updatedObjects mutableCopy];
+    [updatedObjectsToRemove minusSet:updatedObjectsToInsert];
+
+    [_fetchedObjects minusSet:updatedObjectsToRemove];
+    [_fetchedObjects unionSet:updatedObjectsToInsert];
+
+    for (id<FTDataSourceObserver> observer in self.observers) {
+        if ([observer respondsToSelector:@selector(dataSourceDidChange:)]) {
+            [observer dataSourceDidChange:self];
+        }
+    }
 }
 
 #pragma mark FTDataSource
@@ -202,7 +238,7 @@
 
 #pragma mark Manage Sections
 
-- (void)dataSource:(id<FTDataSource> )dataSource didInsertSections:(NSIndexSet *)sections
+- (void)dataSource:(id<FTDataSource>)dataSource didInsertSections:(NSIndexSet *)sections
 {
     for (id<FTDataSourceObserver> observer in self.observers) {
         if ([observer respondsToSelector:@selector(dataSource:didInsertSections:)]) {
@@ -211,7 +247,7 @@
     }
 }
 
-- (void)dataSource:(id<FTDataSource> )dataSource didDeleteSections:(NSIndexSet *)sections
+- (void)dataSource:(id<FTDataSource>)dataSource didDeleteSections:(NSIndexSet *)sections
 {
     for (id<FTDataSourceObserver> observer in self.observers) {
         if ([observer respondsToSelector:@selector(dataSource:didDeleteSections:)]) {
@@ -220,7 +256,7 @@
     }
 }
 
-- (void)dataSource:(id<FTDataSource> )dataSource didChangeSections:(NSIndexSet *)sections
+- (void)dataSource:(id<FTDataSource>)dataSource didChangeSections:(NSIndexSet *)sections
 {
     for (id<FTDataSourceObserver> observer in self.observers) {
         if ([observer respondsToSelector:@selector(dataSource:didChangeSections:)]) {
@@ -229,7 +265,7 @@
     }
 }
 
-- (void)dataSource:(id<FTDataSource> )dataSource didMoveSection:(NSInteger)section toSection:(NSInteger)newSection
+- (void)dataSource:(id<FTDataSource>)dataSource didMoveSection:(NSInteger)section toSection:(NSInteger)newSection
 {
     for (id<FTDataSourceObserver> observer in self.observers) {
         if ([observer respondsToSelector:@selector(dataSource:didMoveSection:toSection:)]) {
@@ -240,7 +276,7 @@
 
 #pragma mark Manage Items
 
-- (void)dataSource:(id<FTDataSource> )dataSource didInsertItemsAtIndexPaths:(NSArray *)indexPaths
+- (void)dataSource:(id<FTDataSource>)dataSource didInsertItemsAtIndexPaths:(NSArray *)indexPaths
 
 {
     for (id<FTDataSourceObserver> observer in self.observers) {
@@ -250,7 +286,7 @@
     }
 }
 
-- (void)dataSource:(id<FTDataSource> )dataSource didDeleteItemsAtIndexPaths:(NSArray *)indexPaths
+- (void)dataSource:(id<FTDataSource>)dataSource didDeleteItemsAtIndexPaths:(NSArray *)indexPaths
 {
     for (id<FTDataSourceObserver> observer in self.observers) {
         if ([observer respondsToSelector:@selector(dataSource:didDeleteItemsAtIndexPaths:)]) {
@@ -259,8 +295,7 @@
     }
 }
 
-
-- (void)dataSource:(id<FTDataSource> )dataSource didChangeItemsAtIndexPaths:(NSArray *)indexPaths
+- (void)dataSource:(id<FTDataSource>)dataSource didChangeItemsAtIndexPaths:(NSArray *)indexPaths
 {
     for (id<FTDataSourceObserver> observer in self.observers) {
         if ([observer respondsToSelector:@selector(dataSource:didChangeItemsAtIndexPaths:)]) {
@@ -269,7 +304,7 @@
     }
 }
 
-- (void)dataSource:(id<FTDataSource> )dataSource didMoveItemAtIndexPath:(NSIndexPath *)indexPath toIndexPath:(NSIndexPath *)newIndexPath
+- (void)dataSource:(id<FTDataSource>)dataSource didMoveItemAtIndexPath:(NSIndexPath *)indexPath toIndexPath:(NSIndexPath *)newIndexPath
 {
     for (id<FTDataSourceObserver> observer in self.observers) {
         if ([observer respondsToSelector:@selector(dataSource:didMoveItemAtIndexPath:toIndexPath:)]) {
