@@ -268,6 +268,7 @@
             if (_clusterComperator) {
 
                 [self ft_applyDeletion_Clusters];
+                [self ft_applyUpdate_Cluster];
                 [self ft_applyInsertion_Clusters];
 
                 for (id<FTDataSourceObserver> observer in self.observers) {
@@ -279,6 +280,7 @@
             } else {
 
                 [self ft_applyDeletion];
+                [self ft_applyUpdate];
                 [self ft_applyInsertion];
 
                 for (id<FTDataSourceObserver> observer in self.observers) {
@@ -538,6 +540,69 @@
 
         [_insertedObjects removeAllObjects];
     }
+}
+
+- (void)ft_applyUpdate
+{
+    if ([_updatedObjects count] > 0) {
+
+        NSComparator comperator = [[self class] comperatorUsingSortDescriptors:self.sortDescriptors];
+        NSArray *updatedObjects = [_updatedObjects sortedArrayUsingDescriptors:self.sortDescriptors];
+
+        NSUInteger offset = 0;
+
+        NSMutableArray *indexPathsOfUpdatedItems = [[NSMutableArray alloc] init];
+        NSMutableArray *indexPathsOfMovedItems = [[NSMutableArray alloc] init];
+
+        for (id object in updatedObjects) {
+
+            NSUInteger index = [_backingStore indexOfObject:object];
+            [_backingStore removeObject:object];
+
+            NSUInteger newIndex = [_backingStore indexOfObject:object
+                                                 inSortedRange:NSMakeRange(offset, [_backingStore count] - offset)
+                                                       options:NSBinarySearchingInsertionIndex
+                                               usingComparator:comperator];
+
+            [_backingStore insertObject:object atIndex:newIndex];
+
+            if (newIndex == index) {
+                NSUInteger indexes[] = {0, index};
+                [indexPathsOfUpdatedItems addObject:[NSIndexPath indexPathWithIndexes:indexes length:2]];
+            } else {
+                [indexPathsOfMovedItems addObject:@[ @(index), @(newIndex) ]];
+            }
+        }
+
+        if ([indexPathsOfUpdatedItems count] > 0) {
+            for (id<FTDataSourceObserver> observer in self.observers) {
+                if ([observer respondsToSelector:@selector(dataSource:didChangeItemsAtIndexPaths:)]) {
+                    [observer dataSource:self didChangeItemsAtIndexPaths:indexPathsOfUpdatedItems];
+                }
+            }
+        }
+
+        if ([indexPathsOfMovedItems count] > 0) {
+            for (id<FTDataSourceObserver> observer in self.observers) {
+                if ([observer respondsToSelector:@selector(dataSource:didMoveItemAtIndexPath:toIndexPath:)]) {
+                    for (NSArray *indexes in indexPathsOfMovedItems) {
+                        NSUInteger index = [[indexes firstObject] unsignedIntegerValue];
+                        NSUInteger newIndex = [[indexes lastObject] unsignedIntegerValue];
+
+                        NSIndexPath *sectionIndex = [NSIndexPath indexPathWithIndex:0];
+
+                        [observer dataSource:self
+                            didMoveItemAtIndexPath:[sectionIndex indexPathByAddingIndex:index]
+                                       toIndexPath:[sectionIndex indexPathByAddingIndex:newIndex]];
+                    }
+                }
+            }
+        }
+    }
+}
+
+- (void)ft_applyUpdate_Cluster
+{
 }
 
 #pragma mark FTDataSource
