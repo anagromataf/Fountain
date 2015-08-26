@@ -11,12 +11,12 @@
 #import "FTMutableSet.h"
 
 @implementation FTMutableSet {
-    NSMutableArray *_backingStore;
+
     NSHashTable *_observers;
     NSUInteger _batchUpdateCallCount;
-    NSArray *_sortDescriptors;
 
-    NSMutableArray *_sections;
+    NSMutableArray *_backingStore;
+    NSArray *_sortDescriptors;
 
     NSMutableSet *_insertedObjects;
     NSMutableSet *_updatedObjects;
@@ -27,7 +27,7 @@
 
 - (instancetype)init
 {
-    return [self initWithBackingStore:[[NSMutableArray alloc] init] sortDescriptors:nil clusterComperator:nil];
+    return [self initWithBackingStore:[[NSMutableArray alloc] init] sortDescriptors:nil];
 }
 
 - (instancetype)initWithObjects:(const id __unsafe_unretained *)objects count:(NSUInteger)cnt
@@ -39,26 +39,17 @@
             [backingStore addObject:obj];
         }
     }
-    return [self initWithBackingStore:backingStore sortDescriptors:nil clusterComperator:nil];
+    return [self initWithBackingStore:backingStore sortDescriptors:nil];
 }
 
 - (instancetype)initSortDescriptors:(NSArray *)sortDescriptors
 {
     return [self initWithBackingStore:[[NSMutableArray alloc] init]
-                      sortDescriptors:sortDescriptors
-                    clusterComperator:nil];
-}
-
-- (nonnull instancetype)initSortDescriptors:(NSArray *)sortDescriptors clusterComperator:(FTMutableSetClusterComperator)clusterComperator
-{
-    return [self initWithBackingStore:[[NSMutableArray alloc] init]
-                      sortDescriptors:sortDescriptors
-                    clusterComperator:clusterComperator];
+                      sortDescriptors:sortDescriptors];
 }
 
 - (nonnull instancetype)initWithBackingStore:(NSMutableArray *)backingStore
                              sortDescriptors:(NSArray *)sortDescriptors
-                           clusterComperator:(FTMutableSetClusterComperator)clusterComperator
 {
     self = [super init];
     if (self) {
@@ -66,13 +57,8 @@
         _observers = [[NSHashTable alloc] init];
         _batchUpdateCallCount = 0;
         _sortDescriptors = [sortDescriptors count] > 0 ? [sortDescriptors copy] : nil;
-        _clusterComperator = clusterComperator;
 
         [_backingStore sortUsingDescriptors:self.sortDescriptors];
-
-        if (clusterComperator) {
-            _sections = [[NSMutableArray alloc] init];
-        }
     }
     return self;
 }
@@ -122,14 +108,14 @@
 
 - (id)copyWithZone:(nullable NSZone *)zone
 {
-    return [[[self class] alloc] initWithBackingStore:[_backingStore mutableCopy] sortDescriptors:[_sortDescriptors copy] clusterComperator:nil];
+    return [[[self class] alloc] initWithBackingStore:[_backingStore mutableCopy] sortDescriptors:[_sortDescriptors copy]];
 }
 
 #pragma mark NSMutableCopying
 
 - (id)mutableCopyWithZone:(NSZone *)zone
 {
-    return [[[self class] alloc] initWithBackingStore:[_backingStore mutableCopy] sortDescriptors:[_sortDescriptors copy] clusterComperator:nil];
+    return [[[self class] alloc] initWithBackingStore:[_backingStore mutableCopy] sortDescriptors:[_sortDescriptors copy]];
 }
 
 #pragma mark NSCoding
@@ -209,28 +195,6 @@
                                         }];
 }
 
-#pragma mark Clustering
-
-+ (NSArray *)clustersWithObjects:(NSSet *)objects
-            usingSortDescriptors:(NSArray *)sortDescriptors
-               clusterComperator:(FTMutableSetClusterComperator)clusterComperator
-{
-    NSMutableArray *clusters = [[NSMutableArray alloc] init];
-
-    NSArray *sortedObjects = [objects sortedArrayUsingDescriptors:sortDescriptors];
-
-    for (id object in sortedObjects) {
-        id previousObject = [[clusters lastObject] lastObject];
-        if (previousObject && clusterComperator(previousObject, object)) {
-            [[clusters lastObject] addObject:object];
-        } else {
-            [clusters addObject:[NSMutableArray arrayWithObject:object]];
-        }
-    }
-
-    return clusters;
-}
-
 #pragma mark Batch Updates
 
 - (void)performBatchUpdates:(void (^)(void))updates
@@ -238,17 +202,9 @@
     if (updates) {
         if (_batchUpdateCallCount == 0) {
 
-            if (_clusterComperator) {
-                for (id<FTDataSourceObserver> observer in self.observers) {
-                    if ([observer respondsToSelector:@selector(dataSourceWillReset:)]) {
-                        [observer dataSourceWillReset:self];
-                    }
-                }
-            } else {
-                for (id<FTDataSourceObserver> observer in self.observers) {
-                    if ([observer respondsToSelector:@selector(dataSourceWillChange:)]) {
-                        [observer dataSourceWillChange:self];
-                    }
+            for (id<FTDataSourceObserver> observer in self.observers) {
+                if ([observer respondsToSelector:@selector(dataSourceWillChange:)]) {
+                    [observer dataSourceWillChange:self];
                 }
             }
 
@@ -265,28 +221,13 @@
 
         if (_batchUpdateCallCount == 0) {
 
-            if (_clusterComperator) {
+            [self ft_applyDeletion];
+            [self ft_applyUpdate];
+            [self ft_applyInsertion];
 
-                [self ft_applyDeletion_Clusters];
-                [self ft_applyUpdate_Cluster];
-                [self ft_applyInsertion_Clusters];
-
-                for (id<FTDataSourceObserver> observer in self.observers) {
-                    if ([observer respondsToSelector:@selector(dataSourceDidReset:)]) {
-                        [observer dataSourceDidReset:self];
-                    }
-                }
-
-            } else {
-
-                [self ft_applyDeletion];
-                [self ft_applyUpdate];
-                [self ft_applyInsertion];
-
-                for (id<FTDataSourceObserver> observer in self.observers) {
-                    if ([observer respondsToSelector:@selector(dataSourceDidChange:)]) {
-                        [observer dataSourceDidChange:self];
-                    }
+            for (id<FTDataSourceObserver> observer in self.observers) {
+                if ([observer respondsToSelector:@selector(dataSourceDidChange:)]) {
+                    [observer dataSourceDidChange:self];
                 }
             }
 
@@ -298,86 +239,6 @@
 }
 
 #pragma mark Apply Changes
-
-- (void)ft_applyDeletion_Clusters
-{
-    if ([_deletedObjects count] > 0) {
-
-        NSComparator comperator = [[self class] comperatorUsingSortDescriptors:self.sortDescriptors];
-        NSArray *deletedObjects = [_deletedObjects sortedArrayUsingDescriptors:self.sortDescriptors];
-
-        NSUInteger offset = 0;
-
-        for (id object in deletedObjects) {
-
-            NSUInteger index = [_backingStore indexOfObject:object
-                                              inSortedRange:NSMakeRange(offset, [_backingStore count] - offset)
-                                                    options:NSBinarySearchingInsertionIndex
-                                            usingComparator:comperator];
-
-            [_backingStore insertObject:object atIndex:index];
-
-            NSUInteger sectionIndex = [_sections indexOfObject:object
-                                                 inSortedRange:NSMakeRange(0, [_sections count])
-                                                       options:NSBinarySearchingFirstEqual
-                                               usingComparator:^NSComparisonResult(NSMutableArray *section, id object) {
-
-                                                   NSUInteger itemIndex = [section indexOfObject:object
-                                                                                   inSortedRange:NSMakeRange(0, [section count])
-                                                                                         options:NSBinarySearchingInsertionIndex
-                                                                                 usingComparator:comperator];
-
-                                                   if (itemIndex == 0) {
-                                                       if (_clusterComperator(object, [section firstObject])) {
-                                                           return NSOrderedSame;
-                                                       } else {
-                                                           return NSOrderedDescending;
-                                                       }
-                                                   } else if (itemIndex == [section count]) {
-                                                       if (_clusterComperator([section lastObject], object)) {
-                                                           return NSOrderedSame;
-                                                       } else {
-                                                           return NSOrderedAscending;
-                                                       }
-                                                   } else {
-                                                       return NSOrderedSame;
-                                                   }
-                                               }];
-
-            if (sectionIndex != NSNotFound) {
-                NSMutableArray *section = [_sections objectAtIndex:sectionIndex];
-
-                NSUInteger itemIndex = [section indexOfObject:object
-                                                inSortedRange:NSMakeRange(0, [section count])
-                                                      options:NSBinarySearchingInsertionIndex
-                                              usingComparator:comperator];
-
-                if (itemIndex != NSNotFound) {
-
-                    if ([section count] == 1) {
-                        [_sections removeObject:section];
-                    } else {
-                        [section removeObject:object];
-
-                        if (itemIndex < [section count] && itemIndex > 0) {
-                            id previousObject = [section objectAtIndex:itemIndex - 1];
-                            id nextObject = [section objectAtIndex:itemIndex];
-
-                            if (!_clusterComperator(previousObject, nextObject)) {
-
-                                // Section needs to be split into two sections
-
-                                NSMutableArray *newSection = [[section subarrayWithRange:NSMakeRange(itemIndex, [section count] - itemIndex)] mutableCopy];
-                                [section removeObjectsInRange:NSMakeRange(itemIndex, [section count] - itemIndex)];
-                                [_sections insertObject:newSection atIndex:sectionIndex + 1];
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
 
 - (void)ft_applyDeletion
 {
@@ -410,99 +271,6 @@
 
         [_backingStore removeObjectsAtIndexes:indexes];
         [_deletedObjects removeAllObjects];
-    }
-}
-
-- (void)ft_applyInsertion_Clusters
-{
-    if ([_insertedObjects count] > 0) {
-
-        NSComparator comperator = [[self class] comperatorUsingSortDescriptors:self.sortDescriptors];
-        NSArray *insertedObjects = [_insertedObjects sortedArrayUsingDescriptors:self.sortDescriptors];
-
-        NSUInteger offset = 0;
-
-        for (id object in insertedObjects) {
-
-            NSUInteger index = [_backingStore indexOfObject:object
-                                              inSortedRange:NSMakeRange(offset, [_backingStore count] - offset)
-                                                    options:NSBinarySearchingInsertionIndex
-                                            usingComparator:comperator];
-
-            [_backingStore insertObject:object atIndex:index];
-
-            NSUInteger sectionIndex = [_sections indexOfObject:object
-                                                 inSortedRange:NSMakeRange(0, [_sections count])
-                                                       options:NSBinarySearchingFirstEqual
-                                               usingComparator:^NSComparisonResult(NSMutableArray *section, id object) {
-
-                                                   NSUInteger itemIndex = [section indexOfObject:object
-                                                                                   inSortedRange:NSMakeRange(0, [section count])
-                                                                                         options:NSBinarySearchingInsertionIndex
-                                                                                 usingComparator:comperator];
-
-                                                   if (itemIndex == 0) {
-                                                       if (_clusterComperator(object, [section firstObject])) {
-                                                           return NSOrderedSame;
-                                                       } else {
-                                                           return NSOrderedDescending;
-                                                       }
-                                                   } else if (itemIndex == [section count]) {
-                                                       if (_clusterComperator([section lastObject], object)) {
-                                                           return NSOrderedSame;
-                                                       } else {
-                                                           return NSOrderedAscending;
-                                                       }
-                                                   } else {
-                                                       return NSOrderedSame;
-                                                   }
-                                               }];
-
-            if (sectionIndex == NSNotFound) {
-
-                // Create new section
-
-                NSMutableArray *newSection = [[NSMutableArray alloc] init];
-                [newSection addObject:object];
-
-                sectionIndex = [_sections indexOfObject:newSection
-                                          inSortedRange:NSMakeRange(0, [_sections count])
-                                                options:NSBinarySearchingInsertionIndex
-                                        usingComparator:^NSComparisonResult(NSArray *section1, NSArray *section2) {
-                                            return comperator([section1 firstObject], [section2 firstObject]);
-                                        }];
-
-                [_sections insertObject:newSection atIndex:sectionIndex];
-
-            } else {
-
-                // Use exsiting section
-
-                NSMutableArray *section = [_sections objectAtIndex:sectionIndex];
-
-                NSUInteger itemIndex = [section indexOfObject:object
-                                                inSortedRange:NSMakeRange(0, [section count])
-                                                      options:NSBinarySearchingInsertionIndex
-                                              usingComparator:comperator];
-
-                [section insertObject:object atIndex:itemIndex];
-
-                if (itemIndex == [section count] - 1 && sectionIndex < [_sections count] - 1) {
-
-                    NSMutableArray *nextSection = [_sections objectAtIndex:sectionIndex + 1];
-
-                    if (_clusterComperator([section lastObject], [nextSection firstObject])) {
-
-                        // Merge with next cluster
-
-                        [section addObjectsFromArray:nextSection];
-                        [_sections removeObject:nextSection];
-                    }
-                }
-            }
-        }
-
-        [_insertedObjects removeAllObjects];
     }
 }
 
@@ -601,37 +369,29 @@
     }
 }
 
-- (void)ft_applyUpdate_Cluster
-{
-}
-
 #pragma mark FTDataSource
 
 #pragma mark Getting Item and Section Metrics
 
 - (NSUInteger)numberOfSections
 {
-    return _sections != nil ? [_sections count] : 1;
+    return 1;
 }
 
 - (NSUInteger)numberOfItemsInSection:(NSUInteger)section
 {
-    if ((_sections == nil && _sections != 0) || (_sections != nil && [_sections count] <= section)) {
+    if (section != 0) {
         [NSException raise:NSRangeException format:@"*** %s: section index %ld beyond bounds [0 .. 1].", __PRETTY_FUNCTION__, (long)section];
     }
 
-    if (_sections) {
-        return [[_sections objectAtIndex:section] count];
-    } else {
-        return [_backingStore count];
-    }
+    return [_backingStore count];
 }
 
 #pragma mark Getting Items and Sections
 
 - (id)sectionItemForSection:(NSUInteger)section
 {
-    if ((_sections == nil && _sections != 0) || (_sections != nil && [_sections count] <= section)) {
+    if (section != 0) {
         [NSException raise:NSRangeException format:@"*** %s: section index %ld beyond bounds [0 .. 1].", __PRETTY_FUNCTION__, (long)section];
     }
 
@@ -647,15 +407,11 @@
     NSUInteger section = [indexPath indexAtPosition:0];
     NSUInteger item = [indexPath indexAtPosition:1];
 
-    if ((_sections == nil && _sections != 0) || (_sections != nil && [_sections count] <= section)) {
+    if (section != 0) {
         [NSException raise:NSRangeException format:@"*** %s: section index %ld beyond bounds [0 .. 1].", __PRETTY_FUNCTION__, (long)section];
     }
 
-    if (_sections) {
-        return [[_sections objectAtIndex:section] objectAtIndex:item];
-    } else {
-        return [_backingStore objectAtIndex:item];
-    }
+    return [_backingStore objectAtIndex:item];
 }
 
 #pragma mark Observer

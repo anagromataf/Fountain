@@ -17,3 +17,4 @@
 // Common Data Sources
 #import "FTMutableArray.h"
 #import "FTMutableSet.h"
+#import "FTMutableClusterSet.h"

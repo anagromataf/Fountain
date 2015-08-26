@@ -23,6 +23,12 @@
 		F610704F1B7C92FC009C2D40 /* CollectionTest.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F610704E1B7C92FC009C2D40 /* CollectionTest.storyboard */; };
 		F61070521B7C9334009C2D40 /* FTTestCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F61070511B7C9334009C2D40 /* FTTestCollectionViewController.m */; };
 		F61070541B7C93E6009C2D40 /* FTCollectionViewAdapterTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F61070531B7C93E6009C2D40 /* FTCollectionViewAdapterTests.m */; };
+		F66C78831B8E27AB0044913D /* FTMutableClusterSet.h in Headers */ = {isa = PBXBuildFile; fileRef = F66C78811B8E27AB0044913D /* FTMutableClusterSet.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F66C78841B8E27AB0044913D /* FTMutableClusterSet.h in Headers */ = {isa = PBXBuildFile; fileRef = F66C78811B8E27AB0044913D /* FTMutableClusterSet.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F66C78851B8E27AB0044913D /* FTMutableClusterSet.m in Sources */ = {isa = PBXBuildFile; fileRef = F66C78821B8E27AB0044913D /* FTMutableClusterSet.m */; };
+		F66C78861B8E27AB0044913D /* FTMutableClusterSet.m in Sources */ = {isa = PBXBuildFile; fileRef = F66C78821B8E27AB0044913D /* FTMutableClusterSet.m */; };
+		F66C78881B8E2BE70044913D /* FTMutableClusterTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F6A333F11B81DCFA00C77C58 /* FTMutableClusterTests.m */; };
+		F66C78891B8E2BE80044913D /* FTMutableClusterTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F6A333F11B81DCFA00C77C58 /* FTMutableClusterTests.m */; };
 		F66C7E991B5AABAE00662CD1 /* FTFountainiOS.h in Headers */ = {isa = PBXBuildFile; fileRef = F66C7E981B5AABAE00662CD1 /* FTFountainiOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F66C7EA01B5AABAF00662CD1 /* FTFountainiOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F66C7E951B5AABAE00662CD1 /* FTFountainiOS.framework */; };
 		F66C7EB51B5AABC300662CD1 /* FTFountainOSX.h in Headers */ = {isa = PBXBuildFile; fileRef = F66C7EB41B5AABC300662CD1 /* FTFountainOSX.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -42,8 +48,6 @@
 		F6A333ED1B810F9D00C77C58 /* FTMutableSet.m in Sources */ = {isa = PBXBuildFile; fileRef = F6A333E91B810F9D00C77C58 /* FTMutableSet.m */; };
 		F6A333EF1B81173900C77C58 /* FTMutableSetTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F6A333EE1B81173900C77C58 /* FTMutableSetTests.m */; };
 		F6A333F01B81173900C77C58 /* FTMutableSetTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F6A333EE1B81173900C77C58 /* FTMutableSetTests.m */; };
-		F6A333F21B81DCFA00C77C58 /* FTMutableSetTests+Clustering.m in Sources */ = {isa = PBXBuildFile; fileRef = F6A333F11B81DCFA00C77C58 /* FTMutableSetTests+Clustering.m */; };
-		F6A333F31B81DCFA00C77C58 /* FTMutableSetTests+Clustering.m in Sources */ = {isa = PBXBuildFile; fileRef = F6A333F11B81DCFA00C77C58 /* FTMutableSetTests+Clustering.m */; };
 		F6AE695F1B7C985100F43CFF /* FTCollectionViewAdapter+Subclassing.h in Headers */ = {isa = PBXBuildFile; fileRef = F6AE695D1B7C985100F43CFF /* FTCollectionViewAdapter+Subclassing.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F6B5E6451B8A0475002C6181 /* FTTestItem.h in Headers */ = {isa = PBXBuildFile; fileRef = F6B5E6431B8A0475002C6181 /* FTTestItem.h */; };
 		F6B5E6461B8A0475002C6181 /* FTTestItem.h in Headers */ = {isa = PBXBuildFile; fileRef = F6B5E6431B8A0475002C6181 /* FTTestItem.h */; };
@@ -96,6 +100,8 @@
 		F61070501B7C9334009C2D40 /* FTTestCollectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FTTestCollectionViewController.h; sourceTree = "<group>"; };
 		F61070511B7C9334009C2D40 /* FTTestCollectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTTestCollectionViewController.m; sourceTree = "<group>"; };
 		F61070531B7C93E6009C2D40 /* FTCollectionViewAdapterTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTCollectionViewAdapterTests.m; sourceTree = "<group>"; };
+		F66C78811B8E27AB0044913D /* FTMutableClusterSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FTMutableClusterSet.h; sourceTree = "<group>"; };
+		F66C78821B8E27AB0044913D /* FTMutableClusterSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTMutableClusterSet.m; sourceTree = "<group>"; };
 		F66C7E951B5AABAE00662CD1 /* FTFountainiOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FTFountainiOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F66C7E981B5AABAE00662CD1 /* FTFountainiOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FTFountainiOS.h; sourceTree = "<group>"; };
 		F66C7E9A1B5AABAE00662CD1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -114,7 +120,7 @@
 		F6A333E81B810F9D00C77C58 /* FTMutableSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FTMutableSet.h; sourceTree = "<group>"; };
 		F6A333E91B810F9D00C77C58 /* FTMutableSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FTMutableSet.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		F6A333EE1B81173900C77C58 /* FTMutableSetTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTMutableSetTests.m; sourceTree = "<group>"; };
-		F6A333F11B81DCFA00C77C58 /* FTMutableSetTests+Clustering.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = "FTMutableSetTests+Clustering.m"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		F6A333F11B81DCFA00C77C58 /* FTMutableClusterTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FTMutableClusterTests.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		F6AE695D1B7C985100F43CFF /* FTCollectionViewAdapter+Subclassing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "FTCollectionViewAdapter+Subclassing.h"; sourceTree = "<group>"; };
 		F6B5E6431B8A0475002C6181 /* FTTestItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FTTestItem.h; sourceTree = "<group>"; };
 		F6B5E6441B8A0475002C6181 /* FTTestItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTTestItem.m; sourceTree = "<group>"; };
@@ -291,7 +297,7 @@
 			children = (
 				F60967771B62D1D0007F2F35 /* FTMutableArrayTests.m */,
 				F6A333EE1B81173900C77C58 /* FTMutableSetTests.m */,
-				F6A333F11B81DCFA00C77C58 /* FTMutableSetTests+Clustering.m */,
+				F6A333F11B81DCFA00C77C58 /* FTMutableClusterTests.m */,
 				F6B5E6491B8A047C002C6181 /* Test Item */,
 			);
 			path = CommonTests;
@@ -315,6 +321,8 @@
 				F6FFB79F1B62C3F2007B9652 /* FTMutableArray.m */,
 				F6A333E81B810F9D00C77C58 /* FTMutableSet.h */,
 				F6A333E91B810F9D00C77C58 /* FTMutableSet.m */,
+				F66C78811B8E27AB0044913D /* FTMutableClusterSet.h */,
+				F66C78821B8E27AB0044913D /* FTMutableClusterSet.m */,
 			);
 			name = "General Data Sources";
 			sourceTree = "<group>";
@@ -367,6 +375,7 @@
 				F6A333EA1B810F9D00C77C58 /* FTMutableSet.h in Headers */,
 				F6FFB7A01B62C3F2007B9652 /* FTMutableArray.h in Headers */,
 				F66C7ED31B5AAC4100662CD1 /* FTReverseDataSource.h in Headers */,
+				F66C78831B8E27AB0044913D /* FTMutableClusterSet.h in Headers */,
 				F6AE695F1B7C985100F43CFF /* FTCollectionViewAdapter+Subclassing.h in Headers */,
 				F61070391B7BD475009C2D40 /* FTTableViewAdapter+Subclassing.h in Headers */,
 				F61070441B7C05DD009C2D40 /* FTPagingDataSource.h in Headers */,
@@ -389,6 +398,7 @@
 				F6FFB7A11B62C3F2007B9652 /* FTMutableArray.h in Headers */,
 				F66C7ED41B5AAC4100662CD1 /* FTReverseDataSource.h in Headers */,
 				F6B5E6461B8A0475002C6181 /* FTTestItem.h in Headers */,
+				F66C78841B8E27AB0044913D /* FTMutableClusterSet.h in Headers */,
 				F66C7ED21B5AAC4100662CD1 /* FTDataSource.h in Headers */,
 				F66C7ED61B5AAC4100662CD1 /* FTDataSourceObserver.h in Headers */,
 				F66C7ECD1B5AAC3B00662CD1 /* FTFountain.h in Headers */,
@@ -625,6 +635,7 @@
 				F6A333EC1B810F9D00C77C58 /* FTMutableSet.m in Sources */,
 				F6B5E6471B8A0475002C6181 /* FTTestItem.m in Sources */,
 				F6FEDF8E1B78FCBF00BAD0FF /* FTTableViewAdapter.m in Sources */,
+				F66C78851B8E27AB0044913D /* FTMutableClusterSet.m in Sources */,
 				F610704A1B7C905E009C2D40 /* FTCollectionViewAdapter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -635,12 +646,12 @@
 			files = (
 				F60967781B62D1D0007F2F35 /* FTMutableArrayTests.m in Sources */,
 				F61070331B7BCB05009C2D40 /* FTTableViewAdapterTests.m in Sources */,
-				F6A333F21B81DCFA00C77C58 /* FTMutableSetTests+Clustering.m in Sources */,
 				F61070311B7BC7BD009C2D40 /* FTTestTableViewController.m in Sources */,
 				F61070521B7C9334009C2D40 /* FTTestCollectionViewController.m in Sources */,
 				F6A333EF1B81173900C77C58 /* FTMutableSetTests.m in Sources */,
 				F61070541B7C93E6009C2D40 /* FTCollectionViewAdapterTests.m in Sources */,
 				F61070421B7BF581009C2D40 /* FTSectionHeaderFooterView.m in Sources */,
+				F66C78881B8E2BE70044913D /* FTMutableClusterTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -650,6 +661,7 @@
 			files = (
 				F6A333ED1B810F9D00C77C58 /* FTMutableSet.m in Sources */,
 				F6FFB7A31B62C3F2007B9652 /* FTMutableArray.m in Sources */,
+				F66C78861B8E27AB0044913D /* FTMutableClusterSet.m in Sources */,
 				F6B5E6481B8A0475002C6181 /* FTTestItem.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -660,8 +672,8 @@
 			files = (
 				F6A333F01B81173900C77C58 /* FTMutableSetTests.m in Sources */,
 				F60967791B62D1D0007F2F35 /* FTMutableArrayTests.m in Sources */,
-				F6A333F31B81DCFA00C77C58 /* FTMutableSetTests+Clustering.m in Sources */,
 				F66C7EC11B5AABC300662CD1 /* OSXTests.m in Sources */,
+				F66C78891B8E2BE80044913D /* FTMutableClusterTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
