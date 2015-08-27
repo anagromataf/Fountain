@@ -13,9 +13,10 @@
 #import <OCMockito/OCMockito.h>
 #import <XCTest/XCTest.h>
 
-#import "FTEntity.h"
-
 #import "FTFountain.h"
+
+#import "FTEntity.h"
+#import "FTEntityClusterComperator.h"
 
 #define IDX(item, section) [[NSIndexPath indexPathWithIndex:section] indexPathByAddingIndex:item]
 
@@ -352,20 +353,103 @@
     [verifyCount(observer, times(0)) dataSourceDidChange:dataSource];
 }
 
+- (void)testClustering
+{
+    [self seedContextWithIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, 10)]];
+    [self seedContextWithIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(30, 8)]];
+    [self seedContextWithIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(54, 12)]];
+
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Entity" inManagedObjectContext:self.context];
+    NSArray *sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:@"value" ascending:YES] ];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"flag == YES"];
+
+    FTFetchedDataSource *dataSource = [[FTFetchedDataSource alloc] initWithManagedObjectContext:self.context
+                                                                                         entity:entity
+                                                                                sortDescriptors:sortDescriptors
+                                                                                      predicate:predicate
+                                                                              clusterComperator:[[FTEntityClusterComperator alloc] init]];
+
+    XCTestExpectation *expectFetch = [self expectationWithDescription:@"Expect Fetched Objects"];
+
+    [dataSource fetchObjectsWithCompletion:^(BOOL success, NSError *error) {
+        assertThatBool(success, isTrue());
+        [expectFetch fulfill];
+    }];
+
+    [self waitForExpectationsWithTimeout:1.0 handler:nil];
+
+    assertThatInteger([dataSource numberOfSections], equalToInteger(3));
+    assertThatInteger([dataSource numberOfItemsInSection:0], equalToInteger(10));
+    assertThatInteger([dataSource numberOfItemsInSection:1], equalToInteger(8));
+    assertThatInteger([dataSource numberOfItemsInSection:2], equalToInteger(12));
+
+    assertThat([(FTEntity *)[dataSource itemAtIndexPath:IDX(0, 0)] value], equalTo(@(0)));
+    assertThat([(FTEntity *)[dataSource itemAtIndexPath:IDX(0, 1)] value], equalTo(@(30)));
+    assertThat([(FTEntity *)[dataSource itemAtIndexPath:IDX(0, 2)] value], equalTo(@(54)));
+}
+
+- (void)testUpdateCluster
+{
+    [self seedContextWithIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, 10)]];
+    [self seedContextWithIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(30, 8)]];
+    [self seedContextWithIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(54, 12)]];
+
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Entity" inManagedObjectContext:self.context];
+    NSArray *sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:@"value" ascending:YES] ];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"flag == YES"];
+
+    FTFetchedDataSource *dataSource = [[FTFetchedDataSource alloc] initWithManagedObjectContext:self.context
+                                                                                         entity:entity
+                                                                                sortDescriptors:sortDescriptors
+                                                                                      predicate:predicate
+                                                                              clusterComperator:[[FTEntityClusterComperator alloc] init]];
+
+    XCTestExpectation *expectFetch = [self expectationWithDescription:@"Expect Fetched Objects"];
+
+    [dataSource fetchObjectsWithCompletion:^(BOOL success, NSError *error) {
+        assertThatBool(success, isTrue());
+        [expectFetch fulfill];
+    }];
+
+    [self waitForExpectationsWithTimeout:1.0 handler:nil];
+
+    assertThatInteger([dataSource numberOfSections], equalToInteger(3));
+    assertThatInteger([dataSource numberOfItemsInSection:0], equalToInteger(10));
+    assertThatInteger([dataSource numberOfItemsInSection:1], equalToInteger(8));
+    assertThatInteger([dataSource numberOfItemsInSection:2], equalToInteger(12));
+
+    id<FTDataSourceObserver> observer = mockProtocol(@protocol(FTDataSourceObserver));
+    [dataSource addObserver:observer];
+
+    [self seedContextWithIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(42, 4)]];
+
+    assertThatInteger([dataSource numberOfSections], equalToInteger(2));
+    assertThatInteger([dataSource numberOfItemsInSection:0], equalToInteger(10));
+    assertThatInteger([dataSource numberOfItemsInSection:1], equalToInteger(24));
+
+    [verifyCount(observer, times(1)) dataSourceWillReset:dataSource];
+    [verifyCount(observer, times(1)) dataSourceDidReset:dataSource];
+}
+
 #pragma mark Seed Context
 
 - (NSArray *)seedContext
 {
+    return [self seedContextWithIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, 100)]];
+}
+
+- (NSArray *)seedContextWithIndexes:(NSIndexSet *)indexes
+{
     NSEntityDescription *entity = [NSEntityDescription entityForName:@"Entity" inManagedObjectContext:self.context];
     NSMutableArray *objects = [[NSMutableArray alloc] init];
-    for (NSUInteger i = 0; i < 100; i++) {
 
+    [indexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
         FTEntity *object = [[FTEntity alloc] initWithEntity:entity insertIntoManagedObjectContext:self.context];
-        object.value = @(i);
-        object.flag = @(i < 90);
+        object.value = @(idx);
+        object.flag = @(idx < 90);
 
         [objects addObject:object];
-    }
+    }];
 
     NSError *error = nil;
     BOOL success = [self.context save:&error];

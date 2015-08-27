@@ -12,7 +12,7 @@
 #import "FTFetchedDataSource.h"
 
 @interface FTFetchedDataSource () <FTDataSourceObserver> {
-    FTMutableSet *_fetchedObjects;
+    NSMutableSet<FTDataSource, FTReverseDataSource> *_fetchedObjects;
     NSHashTable *_observers;
 }
 
@@ -27,6 +27,19 @@
                              sortDescriptors:(NSArray *)sortDescriptors
                                    predicate:(NSPredicate *)predicate
 {
+    return [self initWithManagedObjectContext:context
+                                       entity:entity
+                              sortDescriptors:sortDescriptors
+                                    predicate:predicate
+                            clusterComperator:nil];
+}
+
+- (instancetype)initWithManagedObjectContext:(NSManagedObjectContext *)context
+                                      entity:(NSEntityDescription *)entity
+                             sortDescriptors:(NSArray *)sortDescriptors
+                                   predicate:(NSPredicate *)predicate
+                           clusterComperator:(FTClusterComperator *)clusterComperator
+{
     self = [super init];
     if (self) {
         _observers = [NSHashTable weakObjectsHashTable];
@@ -34,6 +47,7 @@
         _entity = entity;
         _sortDescriptors = [sortDescriptors copy];
         _predicate = [predicate copy];
+        _clusterComperator = clusterComperator;
 
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(managedObjectContextObjectsDidChange:)
@@ -63,11 +77,17 @@
             }
         }
 
-        [_fetchedObjects removeObserver:self];
-
-        _fetchedObjects = [[FTMutableSet alloc] initSortDescriptors:self.sortDescriptors];
-        [_fetchedObjects addObjectsFromArray:result.finalResult];
-        [_fetchedObjects addObserver:self];
+        if (_clusterComperator) {
+            FTMutableClusterSet *set = [[FTMutableClusterSet alloc] initSortDescriptors:self.sortDescriptors comperator:self.clusterComperator];
+            [set addObjectsFromArray:result.finalResult];
+            [set addObserver:self];
+            _fetchedObjects = set;
+        } else {
+            FTMutableSet *set = [[FTMutableSet alloc] initSortDescriptors:self.sortDescriptors];
+            [set addObjectsFromArray:result.finalResult];
+            [set addObserver:self];
+            _fetchedObjects = set;
+        }
 
         for (id<FTDataSourceObserver> observer in self.observers) {
             if ([observer respondsToSelector:@selector(dataSourceDidReset:)]) {
@@ -126,12 +146,21 @@
         [updatedObjectsToRemove count] > 0 ||
         [updatedObjectsToInsert count] > 0) {
 
-        [_fetchedObjects performBatchUpdate:^{
-            [_fetchedObjects minusSet:deletedObjects];
-            [_fetchedObjects unionSet:insertedObjects];
-            [_fetchedObjects minusSet:updatedObjectsToRemove];
-            [_fetchedObjects unionSet:updatedObjectsToInsert];
-        }];
+        if ([_fetchedObjects isKindOfClass:[FTMutableSet class]]) {
+            [(FTMutableSet *)_fetchedObjects performBatchUpdate:^{
+                [_fetchedObjects minusSet:deletedObjects];
+                [_fetchedObjects unionSet:insertedObjects];
+                [_fetchedObjects minusSet:updatedObjectsToRemove];
+                [_fetchedObjects unionSet:updatedObjectsToInsert];
+            }];
+        } else if ([_fetchedObjects isKindOfClass:[FTMutableClusterSet class]]) {
+            [(FTMutableClusterSet *)_fetchedObjects performBatchUpdate:^{
+                [_fetchedObjects minusSet:deletedObjects];
+                [_fetchedObjects unionSet:insertedObjects];
+                [_fetchedObjects minusSet:updatedObjectsToRemove];
+                [_fetchedObjects unionSet:updatedObjectsToInsert];
+            }];
+        }
     }
 }
 

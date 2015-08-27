@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
+#import "FTMutableClusterSet.h"
+
 #import "FTDataSource.h"
 
 @interface FTFetchedDataSource : NSObject <FTDataSource, FTReverseDataSource>
@@ -19,6 +21,12 @@
                              sortDescriptors:(NSArray *)sortDescriptors
                                    predicate:(NSPredicate *)predicate;
 
+- (instancetype)initWithManagedObjectContext:(NSManagedObjectContext *)context
+                                      entity:(NSEntityDescription *)entity
+                             sortDescriptors:(NSArray *)sortDescriptors
+                                   predicate:(NSPredicate *)predicate
+                           clusterComperator:(FTClusterComperator *)clusterComperator;
+
 #pragma mark Managed Object Context
 @property (nonatomic, readonly) NSManagedObjectContext *context;
 
@@ -26,8 +34,9 @@
 @property (nonatomic, readonly) NSEntityDescription *entity;
 @property (nonatomic, readonly) NSArray *sortDescriptors;
 @property (nonatomic, readonly) NSPredicate *predicate;
+@property (nonatomic, readonly) FTClusterComperator *clusterComperator;
 
 #pragma mark Fetch Objects
-- (void)fetchObjectsWithCompletion:(void(^)(BOOL success, NSError *error))completion;
+- (void)fetchObjectsWithCompletion:(void (^)(BOOL success, NSError *error))completion;
 
 @end
