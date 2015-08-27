@@ -313,6 +313,45 @@
     assertThat([(FTEntity *)[dataSource itemAtIndexPath:IDX(89, 0)] value], equalTo(@(200)));
 }
 
+- (void)testOtherEntity
+{
+    [self seedContext];
+
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Entity" inManagedObjectContext:self.context];
+    NSArray *sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:@"value" ascending:YES] ];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"flag == YES"];
+
+    FTFetchedDataSource *dataSource = [[FTFetchedDataSource alloc] initWithManagedObjectContext:self.context
+                                                                                         entity:entity
+                                                                                sortDescriptors:sortDescriptors
+                                                                                      predicate:predicate];
+
+    XCTestExpectation *expectFetch = [self expectationWithDescription:@"Expect Fetched Objects"];
+
+    [dataSource fetchObjectsWithCompletion:^(BOOL success, NSError *error) {
+        assertThatBool(success, isTrue());
+        [expectFetch fulfill];
+    }];
+
+    [self waitForExpectationsWithTimeout:1.0 handler:nil];
+
+    assertThatInteger([dataSource numberOfSections], equalToInteger(1));
+    assertThatInteger([dataSource numberOfItemsInSection:0], equalToInteger(90));
+
+    id<FTDataSourceObserver> observer = mockProtocol(@protocol(FTDataSourceObserver));
+    [dataSource addObserver:observer];
+
+    NSEntityDescription *otherEntity = [NSEntityDescription entityForName:@"OtherEntity" inManagedObjectContext:self.context];
+    __unused NSManagedObject *object = [[NSManagedObject alloc] initWithEntity:otherEntity insertIntoManagedObjectContext:self.context];
+
+    NSError *error = nil;
+    BOOL success = [self.context save:&error];
+    XCTAssertTrue(success, @"Failed to save context: %@", [error localizedDescription]);
+
+    [verifyCount(observer, times(0)) dataSourceWillChange:dataSource];
+    [verifyCount(observer, times(0)) dataSourceDidChange:dataSource];
+}
+
 #pragma mark Seed Context
 
 - (NSArray *)seedContext

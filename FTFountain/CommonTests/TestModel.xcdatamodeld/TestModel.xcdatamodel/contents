@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="8175.2" systemVersion="14F27" minimumToolsVersion="Xcode 7.0">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="7701" systemVersion="14F27" minimumToolsVersion="Xcode 7.0">
     <entity name="Entity" representedClassName="FTEntity" syncable="YES">
         <attribute name="flag" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="value" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
     </entity>
+    <entity name="OtherEntity" syncable="YES"/>
     <elements>
         <element name="Entity" positionX="-63" positionY="-18" width="128" height="75"/>
+        <element name="OtherEntity" positionX="-63" positionY="0" width="128" height="45"/>
     </elements>
 </model>

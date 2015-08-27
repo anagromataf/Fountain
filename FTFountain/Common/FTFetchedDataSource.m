@@ -102,22 +102,14 @@
         return [evaluatedObject.entity isKindOfEntity:self.entity];
     }];
 
-    for (id<FTDataSourceObserver> observer in self.observers) {
-        if ([observer respondsToSelector:@selector(dataSourceWillChange:)]) {
-            [observer dataSourceWillChange:self];
-        }
-    }
-
     // Deleted Object
 
     NSSet *deletedObjects = [notification.userInfo[NSDeletedObjectsKey] filteredSetUsingPredicate:entityPredicate];
-    [_fetchedObjects minusSet:deletedObjects];
 
     // Inserted Objects
 
     NSSet *insertedObjects = [notification.userInfo[NSInsertedObjectsKey] filteredSetUsingPredicate:entityPredicate];
     insertedObjects = [insertedObjects filteredSetUsingPredicate:self.predicate];
-    [_fetchedObjects unionSet:insertedObjects];
 
     // Updates
 
@@ -127,13 +119,19 @@
     NSMutableSet *updatedObjectsToRemove = [updatedObjects mutableCopy];
     [updatedObjectsToRemove minusSet:updatedObjectsToInsert];
 
-    [_fetchedObjects minusSet:updatedObjectsToRemove];
-    [_fetchedObjects unionSet:updatedObjectsToInsert];
+    // Apply Updates
 
-    for (id<FTDataSourceObserver> observer in self.observers) {
-        if ([observer respondsToSelector:@selector(dataSourceDidChange:)]) {
-            [observer dataSourceDidChange:self];
-        }
+    if ([deletedObjects count] > 0 ||
+        [insertedObjects count] > 0 ||
+        [updatedObjectsToRemove count] > 0 ||
+        [updatedObjectsToInsert count] > 0) {
+
+        [_fetchedObjects performBatchUpdate:^{
+            [_fetchedObjects minusSet:deletedObjects];
+            [_fetchedObjects unionSet:insertedObjects];
+            [_fetchedObjects minusSet:updatedObjectsToRemove];
+            [_fetchedObjects unionSet:updatedObjectsToInsert];
+        }];
     }
 }
 
