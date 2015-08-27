@@ -34,6 +34,6 @@
  
  @param updates The block that performs the relevant insert, delete, and replace operations.
  */
-- (void)performBatchUpdates:(void (^)(void))updates;
+- (void)performBatchUpdate:(void (^)(void))updates;
 
 @end

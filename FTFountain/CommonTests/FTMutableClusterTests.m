@@ -44,7 +44,7 @@
     // 16 to 20 in the second,
     // and 32 and 33 in the third,
 
-    [set performBatchUpdates:^{
+    [set performBatchUpdate:^{
         NSArray *items = @[
             ITEM(1),
             ITEM(2),
@@ -88,7 +88,7 @@
     FTMutableClusterSet *set = [[FTMutableClusterSet alloc] initSortDescriptors:sortDescriptors
                                                                      comperator:[[FTTestClusterComperator alloc] init]];
 
-    [set performBatchUpdates:^{
+    [set performBatchUpdate:^{
         NSArray *items = @[ ITEM(10),
                             ITEM(25) ];
         [set addObjectsFromArray:items];
@@ -181,7 +181,7 @@
         ITEM(33)
     ];
 
-    [set performBatchUpdates:^{
+    [set performBatchUpdate:^{
         [set addObjectsFromArray:items];
     }];
 

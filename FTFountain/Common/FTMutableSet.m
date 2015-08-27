@@ -85,7 +85,7 @@
 
 - (void)addObject:(nonnull id)anObject
 {
-    [self performBatchUpdates:^{
+    [self performBatchUpdate:^{
         if ([_backingStore containsObject:anObject]) {
             [_updatedObjects addObject:anObject];
         } else {
@@ -97,7 +97,7 @@
 
 - (void)removeObject:(id)object
 {
-    [self performBatchUpdates:^{
+    [self performBatchUpdate:^{
         [_deletedObjects addObject:object];
         [_insertedObjects removeObject:object];
         [_updatedObjects removeObject:object];
@@ -197,7 +197,7 @@
 
 #pragma mark Batch Updates
 
-- (void)performBatchUpdates:(void (^)(void))updates
+- (void)performBatchUpdate:(void (^)(void))updates
 {
     if (updates) {
         if (_batchUpdateCallCount == 0) {

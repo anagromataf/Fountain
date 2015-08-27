@@ -154,7 +154,7 @@
     id<FTDataSourceObserver> observer = mockProtocol(@protocol(FTDataSourceObserver));
     [set addObserver:observer];
 
-    [set performBatchUpdates:^{
+    [set performBatchUpdate:^{
         [set addObjectsFromArray:@[ @(0), @(2), @(3) ]];
     }];
 
@@ -170,7 +170,7 @@
     id<FTDataSourceObserver> observer = mockProtocol(@protocol(FTDataSourceObserver));
     [set addObserver:observer];
 
-    [set performBatchUpdates:^{
+    [set performBatchUpdate:^{
         [set addObjectsFromArray:@[ @(0), @(2), @(3) ]];
     }];
 
@@ -209,7 +209,7 @@
     FTTestItem *item = items[1];
     item.value = 45;
 
-    [set performBatchUpdates:^{
+    [set performBatchUpdate:^{
         [set addObject:item];
         [set addObject:items[0]];
     }];
