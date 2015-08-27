@@ -163,9 +163,7 @@
     [adapter.collectionView setNeedsLayout];
     [adapter.collectionView layoutIfNeeded];
 
-    [dataSource performBatchUpdates:^{
-        [dataSource addObject:@(20)];
-    }];
+    [dataSource addObject:@(20)];
 
     [adapter.collectionView setNeedsLayout];
     [adapter.collectionView layoutIfNeeded];

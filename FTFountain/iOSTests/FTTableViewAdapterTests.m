@@ -211,9 +211,7 @@
 
     adapter.dataSource = dataSource;
 
-    [dataSource performBatchUpdates:^{
-        [dataSource addObject:@(20)];
-    }];
+    [dataSource addObject:@(20)];
 
     UITableViewCell *cell = nil;
 
