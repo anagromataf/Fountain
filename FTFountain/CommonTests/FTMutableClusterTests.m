@@ -19,6 +19,10 @@
 
 #define IDX(item, section) [[NSIndexPath indexPathWithIndex:section] indexPathByAddingIndex:item]
 
+@interface FTTestClusterComperator : FTClusterComperator
+
+@end
+
 @interface FTMutableClusterTests_Clustering : XCTestCase
 
 @end
@@ -28,12 +32,9 @@
 - (void)testAddItems
 {
     NSArray *sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:@"value" ascending:YES] ];
-    FTMutableClusterSetComperator clusterComperator = ^BOOL(FTTestItem *first __strong, FTTestItem *second __strong) {
-        return second.value - first.value < 10;
-    };
 
     FTMutableClusterSet *set = [[FTMutableClusterSet alloc] initSortDescriptors:sortDescriptors
-                                                                     comperator:clusterComperator];
+                                                                     comperator:[[FTTestClusterComperator alloc] init]];
 
     id<FTDataSourceObserver> observer = mockProtocol(@protocol(FTDataSourceObserver));
     [set addObserver:observer];
@@ -83,12 +84,9 @@
 - (void)testCombineClusterByAddingItems
 {
     NSArray *sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:@"value" ascending:YES] ];
-    FTMutableClusterSetComperator clusterComperator = ^BOOL(FTTestItem *first __strong, FTTestItem *second __strong) {
-        return second.value - first.value < 10;
-    };
 
     FTMutableClusterSet *set = [[FTMutableClusterSet alloc] initSortDescriptors:sortDescriptors
-                                                                     comperator:clusterComperator];
+                                                                     comperator:[[FTTestClusterComperator alloc] init]];
 
     [set performBatchUpdates:^{
         NSArray *items = @[ ITEM(10),
@@ -124,12 +122,9 @@
 - (void)testDevideClusterByRemovingItem
 {
     NSArray *sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:@"value" ascending:YES] ];
-    FTMutableClusterSetComperator clusterComperator = ^BOOL(FTTestItem *first __strong, FTTestItem *second __strong) {
-        return second.value - first.value < 10;
-    };
 
     FTMutableClusterSet *set = [[FTMutableClusterSet alloc] initSortDescriptors:sortDescriptors
-                                                                     comperator:clusterComperator];
+                                                                     comperator:[[FTTestClusterComperator alloc] init]];
 
     NSArray *items = @[ ITEM(10),
                         ITEM(25),
@@ -165,12 +160,9 @@
 - (void)testUpdateItem
 {
     NSArray *sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:@"value" ascending:YES] ];
-    FTMutableClusterSetComperator clusterComperator = ^BOOL(FTTestItem *first __strong, FTTestItem *second __strong) {
-        return second.value - first.value < 10;
-    };
 
     FTMutableClusterSet *set = [[FTMutableClusterSet alloc] initSortDescriptors:sortDescriptors
-                                                                     comperator:clusterComperator];
+                                                                     comperator:[[FTTestClusterComperator alloc] init]];
 
     // Adding items to the set. The items
     // 1 to 5 should be in the first section,
@@ -235,6 +227,15 @@
 
     [verifyCount(observer, times(1)) dataSourceWillReset:set];
     [verifyCount(observer, times(1)) dataSourceDidReset:set];
+}
+
+@end
+
+@implementation FTTestClusterComperator
+
+- (BOOL)compareObject:(FTTestItem *)object1 toObject:(FTTestItem *)object2
+{
+    return labs(object1.value - object2.value) < 10;
 }
 
 @end

@@ -11,16 +11,18 @@
 #import "FTDataSource.h"
 #import "FTReverseDataSource.h"
 
-typedef BOOL (^FTMutableClusterSetComperator)(id obj1, id obj2);
+@interface FTClusterComperator : NSObject <NSSecureCoding>
+- (BOOL)compareObject:(id)object1 toObject:(id)object2;
+@end
 
 @interface FTMutableClusterSet : NSMutableSet <FTDataSource>
 
 #pragma mark Life-cycle
-- (instancetype)initSortDescriptors:(NSArray *)sortDescriptors comperator:(FTMutableClusterSetComperator)comperator;
+- (instancetype)initSortDescriptors:(NSArray *)sortDescriptors comperator:(FTClusterComperator *)comperator;
 
 #pragma mark Sort Descriptors & Clustering
 @property (nonatomic, readonly) NSArray *sortDescriptors;
-@property (nonatomic, readonly) FTMutableClusterSetComperator comperator;
+@property (nonatomic, readonly) FTClusterComperator *comperator;
 
 #pragma mark Batch Updates
 

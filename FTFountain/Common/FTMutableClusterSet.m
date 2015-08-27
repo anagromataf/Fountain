@@ -31,14 +31,14 @@
 
 #pragma mark Life-cycle
 
-- (instancetype)initSortDescriptors:(NSArray *)sortDescriptors comperator:(FTMutableClusterSetComperator)comperator
+- (instancetype)initSortDescriptors:(NSArray *)sortDescriptors comperator:(FTClusterComperator *)comperator
 {
     return [self initWithBackingStore:[[NSMutableArray alloc] init] sortDescriptors:sortDescriptors comperator:comperator];
 }
 
 - (nonnull instancetype)initWithBackingStore:(NSMutableArray *)backingStore
                              sortDescriptors:(NSArray *)sortDescriptors
-                                  comperator:(FTMutableClusterSetComperator)comperator
+                                  comperator:(FTClusterComperator *)comperator
 {
     self = [super init];
     if (self) {
@@ -100,14 +100,14 @@
 
 - (id)copyWithZone:(nullable NSZone *)zone
 {
-    return [[[self class] alloc] initWithBackingStore:[_backingStore mutableCopy] sortDescriptors:[_sortDescriptors copy] comperator:nil];
+    return [[[self class] alloc] initWithBackingStore:[_backingStore mutableCopy] sortDescriptors:[_sortDescriptors copy] comperator:[_comperator copy]];
 }
 
 #pragma mark NSMutableCopying
 
 - (id)mutableCopyWithZone:(NSZone *)zone
 {
-    return [[[self class] alloc] initWithBackingStore:[_backingStore mutableCopy] sortDescriptors:[_sortDescriptors copy] comperator:nil];
+    return [[[self class] alloc] initWithBackingStore:[_backingStore mutableCopy] sortDescriptors:[_sortDescriptors copy] comperator:[_comperator copy]];
 }
 
 #pragma mark NSCoding
@@ -122,6 +122,7 @@
     [super encodeWithCoder:aCoder];
     [aCoder encodeObject:_backingStore forKey:@"_backingStore"];
     [aCoder encodeObject:_sortDescriptors forKey:@"_sortDescriptors"];
+    [aCoder encodeObject:_comperator forKey:@"_comperator"];
 }
 
 - (nullable instancetype)initWithCoder:(NSCoder *)aDecoder
@@ -130,6 +131,7 @@
     if (self) {
         _backingStore = [aDecoder decodeObjectOfClass:[NSMutableArray class] forKey:@"_backingStore"];
         _sortDescriptors = [aDecoder decodeObjectOfClass:[NSArray class] forKey:@"_sortDescriptors"];
+        _comperator = [aDecoder decodeObjectOfClass:[FTClusterComperator class] forKey:@"_comperator"];
         _observers = [[NSHashTable alloc] init];
         _batchUpdateCallCount = 0;
     }
@@ -213,8 +215,8 @@
 
         if (_batchUpdateCallCount == 0) {
 
-            [self ft_applyDeletion_Clusters];
-            [self ft_applyInsertion_Clusters];
+            [self ft_applyDeletion];
+            [self ft_applyInsertion];
 
             for (id<FTDataSourceObserver> observer in self.observers) {
                 if ([observer respondsToSelector:@selector(dataSourceDidReset:)]) {
@@ -231,7 +233,7 @@
 
 #pragma mark Apply Changes
 
-- (void)ft_applyDeletion_Clusters
+- (void)ft_applyDeletion
 {
     if ([_deletedObjects count] > 0 || [_updatedObjects count] > 0) {
 
@@ -264,13 +266,13 @@
                                                                                  usingComparator:comperator];
 
                                                    if (itemIndex == 0) {
-                                                       if (_comperator(object, [section firstObject])) {
+                                                       if ([_comperator compareObject:object toObject:[section firstObject]]) {
                                                            return NSOrderedSame;
                                                        } else {
                                                            return NSOrderedDescending;
                                                        }
                                                    } else if (itemIndex == [section count]) {
-                                                       if (_comperator([section lastObject], object)) {
+                                                       if ([_comperator compareObject:[section lastObject] toObject:object]) {
                                                            return NSOrderedSame;
                                                        } else {
                                                            return NSOrderedAscending;
@@ -299,7 +301,7 @@
                             id previousObject = [section objectAtIndex:itemIndex - 1];
                             id nextObject = [section objectAtIndex:itemIndex];
 
-                            if (!_comperator(previousObject, nextObject)) {
+                            if (![_comperator compareObject:previousObject toObject:nextObject]) {
 
                                 // Section needs to be split into two sections
 
@@ -315,9 +317,9 @@
     }
 }
 
-- (void)ft_applyInsertion_Clusters
+- (void)ft_applyInsertion
 {
-    if ([_insertedObjects count] > 0 || [_updatedObjects count] > 0) {
+    if ([_insertedObjects count] > 0 || [_updatedObjects count] > 0) {
 
         NSComparator comperator = [[self class] comperatorUsingSortDescriptors:self.sortDescriptors];
 
@@ -348,13 +350,13 @@
                                                                                  usingComparator:comperator];
 
                                                    if (itemIndex == 0) {
-                                                       if (_comperator(object, [section firstObject])) {
+                                                       if ([_comperator compareObject:object toObject:[section firstObject]]) {
                                                            return NSOrderedSame;
                                                        } else {
                                                            return NSOrderedDescending;
                                                        }
                                                    } else if (itemIndex == [section count]) {
-                                                       if (_comperator([section lastObject], object)) {
+                                                       if ([_comperator compareObject:[section lastObject] toObject:object]) {
                                                            return NSOrderedSame;
                                                        } else {
                                                            return NSOrderedAscending;
@@ -397,7 +399,7 @@
 
                     NSMutableArray *nextSection = [_sections objectAtIndex:sectionIndex + 1];
 
-                    if (_comperator([section lastObject], [nextSection firstObject])) {
+                    if ([_comperator compareObject:[section lastObject] toObject:[nextSection firstObject]]) {
 
                         // Merge with next cluster
 
@@ -472,6 +474,41 @@
 - (void)removeObserver:(id<FTDataSourceObserver>)observer
 {
     [_observers removeObject:observer];
+}
+
+@end
+
+@implementation FTClusterComperator
+
+- (BOOL)compareObject:(id)object1 toObject:(id)object2
+{
+    return YES;
+}
+
+#pragma mark NSCoding
+
+- (Class)classForCoder
+{
+    return [FTClusterComperator class];
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+}
+
+- (nullable instancetype)initWithCoder:(NSCoder *)aDecoder
+{
+    self = [self init];
+    if (self) {
+    }
+    return self;
+}
+
+#pragma mark NSSecureCoding
+
++ (BOOL)supportsSecureCoding
+{
+    return YES;
 }
 
 @end
