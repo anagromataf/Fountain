@@ -307,7 +307,7 @@
     XCTAssertTrue(success, @"Failed to save context: %@", [error localizedDescription]);
 
     assertThatInteger([dataSource numberOfSections], equalToInteger(1));
-    assertThatInteger([dataSource numberOfItemsInSection:0], equalToInteger(89));
+    assertThatInteger([dataSource numberOfItemsInSection:0], equalToInteger(90));
 
     assertThat([(FTEntity *)[dataSource itemAtIndexPath:IDX(30, 0)] value], equalTo(@(31)));
     assertThat([(FTEntity *)[dataSource itemAtIndexPath:IDX(89, 0)] value], equalTo(@(200)));

@@ -1,5 +1,5 @@
 //
-//  FTMutableSetTests+Clustering.m
+//  FTMutableClusterTests+Clustering.m
 //  FTFountain
 //
 //  Created by Tobias Kraentzer on 17.08.15.
@@ -19,21 +19,22 @@
 
 #define IDX(item, section) [[NSIndexPath indexPathWithIndex:section] indexPathByAddingIndex:item]
 
-@interface FTMutableSetTests_Clustering : XCTestCase
+@interface FTTestClusterComperator : FTClusterComperator
 
 @end
 
-@implementation FTMutableSetTests_Clustering
+@interface FTMutableClusterTests_Clustering : XCTestCase
+
+@end
+
+@implementation FTMutableClusterTests_Clustering
 
 - (void)testAddItems
 {
     NSArray *sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:@"value" ascending:YES] ];
-    FTMutableSetClusterComperator clusterComperator = ^BOOL(FTTestItem *first __strong, FTTestItem *second __strong) {
-        return second.value - first.value < 10;
-    };
 
-    FTMutableSet *set = [[FTMutableSet alloc] initSortDescriptors:sortDescriptors
-                                                clusterComperator:clusterComperator];
+    FTMutableClusterSet *set = [[FTMutableClusterSet alloc] initSortDescriptors:sortDescriptors
+                                                                     comperator:[[FTTestClusterComperator alloc] init]];
 
     id<FTDataSourceObserver> observer = mockProtocol(@protocol(FTDataSourceObserver));
     [set addObserver:observer];
@@ -43,7 +44,7 @@
     // 16 to 20 in the second,
     // and 32 and 33 in the third,
 
-    [set performBatchUpdates:^{
+    [set performBatchUpdate:^{
         NSArray *items = @[
             ITEM(1),
             ITEM(2),
@@ -83,14 +84,11 @@
 - (void)testCombineClusterByAddingItems
 {
     NSArray *sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:@"value" ascending:YES] ];
-    FTMutableSetClusterComperator clusterComperator = ^BOOL(FTTestItem *first __strong, FTTestItem *second __strong) {
-        return second.value - first.value < 10;
-    };
 
-    FTMutableSet *set = [[FTMutableSet alloc] initSortDescriptors:sortDescriptors
-                                                clusterComperator:clusterComperator];
+    FTMutableClusterSet *set = [[FTMutableClusterSet alloc] initSortDescriptors:sortDescriptors
+                                                                     comperator:[[FTTestClusterComperator alloc] init]];
 
-    [set performBatchUpdates:^{
+    [set performBatchUpdate:^{
         NSArray *items = @[ ITEM(10),
                             ITEM(25) ];
         [set addObjectsFromArray:items];
@@ -124,12 +122,9 @@
 - (void)testDevideClusterByRemovingItem
 {
     NSArray *sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:@"value" ascending:YES] ];
-    FTMutableSetClusterComperator clusterComperator = ^BOOL(FTTestItem *first __strong, FTTestItem *second __strong) {
-        return second.value - first.value < 10;
-    };
 
-    FTMutableSet *set = [[FTMutableSet alloc] initSortDescriptors:sortDescriptors
-                                                clusterComperator:clusterComperator];
+    FTMutableClusterSet *set = [[FTMutableClusterSet alloc] initSortDescriptors:sortDescriptors
+                                                                     comperator:[[FTTestClusterComperator alloc] init]];
 
     NSArray *items = @[ ITEM(10),
                         ITEM(25),
@@ -160,6 +155,87 @@
 
     [verifyCount(observer, times(1)) dataSourceWillReset:set];
     [verifyCount(observer, times(1)) dataSourceDidReset:set];
+}
+
+- (void)testUpdateItem
+{
+    NSArray *sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:@"value" ascending:YES] ];
+
+    FTMutableClusterSet *set = [[FTMutableClusterSet alloc] initSortDescriptors:sortDescriptors
+                                                                     comperator:[[FTTestClusterComperator alloc] init]];
+
+    // Adding items to the set. The items
+    // 1 to 5 should be in the first section,
+    // 16 to 20 in the second,
+    // and 32 and 33 in the third,
+
+    NSArray *items = @[
+        ITEM(1),
+        ITEM(2),
+        ITEM(3),
+        ITEM(5),
+        ITEM(16),
+        ITEM(19),
+        ITEM(20),
+        ITEM(32),
+        ITEM(33)
+    ];
+
+    [set performBatchUpdate:^{
+        [set addObjectsFromArray:items];
+    }];
+
+    assertThatInteger([set numberOfItemsInSection:0], equalToInteger(4));
+    assertThatInteger([set numberOfItemsInSection:1], equalToInteger(3));
+    assertThatInteger([set numberOfItemsInSection:2], equalToInteger(2));
+
+    assertThatInteger([(FTTestItem *)[set itemAtIndexPath:IDX(0, 0)] value], equalToInteger(1));
+    assertThatInteger([(FTTestItem *)[set itemAtIndexPath:IDX(1, 0)] value], equalToInteger(2));
+    assertThatInteger([(FTTestItem *)[set itemAtIndexPath:IDX(2, 0)] value], equalToInteger(3));
+    assertThatInteger([(FTTestItem *)[set itemAtIndexPath:IDX(3, 0)] value], equalToInteger(5));
+
+    assertThatInteger([(FTTestItem *)[set itemAtIndexPath:IDX(0, 1)] value], equalToInteger(16));
+    assertThatInteger([(FTTestItem *)[set itemAtIndexPath:IDX(1, 1)] value], equalToInteger(19));
+    assertThatInteger([(FTTestItem *)[set itemAtIndexPath:IDX(2, 1)] value], equalToInteger(20));
+
+    assertThatInteger([(FTTestItem *)[set itemAtIndexPath:IDX(0, 2)] value], equalToInteger(32));
+    assertThatInteger([(FTTestItem *)[set itemAtIndexPath:IDX(1, 2)] value], equalToInteger(33));
+
+    id<FTDataSourceObserver> observer = mockProtocol(@protocol(FTDataSourceObserver));
+    [set addObserver:observer];
+
+    assertThatInteger([set numberOfSections], equalToInteger(3));
+
+    FTTestItem *item = items[2];
+    item.value = 27;
+
+    [set addObject:item];
+
+    assertThatInteger([set numberOfItemsInSection:0], equalToInteger(3));
+    assertThatInteger([set numberOfItemsInSection:1], equalToInteger(6));
+
+    assertThatInteger([(FTTestItem *)[set itemAtIndexPath:IDX(0, 0)] value], equalToInteger(1));
+    assertThatInteger([(FTTestItem *)[set itemAtIndexPath:IDX(1, 0)] value], equalToInteger(2));
+    assertThatInteger([(FTTestItem *)[set itemAtIndexPath:IDX(2, 0)] value], equalToInteger(5));
+
+    assertThatInteger([(FTTestItem *)[set itemAtIndexPath:IDX(0, 1)] value], equalToInteger(16));
+    assertThatInteger([(FTTestItem *)[set itemAtIndexPath:IDX(1, 1)] value], equalToInteger(19));
+    assertThatInteger([(FTTestItem *)[set itemAtIndexPath:IDX(2, 1)] value], equalToInteger(20));
+    assertThatInteger([(FTTestItem *)[set itemAtIndexPath:IDX(3, 1)] value], equalToInteger(27));
+    assertThatInteger([(FTTestItem *)[set itemAtIndexPath:IDX(4, 1)] value], equalToInteger(32));
+    assertThatInteger([(FTTestItem *)[set itemAtIndexPath:IDX(5, 1)] value], equalToInteger(33));
+
+    [verifyCount(observer, times(1)) dataSourceWillReset:set];
+    [verifyCount(observer, times(1)) dataSourceDidReset:set];
+}
+
+@end
+
+@implementation FTTestClusterComperator
+
+- (BOOL)compareObject:(FTTestItem *)object1 toObject:(FTTestItem *)object2
+{
+    return labs(object1.value - object2.value) < 10;
 }
 
 @end

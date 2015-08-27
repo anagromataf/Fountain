@@ -13,6 +13,8 @@
 #import <OCMockito/OCMockito.h>
 #import <XCTest/XCTest.h>
 
+#import "FTTestItem.h"
+
 #import "FTFountain.h"
 
 #define IDX(item, section) [[NSIndexPath indexPathWithIndex:section] indexPathByAddingIndex:item]
@@ -152,7 +154,7 @@
     id<FTDataSourceObserver> observer = mockProtocol(@protocol(FTDataSourceObserver));
     [set addObserver:observer];
 
-    [set performBatchUpdates:^{
+    [set performBatchUpdate:^{
         [set addObjectsFromArray:@[ @(0), @(2), @(3) ]];
     }];
 
@@ -168,7 +170,7 @@
     id<FTDataSourceObserver> observer = mockProtocol(@protocol(FTDataSourceObserver));
     [set addObserver:observer];
 
-    [set performBatchUpdates:^{
+    [set performBatchUpdate:^{
         [set addObjectsFromArray:@[ @(0), @(2), @(3) ]];
     }];
 
@@ -190,6 +192,79 @@
     [verifyCount(observer, times(1)) dataSourceWillChange:set];
     [verifyCount(observer, times(1)) dataSourceDidChange:set];
     [verifyCount(observer, times(1)) dataSource:set didDeleteItemsAtIndexPaths:@[ IDX(1, 0) ]];
+}
+
+#pragma mark Test Update Object
+
+- (void)testUpdateObject
+{
+    FTMutableSet *set = [[FTMutableSet alloc] initSortDescriptors:@[ [NSSortDescriptor sortDescriptorWithKey:@"value" ascending:YES] ]];
+
+    NSArray *items = @[ ITEM(10), ITEM(20), ITEM(30), ITEM(40), ITEM(50), ITEM(60) ];
+    [set addObjectsFromArray:items];
+
+    id<FTDataSourceObserver> observer = mockProtocol(@protocol(FTDataSourceObserver));
+    [set addObserver:observer];
+
+    FTTestItem *item = items[1];
+    item.value = 45;
+
+    [set performBatchUpdate:^{
+        [set addObject:item];
+        [set addObject:items[0]];
+    }];
+
+    assertThatInteger([(FTTestItem *)[set itemAtIndexPath:IDX(1, 0)] value], equalToInteger(30));
+    assertThatInteger([(FTTestItem *)[set itemAtIndexPath:IDX(3, 0)] value], equalToInteger(45));
+
+    [verifyCount(observer, times(1)) dataSourceWillChange:set];
+    [verifyCount(observer, times(1)) dataSourceDidChange:set];
+    [verifyCount(observer, times(1)) dataSource:set didChangeItemsAtIndexPaths:@[ IDX(0, 0) ]];
+    [verifyCount(observer, times(1)) dataSource:set didMoveItemAtIndexPath:IDX(1, 0) toIndexPath:IDX(3, 0)];
+}
+
+- (void)testMoveItemUp
+{
+    FTMutableSet *set = [[FTMutableSet alloc] initSortDescriptors:@[ [NSSortDescriptor sortDescriptorWithKey:@"value" ascending:YES] ]];
+
+    NSArray *items = @[ ITEM(10), ITEM(20), ITEM(30), ITEM(40), ITEM(50), ITEM(60) ];
+    [set addObjectsFromArray:items];
+
+    id<FTDataSourceObserver> observer = mockProtocol(@protocol(FTDataSourceObserver));
+    [set addObserver:observer];
+
+    FTTestItem *item = items[1];
+    item.value = 45;
+
+    [set addObject:item];
+
+    assertThatInteger([(FTTestItem *)[set itemAtIndexPath:IDX(3, 0)] value], equalToInteger(45));
+
+    [verifyCount(observer, times(1)) dataSourceWillChange:set];
+    [verifyCount(observer, times(1)) dataSourceDidChange:set];
+    [verifyCount(observer, times(1)) dataSource:set didMoveItemAtIndexPath:IDX(1, 0) toIndexPath:IDX(3, 0)];
+}
+
+- (void)testMoveItemDown
+{
+    FTMutableSet *set = [[FTMutableSet alloc] initSortDescriptors:@[ [NSSortDescriptor sortDescriptorWithKey:@"value" ascending:YES] ]];
+
+    NSArray *items = @[ ITEM(10), ITEM(20), ITEM(30), ITEM(40), ITEM(50), ITEM(60) ];
+    [set addObjectsFromArray:items];
+
+    id<FTDataSourceObserver> observer = mockProtocol(@protocol(FTDataSourceObserver));
+    [set addObserver:observer];
+
+    FTTestItem *item = items[4];
+    item.value = 15;
+
+    [set addObject:item];
+
+    assertThatInteger([(FTTestItem *)[set itemAtIndexPath:IDX(1, 0)] value], equalToInteger(15));
+
+    [verifyCount(observer, times(1)) dataSourceWillChange:set];
+    [verifyCount(observer, times(1)) dataSourceDidChange:set];
+    [verifyCount(observer, times(1)) dataSource:set didMoveItemAtIndexPath:IDX(4, 0) toIndexPath:IDX(1, 0)];
 }
 
 #pragma mark Test Getting Metrics

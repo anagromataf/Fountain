@@ -98,7 +98,7 @@
 
 - (void)managedObjectContextObjectsDidChange:(NSNotification *)notification
 {
-    NSPredicate *entityPredicate = [NSPredicate predicateWithBlock:^BOOL(NSManagedObject *evaluatedObject, NSDictionary<NSString *, id> *_Nullable bindings) {
+    NSPredicate *entityPredicate = [NSPredicate predicateWithBlock:^BOOL(NSManagedObject *evaluatedObject, NSDictionary *bindings) {
         return [evaluatedObject.entity isKindOfEntity:self.entity];
     }];
 

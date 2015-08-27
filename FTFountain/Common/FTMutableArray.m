@@ -55,7 +55,7 @@
 
 - (void)insertObject:(nonnull id)anObject atIndex:(NSUInteger)index
 {
-    [self performBatchUpdates:^{
+    [self ft_performBatchUpdate:^{
 
         [_backingStore insertObject:anObject atIndex:index];
 
@@ -71,7 +71,7 @@
 
 - (void)removeObjectAtIndex:(NSUInteger)index
 {
-    [self performBatchUpdates:^{
+    [self ft_performBatchUpdate:^{
 
         [_backingStore removeObjectAtIndex:index];
 
@@ -87,7 +87,7 @@
 
 - (void)addObject:(nonnull id)anObject
 {
-    [self performBatchUpdates:^{
+    [self ft_performBatchUpdate:^{
 
         [_backingStore addObject:anObject];
 
@@ -103,9 +103,16 @@
     }];
 }
 
+- (void)addObjectsFromArray:(NSArray *)otherArray
+{
+    [self ft_performBatchUpdate:^{
+        [super addObjectsFromArray:otherArray];
+    }];
+}
+
 - (void)removeLastObject
 {
-    [self performBatchUpdates:^{
+    [self ft_performBatchUpdate:^{
 
         [_backingStore removeLastObject];
 
@@ -123,7 +130,7 @@
 
 - (void)replaceObjectAtIndex:(NSUInteger)index withObject:(nonnull id)anObject
 {
-    [self performBatchUpdates:^{
+    [self ft_performBatchUpdate:^{
 
         [_backingStore replaceObjectAtIndex:index withObject:anObject];
 
@@ -134,6 +141,13 @@
                 [observer dataSource:self didChangeItemsAtIndexPaths:@[ indexPath ]];
             }
         }
+    }];
+}
+
+- (void)replaceObjectsAtIndexes:(NSIndexSet *)indexes withObjects:(NSArray *)objects
+{
+    [self ft_performBatchUpdate:^{
+        [super replaceObjectsAtIndexes:indexes withObjects:objects];
     }];
 }
 
@@ -184,7 +198,7 @@
 
 #pragma mark Batch Updates
 
-- (void)performBatchUpdates:(void (^)(void))updates
+- (void)ft_performBatchUpdate:(void (^)(void))updates
 {
     if (updates) {
         if (_batchUpdateCallCount == 0) {

@@ -121,22 +121,6 @@
     assertThat([array observers], hasCountOf(0));
 }
 
-#pragma mark Test Batch Updates
-
-- (void)testBatchUpdates
-{
-    FTMutableArray *array = [FTMutableArray array];
-    id<FTDataSourceObserver> observer = mockProtocol(@protocol(FTDataSourceObserver));
-    [array addObserver:observer];
-
-    [array performBatchUpdates:^{
-        [array addObjectsFromArray:@[ @(0), @(2), @(3) ]];
-    }];
-
-    [verifyCount(observer, times(1)) dataSourceWillChange:array];
-    [verifyCount(observer, times(1)) dataSourceDidChange:array];
-}
-
 #pragma mark Test Adding Objects
 
 - (void)testAddObject
@@ -158,9 +142,7 @@
     id<FTDataSourceObserver> observer = mockProtocol(@protocol(FTDataSourceObserver));
     [array addObserver:observer];
 
-    [array performBatchUpdates:^{
-        [array addObjectsFromArray:@[ @(0), @(2), @(3) ]];
-    }];
+    [array addObjectsFromArray:@[ @(0), @(2), @(3) ]];
 
     [verifyCount(observer, times(1)) dataSourceWillChange:array];
     [verifyCount(observer, times(1)) dataSourceDidChange:array];
@@ -210,9 +192,7 @@
     [indexes addIndex:4];
     [indexes addIndex:6];
 
-    [array performBatchUpdates:^{
-        [array replaceObjectsAtIndexes:indexes withObjects:@[ @20, @40, @60 ]];
-    }];
+    [array replaceObjectsAtIndexes:indexes withObjects:@[ @20, @40, @60 ]];
 
     [verifyCount(observer, times(1)) dataSourceWillChange:array];
     [verifyCount(observer, times(1)) dataSourceDidChange:array];

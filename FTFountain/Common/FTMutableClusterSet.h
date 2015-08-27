@@ -1,8 +1,8 @@
 //
-//  FTMutableSet.h
+//  FTMutableClusterSet.h
 //  FTFountain
 //
-//  Created by Tobias Kraentzer on 16.08.15.
+//  Created by Tobias Kraentzer on 26.08.15.
 //  Copyright © 2015 Tobias Kräntzer. All rights reserved.
 //
 
@@ -11,13 +11,18 @@
 #import "FTDataSource.h"
 #import "FTReverseDataSource.h"
 
-@interface FTMutableSet : NSMutableSet <FTDataSource, FTReverseDataSource>
+@interface FTClusterComperator : NSObject <NSSecureCoding>
+- (BOOL)compareObject:(id)object1 toObject:(id)object2;
+@end
+
+@interface FTMutableClusterSet : NSMutableSet <FTDataSource>
 
 #pragma mark Life-cycle
-- (instancetype)initSortDescriptors:(NSArray *)sortDescriptors;
+- (instancetype)initSortDescriptors:(NSArray *)sortDescriptors comperator:(FTClusterComperator *)comperator;
 
 #pragma mark Sort Descriptors & Clustering
 @property (nonatomic, readonly) NSArray *sortDescriptors;
+@property (nonatomic, readonly) FTClusterComperator *comperator;
 
 #pragma mark Batch Updates
 
