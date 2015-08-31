@@ -129,12 +129,12 @@
     // Inserted Objects
 
     NSSet *insertedObjects = [notification.userInfo[NSInsertedObjectsKey] filteredSetUsingPredicate:entityPredicate];
-    insertedObjects = [insertedObjects filteredSetUsingPredicate:self.predicate];
+    insertedObjects = self.predicate ? [insertedObjects filteredSetUsingPredicate:self.predicate] : insertedObjects;
 
     // Updates
 
     NSSet *updatedObjects = [notification.userInfo[NSUpdatedObjectsKey] filteredSetUsingPredicate:entityPredicate];
-    NSSet *updatedObjectsToInsert = [updatedObjects filteredSetUsingPredicate:self.predicate];
+    NSSet *updatedObjectsToInsert = self.predicate ? [updatedObjects filteredSetUsingPredicate:self.predicate] : updatedObjects;
 
     NSMutableSet *updatedObjectsToRemove = [updatedObjects mutableCopy];
     [updatedObjectsToRemove minusSet:updatedObjectsToInsert];
