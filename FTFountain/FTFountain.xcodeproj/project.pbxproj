@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		BA76125BE0868B2E5286D745 /* libPods-iOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 181AAC39A27B232748D1FB07 /* libPods-iOSTests.a */; };
 		E819ECD6025418DBD2F88D2F /* libPods-OSXTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C645279FCA25E88BB3758D72 /* libPods-OSXTests.a */; };
+		F60065291B95A9A8006ED118 /* FTCombinedDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = F60065271B95A9A8006ED118 /* FTCombinedDataSource.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F600652A1B95A9A8006ED118 /* FTCombinedDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = F60065271B95A9A8006ED118 /* FTCombinedDataSource.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F600652B1B95A9A8006ED118 /* FTCombinedDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = F60065281B95A9A8006ED118 /* FTCombinedDataSource.m */; };
+		F600652C1B95A9A8006ED118 /* FTCombinedDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = F60065281B95A9A8006ED118 /* FTCombinedDataSource.m */; };
 		F60967781B62D1D0007F2F35 /* FTMutableArrayTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F60967771B62D1D0007F2F35 /* FTMutableArrayTests.m */; };
 		F60967791B62D1D0007F2F35 /* FTMutableArrayTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F60967771B62D1D0007F2F35 /* FTMutableArrayTests.m */; };
 		F61070301B7BC7BD009C2D40 /* TableTest.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F610702D1B7BC7BD009C2D40 /* TableTest.storyboard */; };
@@ -107,6 +111,8 @@
 		B840933B8AFFFE51509020A3 /* Pods-iOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOSTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-iOSTests/Pods-iOSTests.release.xcconfig"; sourceTree = "<group>"; };
 		C1E257ACB1DFDAC116021BD8 /* Pods-OSXTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OSXTests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-OSXTests/Pods-OSXTests.debug.xcconfig"; sourceTree = "<group>"; };
 		C645279FCA25E88BB3758D72 /* libPods-OSXTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-OSXTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F60065271B95A9A8006ED118 /* FTCombinedDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FTCombinedDataSource.h; sourceTree = "<group>"; };
+		F60065281B95A9A8006ED118 /* FTCombinedDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTCombinedDataSource.m; sourceTree = "<group>"; };
 		F60967771B62D1D0007F2F35 /* FTMutableArrayTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FTMutableArrayTests.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		F610702D1B7BC7BD009C2D40 /* TableTest.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = TableTest.storyboard; sourceTree = "<group>"; };
 		F610702E1B7BC7BD009C2D40 /* FTTestTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FTTestTableViewController.h; sourceTree = "<group>"; };
@@ -371,6 +377,8 @@
 				F6A333E91B810F9D00C77C58 /* FTMutableSet.m */,
 				F66C78811B8E27AB0044913D /* FTMutableClusterSet.h */,
 				F66C78821B8E27AB0044913D /* FTMutableClusterSet.m */,
+				F60065271B95A9A8006ED118 /* FTCombinedDataSource.h */,
+				F60065281B95A9A8006ED118 /* FTCombinedDataSource.m */,
 			);
 			name = "General Data Sources";
 			sourceTree = "<group>";
@@ -458,6 +466,7 @@
 				F6EE0AA11B8F220B00A3F608 /* FTEntityClusterComperator.h in Headers */,
 				F66C7ECC1B5AAC3B00662CD1 /* FTFountain.h in Headers */,
 				F6B5E6451B8A0475002C6181 /* FTTestItem.h in Headers */,
+				F60065291B95A9A8006ED118 /* FTCombinedDataSource.h in Headers */,
 				F66C7E991B5AABAE00662CD1 /* FTFountainiOS.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -468,6 +477,7 @@
 			files = (
 				F6A333EB1B810F9D00C77C58 /* FTMutableSet.h in Headers */,
 				F61070451B7C05DD009C2D40 /* FTPagingDataSource.h in Headers */,
+				F600652A1B95A9A8006ED118 /* FTCombinedDataSource.h in Headers */,
 				F6C7968B1B85E12D00B55B6B /* FTFetchedDataSource.h in Headers */,
 				F6FFB7A11B62C3F2007B9652 /* FTMutableArray.h in Headers */,
 				F6EE0AA21B8F220B00A3F608 /* FTEntityClusterComperator.h in Headers */,
@@ -715,6 +725,7 @@
 				F6A3D5711B8B478A00437C34 /* FTEntity.m in Sources */,
 				F6B5E6471B8A0475002C6181 /* FTTestItem.m in Sources */,
 				F6FEDF8E1B78FCBF00BAD0FF /* FTTableViewAdapter.m in Sources */,
+				F600652B1B95A9A8006ED118 /* FTCombinedDataSource.m in Sources */,
 				F66C78851B8E27AB0044913D /* FTMutableClusterSet.m in Sources */,
 				F610704A1B7C905E009C2D40 /* FTCollectionViewAdapter.m in Sources */,
 				F6C7968C1B85E12D00B55B6B /* FTFetchedDataSource.m in Sources */,
@@ -747,6 +758,7 @@
 				F6EE0A9D1B8F211200A3F608 /* FTTestItemClusterComperator.m in Sources */,
 				F6FFB7A31B62C3F2007B9652 /* FTMutableArray.m in Sources */,
 				F6EE0AA41B8F220B00A3F608 /* FTEntityClusterComperator.m in Sources */,
+				F600652C1B95A9A8006ED118 /* FTCombinedDataSource.m in Sources */,
 				F66C78861B8E27AB0044913D /* FTMutableClusterSet.m in Sources */,
 				F6A3D5721B8B478A00437C34 /* FTEntity.m in Sources */,
 				F6B5E6481B8A0475002C6181 /* FTTestItem.m in Sources */,

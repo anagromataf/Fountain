@@ -18,6 +18,7 @@
 #import "FTMutableArray.h"
 #import "FTMutableSet.h"
 #import "FTMutableClusterSet.h"
+#import "FTCombinedDataSource.h"
 
 // CoreData Data Sources
 #import "FTFetchedDataSource.h"
