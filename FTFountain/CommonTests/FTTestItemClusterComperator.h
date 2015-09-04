@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 Tobias Kräntzer. All rights reserved.
 //
 
-#import <FTFountainiOS/FTFountainiOS.h>
+#import "FTFountain.h"
 
 @interface FTTestItemClusterComperator : FTClusterComperator
 
