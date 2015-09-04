@@ -13,7 +13,7 @@
 @interface FTCombinedDataSource () <FTDataSourceObserver> {
     NSHashTable *_observers;
     NSMutableArray *_sectionRanges;
-    
+
     NSUInteger _dataSourceChangeCallCount;
 }
 
@@ -30,14 +30,14 @@
         _dataSources = [dataSources copy];
         _observers = [NSHashTable weakObjectsHashTable];
         _sectionRanges = [[NSMutableArray alloc] init];
-        
+
         NSUInteger offset = 0;
         for (id<FTDataSource> dataSource in _dataSources) {
             [dataSource addObserver:self];
-            
+
             NSUInteger numberOfSections = [dataSource numberOfSections];
             [_sectionRanges addObject:[NSValue valueWithRange:NSMakeRange(offset, numberOfSections)]];
-            
+
             offset += numberOfSections;
         }
     }
@@ -48,11 +48,11 @@
 
 - (id<FTDataSource>)dataSourceOfSection:(NSUInteger)section
 {
-    NSUInteger dataSourceIndex = [_sectionRanges indexOfObjectPassingTest:^BOOL(NSValue *value, NSUInteger idx, BOOL * _Nonnull stop) {
+    NSUInteger dataSourceIndex = [_sectionRanges indexOfObjectPassingTest:^BOOL(NSValue *value, NSUInteger idx, BOOL *stop) {
         NSRange range = [value rangeValue];
         return NSLocationInRange(section, range);
     }];
- 
+
     if (dataSourceIndex != NSNotFound) {
         return [_dataSources objectAtIndex:dataSourceIndex];
     } else {
@@ -70,18 +70,18 @@
 {
     NSUInteger dataSourceIndex = [_dataSources indexOfObject:dataSource];
     [_sectionRanges replaceObjectAtIndex:dataSourceIndex withObject:[NSValue valueWithRange:range]];
-    
+
     NSUInteger offset = NSMaxRange(range);
-    
+
     dataSourceIndex++;
     while (dataSourceIndex < [_sectionRanges count]) {
-        
+
         NSRange range = [[_sectionRanges objectAtIndex:dataSourceIndex] rangeValue];
         range.location = offset;
         [_sectionRanges replaceObjectAtIndex:dataSourceIndex withObject:[NSValue valueWithRange:range]];
-        
+
         offset += range.length;
-        
+
         dataSourceIndex++;
     }
 }
@@ -105,7 +105,7 @@
 - (NSIndexPath *)convertIndexPath:(NSIndexPath *)indexPath toDataSource:(id<FTDataSource>)dataSource
 {
     NSParameterAssert([indexPath length] == 2);
-    
+
     NSUInteger section = [self convertSection:[indexPath indexAtPosition:0] toDataSource:dataSource];
     if (section != NSNotFound) {
         NSUInteger indexes[] = {section, [indexPath indexAtPosition:1]};
@@ -118,7 +118,7 @@
 - (NSIndexPath *)convertIndexPath:(NSIndexPath *)indexPath fromDataSource:(id<FTDataSource>)dataSource
 {
     NSParameterAssert([indexPath length] == 2);
-    
+
     NSUInteger section = [self convertSection:[indexPath indexAtPosition:0] fromDataSource:dataSource];
     if (section != NSNotFound) {
         NSUInteger indexes[] = {section, [indexPath indexAtPosition:1]};
@@ -143,7 +143,7 @@
 {
     id<FTDataSource> dataSource = [self dataSourceOfSection:section];
     NSUInteger convertedSection = [self convertSection:section toDataSource:dataSource];
-    
+
     return [dataSource numberOfItemsInSection:convertedSection];
 }
 
@@ -153,22 +153,21 @@
 {
     id<FTDataSource> dataSource = [self dataSourceOfSection:section];
     NSUInteger convertedSection = [self convertSection:section toDataSource:dataSource];
-    
+
     return [dataSource sectionItemForSection:convertedSection];
 }
 
 - (id)itemAtIndexPath:(NSIndexPath *)indexPath
 {
     NSParameterAssert([indexPath length] == 2);
-    
+
     NSUInteger section = [indexPath indexAtPosition:0];
 
     id<FTDataSource> dataSource = [self dataSourceOfSection:section];
     NSIndexPath *convertedIndexPath = [self convertIndexPath:indexPath toDataSource:dataSource];
-    
+
     return [dataSource itemAtIndexPath:convertedIndexPath];
 }
-
 
 #pragma mark Getting Section Indexes
 
@@ -189,7 +188,7 @@
 
 #pragma mark Getting Item Index Paths
 
-- (NSArray *)indexPathsOfItem:(id )item
+- (NSArray *)indexPathsOfItem:(id)item
 {
     NSMutableArray *indexPaths = [[NSMutableArray alloc] init];
     for (id<FTDataSource> dataSource in _dataSources) {
@@ -222,7 +221,6 @@
 
 #pragma mark - FTDataSourceObserver
 
-
 #pragma mark Reload
 
 - (void)dataSourceWillReset:(id<FTDataSource>)dataSource
@@ -233,19 +231,19 @@
 - (void)dataSourceDidReset:(id<FTDataSource>)dataSource
 {
     NSInteger numberOfSections = [dataSource numberOfSections];
-    
+
     NSRange sectionRange = [self sectionRangeOfDataSource:dataSource];
     NSRange newSectionRange = NSMakeRange(sectionRange.location, numberOfSections);
-    
+
     NSInteger diff = numberOfSections - sectionRange.length;
-    
+
     NSIndexSet *insertedSections = nil;
     NSIndexSet *deletedSections = nil;
     NSIndexSet *changedSections = nil;
-    
+
     NSRange changedRange = NSIntersectionRange(sectionRange, newSectionRange);
     changedSections = [NSIndexSet indexSetWithIndexesInRange:changedRange];
-    
+
     if (diff > 0) {
         NSRange insertedRange = NSMakeRange(NSMaxRange(sectionRange), newSectionRange.length - sectionRange.length);
         insertedSections = [NSIndexSet indexSetWithIndexesInRange:insertedRange];
@@ -253,23 +251,23 @@
         NSRange deletedRange = NSMakeRange(NSMaxRange(newSectionRange), sectionRange.length - newSectionRange.length);
         deletedSections = [NSIndexSet indexSetWithIndexesInRange:deletedRange];
     }
-    
+
     for (id<FTDataSourceObserver> observer in self.observers) {
         if ([deletedSections count] > 0 && [observer respondsToSelector:@selector(dataSource:didDeleteSections:)]) {
             [observer dataSource:self didDeleteSections:deletedSections];
         }
-        
+
         if ([insertedSections count] > 0 && [observer respondsToSelector:@selector(dataSource:didInsertSections:)]) {
             [observer dataSource:self didInsertSections:insertedSections];
         }
-        
+
         if ([changedSections count] > 0 && [observer respondsToSelector:@selector(dataSource:didChangeSections:)]) {
             [observer dataSource:self didChangeSections:changedSections];
         }
     }
-    
+
     [self setSectionRange:newSectionRange ofDataSource:dataSource];
-    
+
     [self dataSourceDidChange:dataSource];
 }
 
@@ -284,14 +282,14 @@
             }
         }
     }
-    
+
     _dataSourceChangeCallCount++;
 }
 
 - (void)dataSourceDidChange:(id<FTDataSource>)dataSource
 {
     _dataSourceChangeCallCount--;
-    
+
     if (_dataSourceChangeCallCount == 0) {
         for (id<FTDataSourceObserver> observer in self.observers) {
             if ([observer respondsToSelector:@selector(dataSourceDidChange:)]) {
@@ -303,15 +301,15 @@
 
 #pragma mark Manage Sections
 
-- (void)dataSource:(id<FTDataSource> )dataSource didInsertSections:(NSIndexSet *)dataSourceSections
+- (void)dataSource:(id<FTDataSource>)dataSource didInsertSections:(NSIndexSet *)dataSourceSections
 {
     NSRange sectionRange = [self sectionRangeOfDataSource:dataSource];
     sectionRange.length += [dataSourceSections count];
     [self setSectionRange:sectionRange ofDataSource:dataSource];
-    
+
     NSMutableIndexSet *sections = [dataSourceSections mutableCopy];
     [sections shiftIndexesStartingAtIndex:0 by:sectionRange.location];
-    
+
     for (id<FTDataSourceObserver> observer in self.observers) {
         if ([observer respondsToSelector:@selector(dataSource:didInsertSections:)]) {
             [observer dataSource:self didInsertSections:sections];
@@ -319,15 +317,15 @@
     }
 }
 
-- (void)dataSource:(id<FTDataSource> )dataSource didDeleteSections:(NSIndexSet *)dataSourceSections
+- (void)dataSource:(id<FTDataSource>)dataSource didDeleteSections:(NSIndexSet *)dataSourceSections
 {
     NSRange sectionRange = [self sectionRangeOfDataSource:dataSource];
     sectionRange.length -= [dataSourceSections count];
     [self setSectionRange:sectionRange ofDataSource:dataSource];
-    
+
     NSMutableIndexSet *sections = [dataSourceSections mutableCopy];
     [sections shiftIndexesStartingAtIndex:0 by:sectionRange.location];
-    
+
     for (id<FTDataSourceObserver> observer in self.observers) {
         if ([observer respondsToSelector:@selector(dataSource:didDeleteSections:)]) {
             [observer dataSource:self didDeleteSections:sections];
@@ -335,13 +333,13 @@
     }
 }
 
-- (void)dataSource:(id<FTDataSource> )dataSource didChangeSections:(NSIndexSet *)dataSourceSections
+- (void)dataSource:(id<FTDataSource>)dataSource didChangeSections:(NSIndexSet *)dataSourceSections
 {
     NSRange sectionRange = [self sectionRangeOfDataSource:dataSource];
-    
+
     NSMutableIndexSet *sections = [dataSourceSections mutableCopy];
     [sections shiftIndexesStartingAtIndex:0 by:sectionRange.location];
-    
+
     for (id<FTDataSourceObserver> observer in self.observers) {
         if ([observer respondsToSelector:@selector(dataSource:didChangeSections:)]) {
             [observer dataSource:self didChangeSections:sections];
@@ -349,13 +347,13 @@
     }
 }
 
-- (void)dataSource:(id<FTDataSource> )dataSource didMoveSection:(NSInteger)dataSourceSection toSection:(NSInteger)newDataSourceSection
+- (void)dataSource:(id<FTDataSource>)dataSource didMoveSection:(NSInteger)dataSourceSection toSection:(NSInteger)newDataSourceSection
 {
     NSRange sectionRange = [self sectionRangeOfDataSource:dataSource];
-    
+
     NSInteger section = dataSourceSection + sectionRange.location;
     NSInteger newSection = newDataSourceSection + sectionRange.location;
-    
+
     for (id<FTDataSourceObserver> observer in self.observers) {
         if ([observer respondsToSelector:@selector(dataSource:didMoveSection:toSection:)]) {
             [observer dataSource:self didMoveSection:section toSection:newSection];
@@ -365,13 +363,13 @@
 
 #pragma mark Manage Items
 
-- (void)dataSource:(id<FTDataSource> )dataSource didInsertItemsAtIndexPaths:(NSArray *)sectionIndexPaths
+- (void)dataSource:(id<FTDataSource>)dataSource didInsertItemsAtIndexPaths:(NSArray *)sectionIndexPaths
 {
     NSMutableArray *indexPaths = [[NSMutableArray alloc] init];
     for (NSIndexPath *indexPath in sectionIndexPaths) {
         [indexPaths addObject:[self convertIndexPath:indexPath fromDataSource:dataSource]];
     }
-    
+
     for (id<FTDataSourceObserver> observer in self.observers) {
         if ([observer respondsToSelector:@selector(dataSource:didInsertItemsAtIndexPaths:)]) {
             [observer dataSource:self didInsertItemsAtIndexPaths:indexPaths];
@@ -379,13 +377,13 @@
     }
 }
 
-- (void)dataSource:(id<FTDataSource> )dataSource didDeleteItemsAtIndexPaths:(NSArray *)sectionIndexPaths
+- (void)dataSource:(id<FTDataSource>)dataSource didDeleteItemsAtIndexPaths:(NSArray *)sectionIndexPaths
 {
     NSMutableArray *indexPaths = [[NSMutableArray alloc] init];
     for (NSIndexPath *indexPath in sectionIndexPaths) {
         [indexPaths addObject:[self convertIndexPath:indexPath fromDataSource:dataSource]];
     }
-    
+
     for (id<FTDataSourceObserver> observer in self.observers) {
         if ([observer respondsToSelector:@selector(dataSource:didDeleteItemsAtIndexPaths:)]) {
             [observer dataSource:self didDeleteItemsAtIndexPaths:indexPaths];
@@ -393,13 +391,13 @@
     }
 }
 
-- (void)dataSource:(id<FTDataSource> )dataSource didChangeItemsAtIndexPaths:(NSArray *)sectionIndexPaths
+- (void)dataSource:(id<FTDataSource>)dataSource didChangeItemsAtIndexPaths:(NSArray *)sectionIndexPaths
 {
     NSMutableArray *indexPaths = [[NSMutableArray alloc] init];
     for (NSIndexPath *indexPath in sectionIndexPaths) {
         [indexPaths addObject:[self convertIndexPath:indexPath fromDataSource:dataSource]];
     }
-    
+
     for (id<FTDataSourceObserver> observer in self.observers) {
         if ([observer respondsToSelector:@selector(dataSource:didChangeItemsAtIndexPaths:)]) {
             [observer dataSource:self didChangeItemsAtIndexPaths:indexPaths];
@@ -407,11 +405,11 @@
     }
 }
 
-- (void)dataSource:(id<FTDataSource> )dataSource didMoveItemAtIndexPath:(NSIndexPath *)sectionIndexPath toIndexPath:(NSIndexPath *)newSectionIndexPath
+- (void)dataSource:(id<FTDataSource>)dataSource didMoveItemAtIndexPath:(NSIndexPath *)sectionIndexPath toIndexPath:(NSIndexPath *)newSectionIndexPath
 {
     NSIndexPath *indexPath = [self convertIndexPath:sectionIndexPath fromDataSource:dataSource];
     NSIndexPath *newIndexPath = [self convertIndexPath:newSectionIndexPath fromDataSource:dataSource];
-    
+
     for (id<FTDataSourceObserver> observer in self.observers) {
         if ([observer respondsToSelector:@selector(dataSource:didMoveItemAtIndexPath:toIndexPath:)]) {
             [observer dataSource:self didMoveItemAtIndexPath:indexPath toIndexPath:newIndexPath];

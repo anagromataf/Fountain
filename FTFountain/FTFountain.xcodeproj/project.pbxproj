@@ -56,6 +56,8 @@
 		F6A333ED1B810F9D00C77C58 /* FTMutableSet.m in Sources */ = {isa = PBXBuildFile; fileRef = F6A333E91B810F9D00C77C58 /* FTMutableSet.m */; };
 		F6A333EF1B81173900C77C58 /* FTMutableSetTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F6A333EE1B81173900C77C58 /* FTMutableSetTests.m */; };
 		F6A333F01B81173900C77C58 /* FTMutableSetTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F6A333EE1B81173900C77C58 /* FTMutableSetTests.m */; };
+		F6A397911B98937B0093BC21 /* FTCombinedDataSourceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F6A397901B98937B0093BC21 /* FTCombinedDataSourceTests.m */; };
+		F6A397921B98937B0093BC21 /* FTCombinedDataSourceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F6A397901B98937B0093BC21 /* FTCombinedDataSourceTests.m */; };
 		F6A3D56D1B8B478A00437C34 /* FTEntity+CoreDataProperties.h in Headers */ = {isa = PBXBuildFile; fileRef = F6A3D56A1B8B478A00437C34 /* FTEntity+CoreDataProperties.h */; };
 		F6A3D56E1B8B478A00437C34 /* FTEntity+CoreDataProperties.h in Headers */ = {isa = PBXBuildFile; fileRef = F6A3D56A1B8B478A00437C34 /* FTEntity+CoreDataProperties.h */; };
 		F6A3D56F1B8B478A00437C34 /* FTEntity.h in Headers */ = {isa = PBXBuildFile; fileRef = F6A3D56B1B8B478A00437C34 /* FTEntity.h */; };
@@ -151,6 +153,7 @@
 		F6A333E91B810F9D00C77C58 /* FTMutableSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FTMutableSet.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		F6A333EE1B81173900C77C58 /* FTMutableSetTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTMutableSetTests.m; sourceTree = "<group>"; };
 		F6A333F11B81DCFA00C77C58 /* FTMutableClusterTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FTMutableClusterTests.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		F6A397901B98937B0093BC21 /* FTCombinedDataSourceTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTCombinedDataSourceTests.m; sourceTree = "<group>"; };
 		F6A3D56A1B8B478A00437C34 /* FTEntity+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "FTEntity+CoreDataProperties.h"; sourceTree = "<group>"; };
 		F6A3D56B1B8B478A00437C34 /* FTEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FTEntity.h; sourceTree = "<group>"; };
 		F6A3D56C1B8B478A00437C34 /* FTEntity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTEntity.m; sourceTree = "<group>"; };
@@ -349,6 +352,7 @@
 				F60967771B62D1D0007F2F35 /* FTMutableArrayTests.m */,
 				F6A333EE1B81173900C77C58 /* FTMutableSetTests.m */,
 				F6A333F11B81DCFA00C77C58 /* FTMutableClusterTests.m */,
+				F6A397901B98937B0093BC21 /* FTCombinedDataSourceTests.m */,
 				F653D15C1B8B42FF00C6F706 /* FTFetchedDataSourceTests.m */,
 				F653D1681B8B439400C6F706 /* Test Model */,
 				F6B5E6491B8A047C002C6181 /* Test Item */,
@@ -747,6 +751,7 @@
 				F61070421B7BF581009C2D40 /* FTSectionHeaderFooterView.m in Sources */,
 				F66C78881B8E2BE70044913D /* FTMutableClusterTests.m in Sources */,
 				F653D15D1B8B42FF00C6F706 /* FTFetchedDataSourceTests.m in Sources */,
+				F6A397911B98937B0093BC21 /* FTCombinedDataSourceTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -776,6 +781,7 @@
 				F653D1621B8B434100C6F706 /* TestModel.xcdatamodeld in Sources */,
 				F66C7EC11B5AABC300662CD1 /* OSXTests.m in Sources */,
 				F66C78891B8E2BE80044913D /* FTMutableClusterTests.m in Sources */,
+				F6A397921B98937B0093BC21 /* FTCombinedDataSourceTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
