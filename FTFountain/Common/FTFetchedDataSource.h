@@ -37,6 +37,7 @@
 @property (nonatomic, readonly) FTClusterComperator *clusterComperator;
 
 #pragma mark Fetch Objects
+- (BOOL)fetchObject:(NSError **)error;
 - (void)fetchObjectsWithCompletion:(void (^)(BOOL success, NSError *error))completion;
 
 @end

@@ -64,6 +64,44 @@
 
 #pragma mark Fetch Objects
 
+- (BOOL)fetchObject:(NSError **)error
+{
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:_entity.name];
+    request.predicate = _predicate;
+
+    NSArray *result = [_context executeFetchRequest:request error:error];
+    if (result) {
+
+        for (id<FTDataSourceObserver> observer in self.observers) {
+            if ([observer respondsToSelector:@selector(dataSourceWillReset:)]) {
+                [observer dataSourceWillReset:self];
+            }
+        }
+
+        if (_clusterComperator) {
+            FTMutableClusterSet *set = [[FTMutableClusterSet alloc] initSortDescriptors:self.sortDescriptors comperator:self.clusterComperator];
+            [set addObjectsFromArray:result];
+            [set addObserver:self];
+            _fetchedObjects = set;
+        } else {
+            FTMutableSet *set = [[FTMutableSet alloc] initSortDescriptors:self.sortDescriptors];
+            [set addObjectsFromArray:result];
+            [set addObserver:self];
+            _fetchedObjects = set;
+        }
+
+        for (id<FTDataSourceObserver> observer in self.observers) {
+            if ([observer respondsToSelector:@selector(dataSourceDidReset:)]) {
+                [observer dataSourceDidReset:self];
+            }
+        }
+
+        return YES;
+    } else {
+        return NO;
+    }
+}
+
 - (void)fetchObjectsWithCompletion:(void (^)(BOOL success, NSError *error))completion
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:_entity.name];
