@@ -476,6 +476,69 @@
     [_observers removeObject:observer];
 }
 
+#pragma mark FTReverseDataSource
+
+#pragma mark Getting Section Indexes
+
+- (NSIndexSet *)sectionsOfSectionItem:(id)sectionItem
+{
+    return [NSIndexSet indexSet];
+}
+
+#pragma mark Getting Item Index Paths
+
+- (NSArray *)indexPathsOfItem:(id)object
+{
+    NSParameterAssert(object);
+    
+    if ([_backingStore containsObject:object]) {
+        
+        NSComparator comperator = [[self class] comperatorUsingSortDescriptors:self.sortDescriptors];
+        
+        NSUInteger sectionIndex = [_sections indexOfObject:object
+                                             inSortedRange:NSMakeRange(0, [_sections count])
+                                                   options:NSBinarySearchingFirstEqual
+                                           usingComparator:^NSComparisonResult(NSMutableArray *section, id object) {
+                                               
+                                               NSUInteger itemIndex = [section indexOfObject:object
+                                                                               inSortedRange:NSMakeRange(0, [section count])
+                                                                                     options:NSBinarySearchingInsertionIndex
+                                                                             usingComparator:comperator];
+                                               
+                                               if (itemIndex == 0) {
+                                                   if ([_comperator compareObject:object toObject:[section firstObject]]) {
+                                                       return NSOrderedSame;
+                                                   } else {
+                                                       return NSOrderedDescending;
+                                                   }
+                                               } else if (itemIndex == [section count]) {
+                                                   if ([_comperator compareObject:[section lastObject] toObject:object]) {
+                                                       return NSOrderedSame;
+                                                   } else {
+                                                       return NSOrderedAscending;
+                                                   }
+                                               } else {
+                                                   return NSOrderedSame;
+                                               }
+                                           }];
+        
+        if (sectionIndex != NSNotFound) {
+            
+            NSMutableArray *section = [_sections objectAtIndex:sectionIndex];
+            NSUInteger itemIndex = [section indexOfObject:object];
+            
+            if (itemIndex != NSNotFound) {
+                
+                NSUInteger indexes[] = {sectionIndex, itemIndex};
+                NSIndexPath *indexPath = [NSIndexPath indexPathWithIndexes:indexes length:2];
+                return @[ indexPath ];
+            }
+        }
+    }
+    
+    return @[];
+}
+
 @end
 
 @implementation FTClusterComperator

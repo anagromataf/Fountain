@@ -15,7 +15,7 @@
 - (BOOL)compareObject:(id)object1 toObject:(id)object2;
 @end
 
-@interface FTMutableClusterSet : NSMutableSet <FTDataSource>
+@interface FTMutableClusterSet : NSMutableSet <FTDataSource, FTReverseDataSource>
 
 #pragma mark Life-cycle
 - (instancetype)initSortDescriptors:(NSArray *)sortDescriptors comperator:(FTClusterComperator *)comperator;
