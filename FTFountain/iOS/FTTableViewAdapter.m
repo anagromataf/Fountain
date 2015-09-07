@@ -266,6 +266,10 @@
 {
     if (tableView == _tableView) {
 
+        if ([self.delegate respondsToSelector:@selector(tableView:willDisplayCell:forRowAtIndexPath:)]) {
+            [self.delegate tableView:tableView willDisplayCell:cell forRowAtIndexPath:indexPath];
+        }
+        
         if ([_dataSource conformsToProtocol:@protocol(FTPagingDataSource)]) {
             id<FTPagingDataSource> pagingDataSource = (id<FTPagingDataSource>)_dataSource;
 
@@ -308,6 +312,9 @@
 
 - (BOOL)respondsToSelector:(SEL)aSelector
 {
+    if (aSelector == @selector(tableView:willDisplayCell:forRowAtIndexPath:)) {
+        
+    }
     if ([super respondsToSelector:aSelector]) {
         return YES;
     } else {

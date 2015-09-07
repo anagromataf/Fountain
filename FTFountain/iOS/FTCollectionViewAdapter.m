@@ -252,6 +252,11 @@
 - (void)collectionView:(UICollectionView *)collectionView willDisplayCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath
 {
     if (collectionView == _collectionView) {
+        
+        if ([self.delegate respondsToSelector:@selector(collectionView:willDisplayCell:forItemAtIndexPath:)]) {
+            [self.delegate collectionView:collectionView willDisplayCell:cell forItemAtIndexPath:indexPath];
+        }
+        
         if ([_dataSource conformsToProtocol:@protocol(FTPagingDataSource)]) {
             id<FTPagingDataSource> pagingDataSource = (id<FTPagingDataSource>)_dataSource;
 
