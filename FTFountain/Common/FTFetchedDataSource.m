@@ -171,7 +171,16 @@
 
     // Updates
 
-    NSSet *updatedObjects = [notification.userInfo[NSUpdatedObjectsKey] filteredSetUsingPredicate:entityPredicate];
+    NSMutableSet *updatedObjects = [[NSMutableSet alloc] init];
+
+    if (notification.userInfo[NSUpdatedObjectsKey]) {
+        [updatedObjects unionSet:[notification.userInfo[NSUpdatedObjectsKey] filteredSetUsingPredicate:entityPredicate]];
+    }
+
+    if (notification.userInfo[NSRefreshedObjectsKey]) {
+        [updatedObjects unionSet:[notification.userInfo[NSRefreshedObjectsKey] filteredSetUsingPredicate:entityPredicate]];
+    }
+
     NSSet *updatedObjectsToInsert = self.predicate ? [updatedObjects filteredSetUsingPredicate:self.predicate] : updatedObjects;
 
     NSMutableSet *updatedObjectsToRemove = [updatedObjects mutableCopy];
