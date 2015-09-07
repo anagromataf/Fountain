@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name                    = "FTFountain"
-  s.version                 = "2.0-alpha2"
+  s.version                 = "2.0-alpha3"
   s.summary                 = "Pluggable data sources and adapters for managing list-like content."
   
   s.authors                 = { "Tobias Kräntzer" => "info@tobias-kraentzer.de" }
