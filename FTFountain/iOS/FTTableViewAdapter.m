@@ -358,7 +358,7 @@
     }
 }
 
-- (void)dataSource:(id<FTDataSource>)dataSource didReloadSections:(NSIndexSet *)sections
+- (void)dataSource:(id<FTDataSource>)dataSource didChangeSections:(NSIndexSet *)sections
 {
     if (dataSource == _dataSource) {
         [_tableView reloadSections:sections withRowAnimation:self.rowAnimation];
@@ -386,7 +386,7 @@
     }
 }
 
-- (void)dataSource:(id<FTDataSource>)dataSource didReloadItemsAtIndexPaths:(NSArray *)indexPaths
+- (void)dataSource:(id<FTDataSource>)dataSource didChangeItemsAtIndexPaths:(NSArray *)indexPaths
 {
     if (dataSource == _dataSource) {
         [_tableView reloadRowsAtIndexPaths:indexPaths withRowAnimation:self.rowAnimation];
