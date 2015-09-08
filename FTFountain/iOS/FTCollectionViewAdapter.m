@@ -41,6 +41,8 @@
 
     BOOL _isLoadingMoreItemsBeforeFirstItem;
     BOOL _isLoadingMoreItemsAfterLastItem;
+
+    NSInteger _isInUserDrivenChangeCallCount;
 }
 
 @end
@@ -95,6 +97,17 @@
         _dataSource = dataSource;
         [_dataSource addObserver:self];
         [_collectionView reloadData];
+    }
+}
+
+#pragma mark User-driven Change
+
+- (void)performUserDrivenChange:(void (^)())block
+{
+    if (block) {
+        _isInUserDrivenChangeCallCount++;
+        block();
+        _isInUserDrivenChangeCallCount--;
     }
 }
 
@@ -252,11 +265,11 @@
 - (void)collectionView:(UICollectionView *)collectionView willDisplayCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath
 {
     if (collectionView == _collectionView) {
-        
+
         if ([self.delegate respondsToSelector:@selector(collectionView:willDisplayCell:forItemAtIndexPath:)]) {
             [self.delegate collectionView:collectionView willDisplayCell:cell forItemAtIndexPath:indexPath];
         }
-        
+
         if ([_dataSource conformsToProtocol:@protocol(FTPagingDataSource)]) {
             id<FTPagingDataSource> pagingDataSource = (id<FTPagingDataSource>)_dataSource;
 
@@ -316,110 +329,115 @@
 
 - (void)dataSourceDidReset:(id<FTDataSource>)dataSource
 {
-    if (dataSource == _dataSource) {
+    if (_isInUserDrivenChangeCallCount == 0 && dataSource == _dataSource) {
         [_collectionView reloadData];
     }
 }
 
 - (void)dataSourceWillChange:(id<FTDataSource>)dataSource
 {
-    [_insertedSections removeAllIndexes];
-    [_deletedSections removeAllIndexes];
-    [_reloadedSections removeAllIndexes];
-    [_movedSections removeAllObjects];
-    [_insertedItems removeAllObjects];
-    [_deletedItems removeAllObjects];
-    [_movedItems removeAllObjects];
-    [_reloadedItems removeAllObjects];
+    if (_isInUserDrivenChangeCallCount == 0 && dataSource == _dataSource) {
+        [_insertedSections removeAllIndexes];
+        [_deletedSections removeAllIndexes];
+        [_reloadedSections removeAllIndexes];
+        [_movedSections removeAllObjects];
+        [_insertedItems removeAllObjects];
+        [_deletedItems removeAllObjects];
+        [_movedItems removeAllObjects];
+        [_reloadedItems removeAllObjects];
+    }
 }
 
 - (void)dataSourceDidChange:(id<FTDataSource>)dataSource
 {
-    [_collectionView performBatchUpdates:^{
-        [_collectionView deleteSections:_deletedSections];
-        [_collectionView insertSections:_insertedSections];
-        [_collectionView reloadSections:_reloadedSections];
+    if (_isInUserDrivenChangeCallCount == 0 && dataSource == _dataSource) {
 
-        [_movedSections enumerateObjectsUsingBlock:^(NSArray *indexes, NSUInteger idx, BOOL *stop) {
-            [_collectionView moveSection:[[indexes firstObject] integerValue]
-                               toSection:[[indexes lastObject] integerValue]];
+        [_collectionView performBatchUpdates:^{
+            [_collectionView deleteSections:_deletedSections];
+            [_collectionView insertSections:_insertedSections];
+            [_collectionView reloadSections:_reloadedSections];
+
+            [_movedSections enumerateObjectsUsingBlock:^(NSArray *indexes, NSUInteger idx, BOOL *stop) {
+                [_collectionView moveSection:[[indexes firstObject] integerValue]
+                                   toSection:[[indexes lastObject] integerValue]];
+            }];
+
+            [_collectionView insertItemsAtIndexPaths:_insertedItems];
+            [_collectionView deleteItemsAtIndexPaths:_deletedItems];
+            [_collectionView reloadItemsAtIndexPaths:_reloadedItems];
+
+            [_movedItems enumerateObjectsUsingBlock:^(NSArray *indexPaths, NSUInteger idx, BOOL *stop) {
+                [_collectionView moveItemAtIndexPath:[indexPaths firstObject]
+                                         toIndexPath:[indexPaths lastObject]];
+            }];
+
+        } completion:^(BOOL finished){
+
         }];
 
-        [_collectionView insertItemsAtIndexPaths:_insertedItems];
-        [_collectionView deleteItemsAtIndexPaths:_deletedItems];
-        [_collectionView reloadItemsAtIndexPaths:_reloadedItems];
-
-        [_movedItems enumerateObjectsUsingBlock:^(NSArray *indexPaths, NSUInteger idx, BOOL *stop) {
-            [_collectionView moveItemAtIndexPath:[indexPaths firstObject]
-                                     toIndexPath:[indexPaths lastObject]];
-        }];
-
-    } completion:^(BOOL finished){
-
-    }];
-
-    [_insertedSections removeAllIndexes];
-    [_deletedSections removeAllIndexes];
-    [_reloadedSections removeAllIndexes];
-    [_movedSections removeAllObjects];
-    [_insertedItems removeAllObjects];
-    [_deletedItems removeAllObjects];
-    [_movedItems removeAllObjects];
-    [_reloadedItems removeAllObjects];
+        [_insertedSections removeAllIndexes];
+        [_deletedSections removeAllIndexes];
+        [_reloadedSections removeAllIndexes];
+        [_movedSections removeAllObjects];
+        [_insertedItems removeAllObjects];
+        [_deletedItems removeAllObjects];
+        [_movedItems removeAllObjects];
+        [_reloadedItems removeAllObjects];
+    }
 }
 
 - (void)dataSource:(id<FTDataSource>)dataSource didInsertSections:(NSIndexSet *)sections
 {
-    if (dataSource == _dataSource) {
+    if (_isInUserDrivenChangeCallCount == 0 && dataSource == _dataSource) {
         [_insertedSections addIndexes:sections];
     }
 }
 
 - (void)dataSource:(id<FTDataSource>)dataSource didDeleteSections:(NSIndexSet *)sections
 {
-    if (dataSource == _dataSource) {
+    if (_isInUserDrivenChangeCallCount == 0 && dataSource == _dataSource) {
         [_deletedSections addIndexes:sections];
     }
 }
 
 - (void)dataSource:(id<FTDataSource>)dataSource didChangeSections:(NSIndexSet *)sections
 {
-    if (dataSource == _dataSource) {
+    if (_isInUserDrivenChangeCallCount == 0 && dataSource == _dataSource) {
         [_reloadedSections addIndexes:sections];
     }
 }
 
 - (void)dataSource:(id<FTDataSource>)dataSource didMoveSection:(NSInteger)section toSection:(NSInteger)newSection
 {
-    if (dataSource == _dataSource) {
+    if (_isInUserDrivenChangeCallCount == 0 && dataSource == _dataSource) {
         [_movedSections addObject:@[ @(section), @(newSection) ]];
     }
 }
 
 - (void)dataSource:(id<FTDataSource>)dataSource didInsertItemsAtIndexPaths:(NSArray *)indexPaths
 {
-    if (dataSource == _dataSource) {
+    if (_isInUserDrivenChangeCallCount == 0 && dataSource == _dataSource) {
         [_insertedItems addObjectsFromArray:indexPaths];
     }
 }
 
 - (void)dataSource:(id<FTDataSource>)dataSource didDeleteItemsAtIndexPaths:(NSArray *)indexPaths
 {
-    if (dataSource == _dataSource) {
+    if (_isInUserDrivenChangeCallCount == 0 && dataSource == _dataSource) {
         [_deletedItems addObjectsFromArray:indexPaths];
     }
 }
 
 - (void)dataSource:(id<FTDataSource>)dataSource didChangeItemsAtIndexPaths:(NSArray *)indexPaths
 {
-    if (dataSource == _dataSource) {
+    if (_isInUserDrivenChangeCallCount == 0 && dataSource == _dataSource) {
         [_reloadedItems addObjectsFromArray:indexPaths];
     }
 }
 
 - (void)dataSource:(id<FTDataSource>)dataSource didMoveItemAtIndexPath:(NSIndexPath *)indexPath toIndexPath:(NSIndexPath *)newIndexPath
 {
-    if (dataSource == _dataSource) {
+    if (_isInUserDrivenChangeCallCount == 0 && dataSource == _dataSource) {
         [_movedItems addObject:@[ indexPath, newIndexPath ]];
     }
 }

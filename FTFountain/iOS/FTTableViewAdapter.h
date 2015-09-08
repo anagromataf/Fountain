@@ -30,6 +30,9 @@ typedef void (^FTTableViewAdapterHeaderFooterPrepareBlock)(id view, id item, NSU
 #pragma mark Reload Behaviour
 @property (nonatomic, assign) UITableViewRowAnimation rowAnimation;
 
+#pragma mark User-driven Change
+- (void)performUserDrivenChange:(void(^)())block;
+
 #pragma mark Prepare Handler
 - (void)forRowsMatchingPredicate:(NSPredicate *)predicate
       useCellWithReuseIdentifier:(NSString *)reuseIdentifier

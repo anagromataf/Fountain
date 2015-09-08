@@ -26,6 +26,9 @@ typedef void (^FTCollectionViewAdapterCellPrepareBlock)(id cell, id item, NSInde
 #pragma mark Data Source
 @property (nonatomic, strong) id<FTDataSource> dataSource;
 
+#pragma mark User-driven Change
+- (void)performUserDrivenChange:(void (^)())block;
+
 #pragma mark Prepare Handler
 - (void)forItemsMatchingPredicate:(NSPredicate *)predicate
        useCellWithReuseIdentifier:(NSString *)reuseIdentifier

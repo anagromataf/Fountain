@@ -10,10 +10,12 @@
 #import "FTTableViewAdapter+Subclassing.h"
 
 @interface FTTableViewAdapterPreperationHandler : NSObject
+
 #pragma mark Life-cycle
 - (instancetype)initWithPredicate:(NSPredicate *)predicate
                   reuseIdentifier:(NSString *)reuseIdentifier
                             block:(id)block;
+
 #pragma mark Properties
 @property (nonatomic, readonly) NSString *reuseIdentifier;
 @property (nonatomic, readonly) NSPredicate *predicate;
@@ -33,6 +35,8 @@
 
     BOOL _isLoadingMoreItemsBeforeFirstItem;
     BOOL _isLoadingMoreItemsAfterLastItem;
+
+    NSInteger _isInUserDrivenChangeCallCount;
 }
 
 @end
@@ -78,6 +82,17 @@
         _dataSource = dataSource;
         [_dataSource addObserver:self];
         [_tableView reloadData];
+    }
+}
+
+#pragma mark User-driven Change
+
+- (void)performUserDrivenChange:(void (^)())block
+{
+    if (block) {
+        _isInUserDrivenChangeCallCount++;
+        block();
+        _isInUserDrivenChangeCallCount--;
     }
 }
 
@@ -269,7 +284,7 @@
         if ([self.delegate respondsToSelector:@selector(tableView:willDisplayCell:forRowAtIndexPath:)]) {
             [self.delegate tableView:tableView willDisplayCell:cell forRowAtIndexPath:indexPath];
         }
-        
+
         if ([_dataSource conformsToProtocol:@protocol(FTPagingDataSource)]) {
             id<FTPagingDataSource> pagingDataSource = (id<FTPagingDataSource>)_dataSource;
 
@@ -312,9 +327,6 @@
 
 - (BOOL)respondsToSelector:(SEL)aSelector
 {
-    if (aSelector == @selector(tableView:willDisplayCell:forRowAtIndexPath:)) {
-        
-    }
     if ([super respondsToSelector:aSelector]) {
         return YES;
     } else {
@@ -332,77 +344,77 @@
 
 - (void)dataSourceDidReset:(id<FTDataSource>)dataSource
 {
-    if (dataSource == _dataSource) {
+    if (_isInUserDrivenChangeCallCount == 0 && dataSource == _dataSource) {
         [_tableView reloadData];
     }
 }
 
 - (void)dataSourceWillChange:(id<FTDataSource>)dataSource
 {
-    if (dataSource == _dataSource) {
+    if (_isInUserDrivenChangeCallCount == 0 && dataSource == _dataSource) {
         [_tableView beginUpdates];
     }
 }
 
 - (void)dataSourceDidChange:(id<FTDataSource>)dataSource
 {
-    if (dataSource == _dataSource) {
+    if (_isInUserDrivenChangeCallCount == 0 && dataSource == _dataSource) {
         [_tableView endUpdates];
     }
 }
 
 - (void)dataSource:(id<FTDataSource>)dataSource didInsertSections:(NSIndexSet *)sections
 {
-    if (dataSource == _dataSource) {
+    if (_isInUserDrivenChangeCallCount == 0 && dataSource == _dataSource) {
         [_tableView insertSections:sections withRowAnimation:self.rowAnimation];
     }
 }
 
 - (void)dataSource:(id<FTDataSource>)dataSource didDeleteSections:(NSIndexSet *)sections
 {
-    if (dataSource == _dataSource) {
+    if (_isInUserDrivenChangeCallCount == 0 && dataSource == _dataSource) {
         [_tableView deleteSections:sections withRowAnimation:self.rowAnimation];
     }
 }
 
 - (void)dataSource:(id<FTDataSource>)dataSource didChangeSections:(NSIndexSet *)sections
 {
-    if (dataSource == _dataSource) {
+    if (_isInUserDrivenChangeCallCount == 0 && dataSource == _dataSource) {
         [_tableView reloadSections:sections withRowAnimation:self.rowAnimation];
     }
 }
 
 - (void)dataSource:(id<FTDataSource>)dataSource didMoveSection:(NSInteger)section toSection:(NSInteger)newSection
 {
-    if (dataSource == _dataSource) {
+    if (_isInUserDrivenChangeCallCount == 0 && dataSource == _dataSource) {
         [_tableView moveSection:section toSection:newSection];
     }
 }
 
 - (void)dataSource:(id<FTDataSource>)dataSource didInsertItemsAtIndexPaths:(NSArray *)indexPaths
 {
-    if (dataSource == _dataSource) {
+    if (_isInUserDrivenChangeCallCount == 0 && dataSource == _dataSource) {
         [_tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:self.rowAnimation];
     }
 }
 
 - (void)dataSource:(id<FTDataSource>)dataSource didDeleteItemsAtIndexPaths:(NSArray *)indexPaths
 {
-    if (dataSource == _dataSource) {
+    if (_isInUserDrivenChangeCallCount == 0 && dataSource == _dataSource) {
         [_tableView deleteRowsAtIndexPaths:indexPaths withRowAnimation:self.rowAnimation];
     }
 }
 
 - (void)dataSource:(id<FTDataSource>)dataSource didChangeItemsAtIndexPaths:(NSArray *)indexPaths
 {
-    if (dataSource == _dataSource) {
+    if (_isInUserDrivenChangeCallCount == 0 && dataSource == _dataSource) {
         [_tableView reloadRowsAtIndexPaths:indexPaths withRowAnimation:self.rowAnimation];
     }
 }
 
 - (void)dataSource:(id<FTDataSource>)dataSource didMoveItemAtIndexPath:(NSIndexPath *)indexPath toIndexPath:(NSIndexPath *)newIndexPath
 {
-    if (dataSource == _dataSource) {
+    if (_isInUserDrivenChangeCallCount == 0 && dataSource == _dataSource) {
         [_tableView moveRowAtIndexPath:indexPath toIndexPath:newIndexPath];
     }
 }
