@@ -490,21 +490,21 @@
 - (NSArray *)indexPathsOfItem:(id)object
 {
     NSParameterAssert(object);
-    
+
     if ([_backingStore containsObject:object]) {
-        
+
         NSComparator comperator = [[self class] comperatorUsingSortDescriptors:self.sortDescriptors];
-        
+
         NSUInteger sectionIndex = [_sections indexOfObject:object
                                              inSortedRange:NSMakeRange(0, [_sections count])
                                                    options:NSBinarySearchingFirstEqual
                                            usingComparator:^NSComparisonResult(NSMutableArray *section, id object) {
-                                               
+
                                                NSUInteger itemIndex = [section indexOfObject:object
                                                                                inSortedRange:NSMakeRange(0, [section count])
                                                                                      options:NSBinarySearchingInsertionIndex
                                                                              usingComparator:comperator];
-                                               
+
                                                if (itemIndex == 0) {
                                                    if ([_comperator compareObject:object toObject:[section firstObject]]) {
                                                        return NSOrderedSame;
@@ -521,21 +521,21 @@
                                                    return NSOrderedSame;
                                                }
                                            }];
-        
+
         if (sectionIndex != NSNotFound) {
-            
+
             NSMutableArray *section = [_sections objectAtIndex:sectionIndex];
             NSUInteger itemIndex = [section indexOfObject:object];
-            
+
             if (itemIndex != NSNotFound) {
-                
+
                 NSUInteger indexes[] = {sectionIndex, itemIndex};
                 NSIndexPath *indexPath = [NSIndexPath indexPathWithIndexes:indexes length:2];
                 return @[ indexPath ];
             }
         }
     }
-    
+
     return @[];
 }
 

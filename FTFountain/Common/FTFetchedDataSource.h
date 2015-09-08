@@ -13,6 +13,11 @@
 
 #import "FTDataSource.h"
 
+/*! <code>FTFetchedDataSource</code> is a data source that represents a set of objects from a
+    managed object context.
+ 
+    @warning The cluster support is realized with <code>FTMutableClusterSet</code> which is currently in an experimental state.
+ */
 @interface FTFetchedDataSource : NSObject <FTDataSource, FTReverseDataSource>
 
 #pragma mark Life-cycle

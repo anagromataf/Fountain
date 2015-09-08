@@ -22,4 +22,3 @@
 
 // CoreData Data Sources
 #import "FTFetchedDataSource.h"
-

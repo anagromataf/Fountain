@@ -31,7 +31,7 @@ typedef void (^FTTableViewAdapterHeaderFooterPrepareBlock)(id view, id item, NSU
 @property (nonatomic, assign) UITableViewRowAnimation rowAnimation;
 
 #pragma mark User-driven Change
-- (void)performUserDrivenChange:(void(^)())block;
+- (void)performUserDrivenChange:(void (^)())block;
 
 #pragma mark Prepare Handler
 - (void)forRowsMatchingPredicate:(NSPredicate *)predicate

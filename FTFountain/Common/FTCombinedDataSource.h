@@ -11,6 +11,11 @@
 #import "FTDataSource.h"
 #import "FTReverseDataSource.h"
 
+/*! <code>FTCombinedDataSource</code> is a data source, that combines the data sources
+    it is initialized with to one data source.
+ 
+    The resulting data sour e is a concatenation of the sections of the given data sources.
+ */
 @interface FTCombinedDataSource : NSObject <FTDataSource, FTReverseDataSource>
 
 #pragma mark Life-cycle

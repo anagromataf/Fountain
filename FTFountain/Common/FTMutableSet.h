@@ -11,6 +11,15 @@
 #import "FTDataSource.h"
 #import "FTReverseDataSource.h"
 
+/*! <code>FTMutableSet</code> is a subclass of <code>NSMutableSet</code> that conforms
+    to the <code>FTDataSource</code> and the <code>FTReverseDataSource</code> protocols.
+ 
+    If <code>FTMutableSet</code> is initialized with sort descriptors, the items are
+    provided to you via the data source protocol in that sort order.
+ 
+    If sort descriptors are not defined during initialization, a default sort descriptor
+    is used, that sorts the items in an undefined but consistent manner.
+ */
 @interface FTMutableSet : NSMutableSet <FTDataSource, FTReverseDataSource>
 
 #pragma mark Life-cycle
