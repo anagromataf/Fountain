@@ -2,12 +2,6 @@
 
 Fountain aims to be a modular data source for table views, collection views or any other kind of representations. It separates the data source form the connection to the actual representation logic. With this, a data source can for example be displayed at the same time with via a tabel view and via a collection view.
 
-## Installation
-
-Fountain is be available through [CocoaPods](http://cocoapods.org). To install it simply add the following line to your Podfile:
-
-    pod "Fountain"
-
 ## Usage
 
 A detailed documentation is comming soon.
