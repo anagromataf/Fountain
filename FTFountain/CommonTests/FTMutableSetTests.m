@@ -29,7 +29,7 @@
 
 - (void)testInit
 {
-    FTMutableSet *set = [[FTMutableSet alloc] init];
+    FTMutableSet *set = [[FTMutableSet alloc] initSortDescriptors:@[ [NSSortDescriptor sortDescriptorWithKey:@"self" ascending:YES] ]];
 
     assertThat(set, instanceOf([FTMutableSet class]));
 
@@ -38,7 +38,8 @@
 
 - (void)testInitWithObjects
 {
-    FTMutableSet *set = [FTMutableSet setWithArray:@[ @(0), @(2), @(3) ]];
+    FTMutableSet *set = [[FTMutableSet alloc] initSortDescriptors:@[ [NSSortDescriptor sortDescriptorWithKey:@"self" ascending:YES] ]];
+    [set addObjectsFromArray:@[ @(0), @(2), @(3) ]];
 
     assertThat(set, instanceOf([FTMutableSet class]));
 
@@ -48,7 +49,8 @@
 
 - (void)testInitWithDublicates
 {
-    FTMutableSet *set = [FTMutableSet setWithArray:@[ @(0), @(2), @(3), @(2) ]];
+    FTMutableSet *set = [[FTMutableSet alloc] initSortDescriptors:@[ [NSSortDescriptor sortDescriptorWithKey:@"self" ascending:YES] ]];
+    [set addObjectsFromArray:@[ @(0), @(2), @(3), @(2) ]];
 
     assertThat(set, instanceOf([FTMutableSet class]));
 
@@ -75,7 +77,9 @@
 {
     assertThatBool([FTMutableSet supportsSecureCoding], isTrue());
 
-    FTMutableSet *set = [FTMutableSet setWithArray:@[ @0, @1, @2, @3, @4, @5, @6, @7 ]];
+    FTMutableSet *set = [[FTMutableSet alloc] initSortDescriptors:@[ [NSSortDescriptor sortDescriptorWithKey:@"self" ascending:YES] ]];
+    [set addObjectsFromArray:@[ @0, @1, @2, @3, @4, @5, @6, @7 ]];
+
     id<FTDataSourceObserver> observer = mockProtocol(@protocol(FTDataSourceObserver));
     [set addObserver:observer];
 
@@ -94,7 +98,9 @@
 
 - (void)testCopying
 {
-    FTMutableSet *set = [FTMutableSet setWithArray:@[ @0, @1, @2, @3, @4, @5, @6, @7 ]];
+    FTMutableSet *set = [[FTMutableSet alloc] initSortDescriptors:@[ [NSSortDescriptor sortDescriptorWithKey:@"self" ascending:YES] ]];
+    [set addObjectsFromArray:@[ @0, @1, @2, @3, @4, @5, @6, @7 ]];
+
     id<FTDataSourceObserver> observer = mockProtocol(@protocol(FTDataSourceObserver));
     [set addObserver:observer];
 
@@ -112,7 +118,9 @@
 
 - (void)testMutableCopying
 {
-    FTMutableSet *set = [FTMutableSet setWithArray:@[ @0, @1, @2, @3, @4, @5, @6, @7 ]];
+    FTMutableSet *set = [[FTMutableSet alloc] initSortDescriptors:@[ [NSSortDescriptor sortDescriptorWithKey:@"self" ascending:YES] ]];
+    [set addObjectsFromArray:@[ @0, @1, @2, @3, @4, @5, @6, @7 ]];
+
     id<FTDataSourceObserver> observer = mockProtocol(@protocol(FTDataSourceObserver));
     [set addObserver:observer];
 
@@ -150,7 +158,8 @@
 
 - (void)testBatchUpdates
 {
-    FTMutableSet *set = [FTMutableSet set];
+    FTMutableSet *set = [[FTMutableSet alloc] initSortDescriptors:@[ [NSSortDescriptor sortDescriptorWithKey:@"self" ascending:YES] ]];
+
     id<FTDataSourceObserver> observer = mockProtocol(@protocol(FTDataSourceObserver));
     [set addObserver:observer];
 
@@ -166,7 +175,8 @@
 
 - (void)testAddObjects
 {
-    FTMutableSet *set = [FTMutableSet set];
+    FTMutableSet *set = [[FTMutableSet alloc] initSortDescriptors:@[ [NSSortDescriptor sortDescriptorWithKey:@"self" ascending:YES] ]];
+
     id<FTDataSourceObserver> observer = mockProtocol(@protocol(FTDataSourceObserver));
     [set addObserver:observer];
 
@@ -183,7 +193,9 @@
 
 - (void)testRemoveObject
 {
-    FTMutableSet *set = [FTMutableSet setWithArray:@[ @(0), @(2), @(3) ]];
+    FTMutableSet *set = [[FTMutableSet alloc] initSortDescriptors:@[ [NSSortDescriptor sortDescriptorWithKey:@"self" ascending:YES] ]];
+    [set addObjectsFromArray:@[ @(0), @(2), @(3) ]];
+
     id<FTDataSourceObserver> observer = mockProtocol(@protocol(FTDataSourceObserver));
     [set addObserver:observer];
 
@@ -288,7 +300,8 @@
 
 - (void)testGetItemAtIndexPath
 {
-    FTMutableSet *set = [FTMutableSet setWithArray:@[ @0, @1, @2, @3, @4, @5, @6, @7 ]];
+    FTMutableSet *set = [[FTMutableSet alloc] initSortDescriptors:@[ [NSSortDescriptor sortDescriptorWithKey:@"self" ascending:YES] ]];
+    [set addObjectsFromArray:@[ @0, @1, @2, @3, @4, @5, @6, @7 ]];
 
     assertThat([set itemAtIndexPath:IDX(2, 0)], equalTo(@2));
     assertThat([set itemAtIndexPath:IDX(4, 0)], equalTo(@4));
