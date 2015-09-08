@@ -1,27 +1,13 @@
 PODS:
-  - OCHamcrest (4.0.1)
-  - OCMockito (1.3.1):
+  - OCHamcrest (4.1.1)
+  - OCMockito (1.4.0):
     - OCHamcrest (~> 4.0)
-  - Specta (0.3.0.beta1)
 
 DEPENDENCIES:
-  - OCHamcrest (~> 4.0.1)
-  - OCMockito (~> 1.3.1)
-  - Specta (from `https://github.com/specta/specta.git`, tag `v0.3.0.beta1`)
-
-EXTERNAL SOURCES:
-  Specta:
-    :git: https://github.com/specta/specta.git
-    :tag: v0.3.0.beta1
-
-CHECKOUT OPTIONS:
-  Specta:
-    :git: https://github.com/specta/specta.git
-    :tag: v0.3.0.beta1
+  - OCMockito (~> 1.4.0)
 
 SPEC CHECKSUMS:
-  OCHamcrest: a62dbcf4dec9cbf091263d936e0de8dec02baac0
-  OCMockito: 958f33ee8ad03eeb62e1397ef6b60f5121214ca4
-  Specta: d2158a483ad179e5f8d3a29f75ff4fc0ff6fab16
+  OCHamcrest: 6f03ffa81d12feab872638490a44ab0a6d3aca10
+  OCMockito: 4981140c9a9ec06c31af40f636e3c0f25f27e6b2
 
 COCOAPODS: 0.37.2
