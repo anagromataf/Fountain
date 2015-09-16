@@ -25,7 +25,7 @@
 
 #pragma mark -
 
-@interface FTTableViewAdapter () <FTDataSourceObserver, UITableViewDelegate, UITableViewDataSource> {
+@interface FTTableViewAdapter () <FTDataSourceObserver, FTMutableDataSourceObserver, UITableViewDelegate, UITableViewDataSource> {
     UITableView *_tableView;
     id<FTDataSource> _dataSource;
 
@@ -85,6 +85,59 @@
     }
 }
 
+#pragma mark Editing
+
+@dynamic editing;
+
+- (BOOL)isEditing
+{
+    return self.tableView.editing;
+}
+
+- (void)setEditing:(BOOL)editing
+{
+    [self setEditing:editing animated:NO];
+}
+
+- (void)setEditing:(BOOL)editing animated:(BOOL)animated
+{
+    if (self.editing != editing) {
+
+        [self.tableView setEditing:editing animated:animated];
+
+        if ([self.dataSource conformsToProtocol:@protocol(FTMutableDataSource)]) {
+
+            id<FTMutableDataSource> mutableDataSource = (id<FTMutableDataSource>)self.dataSource;
+
+            NSMutableArray *indexPaths = [[NSMutableArray alloc] init];
+
+            NSUInteger numberOfSections = [self.dataSource numberOfSections];
+            for (NSUInteger section = 0; section < numberOfSections; section++) {
+                NSUInteger numberOfTemplateItems = [mutableDataSource numberOfFutureItemTypesInSection:section];
+
+                if (numberOfTemplateItems > 0) {
+                    NSUInteger firstTemplateIndex = [self.dataSource numberOfItemsInSection:section];
+                    NSIndexSet *indexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(firstTemplateIndex, numberOfTemplateItems)];
+
+                    [indexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+                        [indexPaths addObject:[NSIndexPath indexPathForItem:idx inSection:section]];
+                    }];
+                }
+            }
+
+            if ([indexPaths count] > 0) {
+                UITableViewRowAnimation animation = animated ? UITableViewRowAnimationAutomatic : UITableViewRowAnimationNone;
+
+                if (editing) {
+                    [self.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:animation];
+                } else {
+                    [self.tableView deleteRowsAtIndexPaths:indexPaths withRowAnimation:animation];
+                }
+            }
+        }
+    }
+}
+
 #pragma mark User-driven Change
 
 - (void)performUserDrivenChange:(void (^)())block
@@ -141,7 +194,18 @@
                                                    FTTableViewAdapterCellPrepareBlock prepareBlock,
                                                    id item))block
 {
-    id item = [_dataSource itemAtIndexPath:indexPath];
+    id item = nil;
+
+    NSUInteger numberOfItemsInSection = [self.dataSource numberOfItemsInSection:indexPath.section];
+    if (indexPath.item < numberOfItemsInSection) {
+        item = [_dataSource itemAtIndexPath:indexPath];
+    } else if (self.editing && [self.dataSource conformsToProtocol:@protocol(FTMutableDataSource)]) {
+        id<FTMutableDataSource> mutableDataSource = (id<FTMutableDataSource>)self.dataSource;
+
+        NSIndexPath *futureItemIndexPath = [NSIndexPath indexPathForItem:indexPath.item - numberOfItemsInSection
+                                                               inSection:indexPath.section];
+        item = [mutableDataSource futureItemTypeAtIndexPath:futureItemIndexPath];
+    }
 
     NSDictionary *substitutionVariables = @{ @"SECTION" : @(indexPath.section),
                                              @"ITEM" : @(indexPath.item),
@@ -209,7 +273,12 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     if (tableView == _tableView) {
-        return [self.dataSource numberOfItemsInSection:section];
+        NSUInteger numberOfItemsInSection = [self.dataSource numberOfItemsInSection:section];
+        if (self.editing && [self.dataSource conformsToProtocol:@protocol(FTMutableDataSource)]) {
+            id<FTMutableDataSource> mutableDataSource = (id<FTMutableDataSource>)self.dataSource;
+            numberOfItemsInSection += [mutableDataSource numberOfFutureItemTypesInSection:section];
+        }
+        return numberOfItemsInSection;
     } else {
         return 0;
     }
@@ -232,6 +301,63 @@
         return cell;
     } else {
         return nil;
+    }
+}
+
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    BOOL canEdit = NO;
+
+    NSUInteger numberOfItemsInSection = [self.dataSource numberOfItemsInSection:indexPath.section];
+    if (indexPath.item < numberOfItemsInSection) {
+        if ([self.dataSource conformsToProtocol:@protocol(FTMutableDataSource)]) {
+            id<FTMutableDataSource> mutableDataSource = (id<FTMutableDataSource>)self.dataSource;
+            return [mutableDataSource canDeleteItemAtIndexPath:indexPath];
+        } else {
+            return NO;
+        }
+    } else {
+        return YES;
+    }
+    return canEdit;
+}
+
+- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSUInteger numberOfItemsInSection = [self.dataSource numberOfItemsInSection:indexPath.section];
+    if (indexPath.item < numberOfItemsInSection) {
+        return UITableViewCellEditingStyleDelete;
+    } else {
+        return UITableViewCellEditingStyleInsert;
+    }
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSUInteger numberOfItemsInSection = [self.dataSource numberOfItemsInSection:indexPath.section];
+    if (indexPath.item < numberOfItemsInSection) {
+        if (editingStyle == UITableViewCellEditingStyleDelete &&
+            [self.dataSource conformsToProtocol:@protocol(FTMutableDataSource)]) {
+            id<FTMutableDataSource> mutableDataSource = (id<FTMutableDataSource>)self.dataSource;
+            [mutableDataSource deleteItemAtIndexPath:indexPath];
+        }
+    } else if (self.editing && [self.dataSource conformsToProtocol:@protocol(FTMutableDataSource)]) {
+
+        if (editingStyle == UITableViewCellEditingStyleInsert) {
+            id<FTMutableDataSource> mutableDataSource = (id<FTMutableDataSource>)self.dataSource;
+
+            NSIndexPath *futureItemIndexPath = [NSIndexPath indexPathForItem:indexPath.item - numberOfItemsInSection
+                                                                   inSection:indexPath.section];
+            id futureItem = [mutableDataSource futureItemTypeAtIndexPath:futureItemIndexPath];
+            NSDictionary *properties = nil;
+
+            if (self.cellPropertiesBlock) {
+                UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+                properties = self.cellPropertiesBlock(cell, indexPath, self.dataSource);
+            }
+
+            [mutableDataSource insertItemWithProperties:properties basedOnType:futureItem atIndexPath:futureItemIndexPath];
+        }
     }
 }
 
@@ -416,6 +542,15 @@
 {
     if (_isInUserDrivenChangeCallCount == 0 && dataSource == _dataSource) {
         [_tableView moveRowAtIndexPath:indexPath toIndexPath:newIndexPath];
+    }
+}
+
+#pragma mark FTMutableDataSourceObserver
+
+- (void)dataSource:(id<FTMutableDataSource>)dataSource didChangeFutureItemTypesInSections:(NSIndexSet *)sections
+{
+    if (_isInUserDrivenChangeCallCount == 0 && dataSource == _dataSource) {
+        [_tableView reloadSections:sections withRowAnimation:self.rowAnimation];
     }
 }
 
