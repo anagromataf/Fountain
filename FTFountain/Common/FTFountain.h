@@ -10,6 +10,7 @@
 #import "FTDataSource.h"
 #import "FTReverseDataSource.h"
 #import "FTPagingDataSource.h"
+#import "FTMutableDataSource.h"
 
 // Observer
 #import "FTDataSourceObserver.h"
