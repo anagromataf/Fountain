@@ -13,6 +13,8 @@
 typedef void (^FTTableViewAdapterCellPrepareBlock)(id cell, id item, NSIndexPath *indexPath, id<FTDataSource> dataSource);
 typedef void (^FTTableViewAdapterHeaderFooterPrepareBlock)(id view, id item, NSUInteger section, id<FTDataSource> dataSource);
 
+typedef NSDictionary * (^FTTableViewAdapterCellPropertiesBlock)(id cell, NSIndexPath *indexPath, id<FTDataSource> dataSource);
+
 @interface FTTableViewAdapter : NSObject
 
 #pragma mark Life-cycle
@@ -30,6 +32,10 @@ typedef void (^FTTableViewAdapterHeaderFooterPrepareBlock)(id view, id item, NSU
 #pragma mark Reload Behaviour
 @property (nonatomic, assign) UITableViewRowAnimation rowAnimation;
 
+#pragma mark Editing
+@property (nonatomic, getter=isEditing) BOOL editing;
+- (void)setEditing:(BOOL)editing animated:(BOOL)animated;
+
 #pragma mark User-driven Change
 - (void)performUserDrivenChange:(void (^)())block;
 
@@ -45,5 +51,8 @@ typedef void (^FTTableViewAdapterHeaderFooterPrepareBlock)(id view, id item, NSU
 - (void)forFooterMatchingPredicate:(NSPredicate *)predicate
         useViewWithReuseIdentifier:(NSString *)reuseIdentifier
                       prepareBlock:(FTTableViewAdapterHeaderFooterPrepareBlock)prepareBlock;
+
+#pragma mark Cell Properties
+@property (nonatomic, strong) FTTableViewAdapterCellPropertiesBlock cellPropertiesBlock;
 
 @end
