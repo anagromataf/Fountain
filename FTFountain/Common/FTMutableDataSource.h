@@ -17,6 +17,9 @@
 
 @protocol FTMutableDataSource <FTDataSource>
 
+#pragma mark Editing
+- (BOOL)canEditItemAtIndexPath:(NSIndexPath *)indexPath;
+
 #pragma mark Insertion
 - (NSUInteger)numberOfFutureItemTypesInSection:(NSUInteger)section;
 - (id)futureItemTypeAtIndexPath:(NSIndexPath *)indexPath;
