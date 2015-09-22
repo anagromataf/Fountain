@@ -306,27 +306,30 @@
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    BOOL canEdit = NO;
-
     NSUInteger numberOfItemsInSection = [self.dataSource numberOfItemsInSection:indexPath.section];
     if (indexPath.item < numberOfItemsInSection) {
         if ([self.dataSource conformsToProtocol:@protocol(FTMutableDataSource)]) {
             id<FTMutableDataSource> mutableDataSource = (id<FTMutableDataSource>)self.dataSource;
-            return [mutableDataSource canDeleteItemAtIndexPath:indexPath];
+            return [mutableDataSource canEditItemAtIndexPath:indexPath];
         } else {
             return NO;
         }
     } else {
         return YES;
     }
-    return canEdit;
 }
 
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSUInteger numberOfItemsInSection = [self.dataSource numberOfItemsInSection:indexPath.section];
     if (indexPath.item < numberOfItemsInSection) {
-        return UITableViewCellEditingStyleDelete;
+        if ([self.dataSource conformsToProtocol:@protocol(FTMutableDataSource)]) {
+            id<FTMutableDataSource> mutableDataSource = (id<FTMutableDataSource>)self.dataSource;
+            BOOL canDelete = [mutableDataSource canDeleteItemAtIndexPath:indexPath];
+            return canDelete ? UITableViewCellEditingStyleDelete : UITableViewCellEditingStyleNone;
+        } else {
+            return UITableViewCellEditingStyleNone;
+        }
     } else {
         return UITableViewCellEditingStyleInsert;
     }
