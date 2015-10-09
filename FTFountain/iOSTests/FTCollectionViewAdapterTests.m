@@ -123,16 +123,17 @@
     assertThat(cell, notNilValue());
     assertThatInteger(cell.tag, equalToInteger(2));
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_8_4 // visibleSupplementaryViewsOfKind Is only avalilable in iOS 9
-    NSArray *visibleSupplementaryView = [adapter.collectionView visibleSupplementaryViewsOfKind:UICollectionElementKindSectionHeader];
-    assertThat(visibleSupplementaryView, hasCountOf(1));
+    // visibleSupplementaryViewsOfKind Is only avalilable in iOS 9
+    if ([adapter.collectionView respondsToSelector:@selector(visibleSupplementaryViewsOfKind:)]) {
+        NSArray *visibleSupplementaryView = [adapter.collectionView visibleSupplementaryViewsOfKind:UICollectionElementKindSectionHeader];
+        assertThat(visibleSupplementaryView, hasCountOf(1));
 
-    UICollectionReusableView *headerView = [visibleSupplementaryView firstObject];
-    assertThatInteger(headerView.tag, equalToInteger(10));
-#else
-    NSArray *tags = [adapter.collectionView valueForKeyPath:@"subviews.tag"];
-    assertThat(tags, hasItem(@(10)));
-#endif
+        UICollectionReusableView *headerView = [visibleSupplementaryView firstObject];
+        assertThatInteger(headerView.tag, equalToInteger(10));
+    } else {
+        NSArray *tags = [adapter.collectionView valueForKeyPath:@"subviews.tag"];
+        assertThat(tags, hasItem(@(10)));
+    }
 }
 
 #pragma mark Test Data Source Updates
