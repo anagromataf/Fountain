@@ -10,7 +10,7 @@ Pod::Spec.new do |s|
   s.source                  = {:git => 'https://github.com/anagromataf/Fountain.git', :tag => "#{s.version}"}
   
   s.requires_arc            = true
-  s.ios.deployment_target   = '8.4'
+  s.ios.deployment_target   = '8.0'
   s.osx.deployment_target   = '10.10'
   
   s.source_files            = 'FTFountain/Common/**/*.{h,m,c}'
