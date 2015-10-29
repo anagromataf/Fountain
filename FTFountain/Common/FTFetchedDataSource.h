@@ -42,7 +42,18 @@
 @property (nonatomic, readonly) FTClusterComperator *clusterComperator;
 
 #pragma mark Fetch Objects
-- (BOOL)fetchObject:(NSError **)error;
+- (BOOL)fetchObject:(NSError **)error DEPRECATED_ATTRIBUTE;
+- (BOOL)fetchObjects:(NSError **)error;
 - (void)fetchObjectsWithCompletion:(void (^)(BOOL success, NSError *error))completion;
+
+#pragma mark Filter Result
+
+// Predicate used for filtering
+@property (nonatomic, readonly) NSPredicate *filterPredicate;
+
+// Filters the objects with the given predicate. The resulting objects
+// are passing self.predicate AND self.filterPredicate.
+- (BOOL)filterResultWithPredicate:(NSPredicate *)predicate error:(NSError **)error;
+- (void)filterResultWithPredicate:(NSPredicate *)predicate completion:(void (^)(BOOL success, NSError *error))completion;
 
 @end

@@ -14,6 +14,7 @@
 @interface FTFetchedDataSource () <FTDataSourceObserver> {
     NSMutableSet<FTDataSource, FTReverseDataSource> *_fetchedObjects;
     NSHashTable *_observers;
+    NSPredicate *_filterPredicate;
 }
 
 @end
@@ -62,12 +63,34 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
+#pragma mark Fetch Predicate
+
+- (NSPredicate *)fetchPredicate
+{
+    NSMutableArray *predicates = [[NSMutableArray alloc] init];
+    
+    if (self.predicate) {
+        [predicates addObject:self.predicate];
+    }
+    
+    if (self.filterPredicate) {
+        [predicates addObject:self.filterPredicate];
+    }
+    
+    return [NSCompoundPredicate andPredicateWithSubpredicates:predicates];
+}
+
 #pragma mark Fetch Objects
 
 - (BOOL)fetchObject:(NSError **)error
 {
+    return [self fetchObjects:error];
+}
+
+- (BOOL)fetchObjects:(NSError **)error
+{
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:_entity.name];
-    request.predicate = _predicate;
+    request.predicate = [self fetchPredicate];
 
     NSArray *result = [_context executeFetchRequest:request error:error];
     if (result) {
@@ -105,7 +128,7 @@
 - (void)fetchObjectsWithCompletion:(void (^)(BOOL success, NSError *error))completion
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:_entity.name];
-    request.predicate = _predicate;
+    request.predicate = [self fetchPredicate];
 
     NSPersistentStoreAsynchronousFetchResultCompletionBlock resultBlock = ^(NSAsynchronousFetchResult *result) {
 
@@ -152,6 +175,99 @@
     }];
 }
 
+#pragma mark Filter Result
+
+- (BOOL)filterResultWithPredicate:(NSPredicate *)predicate
+                            error:(NSError **)error
+{
+    _filterPredicate = predicate;
+    
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:_entity.name];
+    request.predicate = [self fetchPredicate];
+    
+    NSArray *result = [_context executeFetchRequest:request error:error];
+    if (result) {
+        
+        if ([_fetchedObjects isKindOfClass:[FTMutableSet class]]) {
+            
+            FTMutableSet *fetchedObjects = (FTMutableSet *)_fetchedObjects;
+            [fetchedObjects performBatchUpdate:^{
+                [fetchedObjects removeAllObjects];
+                [fetchedObjects addObjectsFromArray:result];
+            }];
+            
+        } else if ([_fetchedObjects isKindOfClass:[FTMutableClusterSet class]]) {
+            
+            FTMutableClusterSet *fetchedObjects = (FTMutableClusterSet *)_fetchedObjects;
+            [fetchedObjects performBatchUpdate:^{
+                [fetchedObjects removeAllObjects];
+                [fetchedObjects addObjectsFromArray:result];
+            }];
+            
+        } else {
+            NSAssert(NO, @"Internal error backing store must either be of kind 'FTMutableSet' or 'FTMutableClusterSet', but it is of kind '%@'", NSStringFromClass([_fetchedObjects class]));
+            return NO;
+        }
+        
+        return YES;
+    } else {
+        return NO;
+    }
+}
+
+- (void)filterResultWithPredicate:(NSPredicate *)predicate
+                       completion:(void (^)(BOOL success, NSError *error))completion
+{
+    _filterPredicate = predicate;
+    
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:_entity.name];
+    request.predicate = [self fetchPredicate];
+    
+    NSPersistentStoreAsynchronousFetchResultCompletionBlock resultBlock = ^(NSAsynchronousFetchResult *result) {
+        
+        if ([_fetchedObjects isKindOfClass:[FTMutableSet class]]) {
+            
+            FTMutableSet *fetchedObjects = (FTMutableSet *)_fetchedObjects;
+            [fetchedObjects performBatchUpdate:^{
+                [fetchedObjects removeAllObjects];
+                [fetchedObjects addObjectsFromArray:result.finalResult];
+            }];
+            
+        } else if ([_fetchedObjects isKindOfClass:[FTMutableClusterSet class]]) {
+            
+            FTMutableClusterSet *fetchedObjects = (FTMutableClusterSet *)_fetchedObjects;
+            [fetchedObjects performBatchUpdate:^{
+                [fetchedObjects removeAllObjects];
+                [fetchedObjects addObjectsFromArray:result.finalResult];
+            }];
+            
+        } else {
+            NSAssert(NO, @"Internal error backing store must either be of kind 'FTMutableSet' or 'FTMutableClusterSet', but it is of kind '%@'", NSStringFromClass([_fetchedObjects class]));
+            
+            if (completion) {
+                completion(NO, nil);
+            }
+        }
+        
+        if (completion) {
+            completion(YES, nil);
+        }
+    };
+    
+    NSAsynchronousFetchRequest *asyncRequest = [[NSAsynchronousFetchRequest alloc] initWithFetchRequest:request
+                                                                                        completionBlock:resultBlock];
+    
+    [_context performBlock:^{
+        NSError *error = nil;
+        NSAsynchronousFetchResult *result = (NSAsynchronousFetchResult *)[_context executeRequest:asyncRequest error:&error];
+        if (result == nil) {
+            if (completion) {
+                completion(NO, error);
+            }
+        }
+    }];
+}
+
 #pragma mark Notification Handling
 
 - (void)managedObjectContextObjectsDidChange:(NSNotification *)notification
@@ -167,7 +283,7 @@
     // Inserted Objects
 
     NSSet *insertedObjects = [notification.userInfo[NSInsertedObjectsKey] filteredSetUsingPredicate:entityPredicate];
-    insertedObjects = self.predicate ? [insertedObjects filteredSetUsingPredicate:self.predicate] : insertedObjects;
+    insertedObjects = [insertedObjects filteredSetUsingPredicate:[self fetchPredicate]];
 
     // Updates
 
@@ -181,7 +297,7 @@
         [updatedObjects unionSet:[notification.userInfo[NSRefreshedObjectsKey] filteredSetUsingPredicate:entityPredicate]];
     }
 
-    NSSet *updatedObjectsToInsert = self.predicate ? [updatedObjects filteredSetUsingPredicate:self.predicate] : updatedObjects;
+    NSSet *updatedObjectsToInsert = [updatedObjects filteredSetUsingPredicate:[self fetchPredicate]];
 
     NSMutableSet *updatedObjectsToRemove = [updatedObjects mutableCopy];
     [updatedObjectsToRemove minusSet:updatedObjectsToInsert];
