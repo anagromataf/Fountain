@@ -114,7 +114,7 @@
     BOOL success = NO;
     NSError *error = nil;
     
-    success = [dataSource fetchObject:&error];
+    success = [dataSource fetchObjects:&error];
     assertThatBool(success, isTrue());
     
     assertThatInteger([dataSource numberOfSections], equalToInteger(1));

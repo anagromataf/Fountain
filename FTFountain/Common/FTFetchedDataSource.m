@@ -84,6 +84,11 @@
 
 - (BOOL)fetchObject:(NSError **)error
 {
+    return [self fetchObjects:error];
+}
+
+- (BOOL)fetchObjects:(NSError **)error
+{
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:_entity.name];
     request.predicate = [self fetchPredicate];
 
