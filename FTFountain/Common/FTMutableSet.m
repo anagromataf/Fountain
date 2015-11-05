@@ -277,27 +277,30 @@
 - (void)ft_applyInsertion
 {
     if ([_insertedObjects count] > 0) {
-
+        
         NSComparator comperator = [[self class] comperatorUsingSortDescriptors:self.sortDescriptors];
         NSArray *insertedObjects = [_insertedObjects sortedArrayUsingDescriptors:self.sortDescriptors];
-
+        
         NSMutableArray *indexPathsOfInsertedItems = [[NSMutableArray alloc] init];
-
+        
         NSUInteger offset = 0;
-
+        
         for (id object in insertedObjects) {
-
+            
             NSUInteger index = [_backingStore indexOfObject:object
                                               inSortedRange:NSMakeRange(offset, [_backingStore count] - offset)
                                                     options:NSBinarySearchingInsertionIndex
                                             usingComparator:comperator];
-
+            
             [_backingStore insertObject:object atIndex:index];
-
+        }
+        
+        for (id object in insertedObjects) {
+            NSUInteger index = [_backingStore indexOfObject:object];
             NSUInteger indexes[] = {0, index};
             [indexPathsOfInsertedItems addObject:[NSIndexPath indexPathWithIndexes:indexes length:2]];
         }
-
+        
         if ([indexPathsOfInsertedItems count] > 0) {
             for (id<FTDataSourceObserver> observer in self.observers) {
                 if ([observer respondsToSelector:@selector(dataSource:didInsertItemsAtIndexPaths:)]) {
@@ -305,7 +308,7 @@
                 }
             }
         }
-
+        
         [_insertedObjects removeAllObjects];
     }
 }
