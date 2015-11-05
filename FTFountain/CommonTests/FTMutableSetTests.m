@@ -71,6 +71,30 @@
     assertThat([set itemAtIndexPath:IDX(3, 0)], equalTo(@7));
 }
 
+- (void)testInitWithSortDescriptorsForSameValue
+{
+
+    NSArray *sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:@"value" ascending:YES] ];
+    FTMutableSet *set = [[FTMutableSet alloc] initSortDescriptors:sortDescriptors];
+
+    id<FTDataSourceObserver> observer = mockProtocol(@protocol(FTDataSourceObserver));
+    [set addObserver:observer];
+
+    FTTestItem *item1 = [[FTTestItem alloc] initWithValue:3];
+    FTTestItem *item2 = [[FTTestItem alloc] initWithValue:5];
+    FTTestItem *item3 = [[FTTestItem alloc] initWithValue:5];
+
+    NSSet *itemsSet = [NSSet setWithObjects:item1, item2, item3, nil];
+
+    [set performBatchUpdate:^{
+        [set unionSet:itemsSet];
+    }];
+
+    [verifyCount(observer, times(1)) dataSourceWillChange:set];
+    [verifyCount(observer, times(1)) dataSourceDidChange:set];
+    [verifyCount(observer, times(1)) dataSource:set didInsertItemsAtIndexPaths:@[ IDX(0, 0), IDX(1, 0), IDX(2, 0) ]];
+}
+
 #pragma mark Test Secure Coding
 
 - (void)testCoding
