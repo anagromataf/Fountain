@@ -350,6 +350,11 @@
 
 - (id)itemAtIndexPath:(NSIndexPath *)indexPath
 {
+    if (_fetchedObjects.count == 0)
+    {
+        return nil;
+    }
+    
     return [_fetchedObjects itemAtIndexPath:indexPath];
 }
 
