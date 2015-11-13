@@ -351,6 +351,8 @@
             }];
         }
     }
+    
+    allFetchedObjects = [_fetchedObjects copy];
 }
 
 #pragma mark FTDataSource
