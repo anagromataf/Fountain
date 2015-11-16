@@ -55,5 +55,6 @@
 // are passing self.predicate AND self.filterPredicate.
 - (BOOL)filterResultWithPredicate:(NSPredicate *)predicate error:(NSError **)error;
 - (void)filterResultWithPredicate:(NSPredicate *)predicate completion:(void (^)(BOOL success, NSError *error))completion;
+- (void)filterFetchedObjectsWithPredicate:(NSPredicate*)predicate;
 
 @end

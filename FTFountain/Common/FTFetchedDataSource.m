@@ -13,6 +13,7 @@
 
 @interface FTFetchedDataSource () <FTDataSourceObserver> {
     NSMutableSet<FTDataSource, FTReverseDataSource> *_fetchedObjects;
+    NSMutableSet<FTDataSource, FTReverseDataSource> *allFetchedObjects;
     NSHashTable *_observers;
     NSPredicate *_filterPredicate;
 }
@@ -118,6 +119,8 @@
                 [observer dataSourceDidReset:self];
             }
         }
+        
+        allFetchedObjects = [_fetchedObjects copy];
 
         return YES;
     } else {
@@ -155,6 +158,8 @@
                 [observer dataSourceDidReset:self];
             }
         }
+        
+        allFetchedObjects = [_fetchedObjects copy];
 
         if (completion) {
             completion(YES, nil);
@@ -176,6 +181,31 @@
 }
 
 #pragma mark Filter Result
+
+- (void)filterFetchedObjectsWithPredicate:(NSPredicate*)predicate
+{
+    FTMutableSet *newFechtedObjects = [allFetchedObjects mutableCopy];
+    
+    [newFechtedObjects filterUsingPredicate:predicate ?: [NSPredicate predicateWithValue:YES]];
+    
+    if ([_fetchedObjects isKindOfClass:[FTMutableSet class]]) {
+        
+        FTMutableSet *fetchedObjects = (FTMutableSet *)_fetchedObjects;
+        [fetchedObjects removeAllObjects];
+        
+        [fetchedObjects performBatchUpdate:^{
+            [fetchedObjects addObjectsFromArray:newFechtedObjects.allObjects];
+        }];
+    } else if ([_fetchedObjects isKindOfClass:[FTMutableClusterSet class]]) {
+        
+        FTMutableClusterSet *fetchedObjects = (FTMutableClusterSet *)_fetchedObjects;
+        [fetchedObjects removeAllObjects];
+
+        [fetchedObjects performBatchUpdate:^{
+            [fetchedObjects addObjectsFromArray:newFechtedObjects.allObjects];
+        }];
+    }
+}
 
 - (BOOL)filterResultWithPredicate:(NSPredicate *)predicate
                             error:(NSError **)error
@@ -325,6 +355,8 @@
             }];
         }
     }
+    
+    allFetchedObjects = [_fetchedObjects copy];
 }
 
 #pragma mark FTDataSource
