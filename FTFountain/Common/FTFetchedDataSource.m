@@ -196,6 +196,14 @@
         [fetchedObjects performBatchUpdate:^{
             [fetchedObjects addObjectsFromArray:newFechtedObjects.allObjects];
         }];
+    } else if ([_fetchedObjects isKindOfClass:[FTMutableClusterSet class]]) {
+        
+        FTMutableClusterSet *fetchedObjects = (FTMutableClusterSet *)_fetchedObjects;
+        [fetchedObjects removeAllObjects];
+
+        [fetchedObjects performBatchUpdate:^{
+            [fetchedObjects addObjectsFromArray:newFechtedObjects.allObjects];
+        }];
     }
 }
 
