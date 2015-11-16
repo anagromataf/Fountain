@@ -71,6 +71,38 @@
     assertThat([set itemAtIndexPath:IDX(3, 0)], equalTo(@7));
 }
 
+- (void)testInitWithSortDescriptorsForSameValue
+{
+
+    NSArray *sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:@"value" ascending:YES] ];
+    FTMutableSet *set = [[FTMutableSet alloc] initSortDescriptors:sortDescriptors];
+
+    id<FTDataSourceObserver> observer = mockProtocol(@protocol(FTDataSourceObserver));
+    [set addObserver:observer];
+
+    FTTestItem *item1 = ITEM(3);
+    FTTestItem *item2 = ITEM(5);
+    FTTestItem *item3 = ITEM(5);
+    FTTestItem *item4 = ITEM(5);
+
+    NSSet *itemsSet = [NSSet setWithObjects:item1, item2, item3, item4, nil];
+
+    [set performBatchUpdate:^{
+        [set unionSet:itemsSet];
+    }];
+
+    assertThatInteger([(FTTestItem *)[set itemAtIndexPath:IDX(0, 0)] value], equalToInteger(3));
+    assertThatInteger([(FTTestItem *)[set itemAtIndexPath:IDX(1, 0)] value], equalToInteger(5));
+    assertThatInteger([(FTTestItem *)[set itemAtIndexPath:IDX(2, 0)] value], equalToInteger(5));
+    assertThatInteger([(FTTestItem *)[set itemAtIndexPath:IDX(3, 0)] value], equalToInteger(5));
+
+    [verifyCount(observer, times(1)) dataSourceWillChange:set];
+    [verifyCount(observer, times(1)) dataSourceDidChange:set];
+
+    //For set the actual order of indexes does not matter, the only requirement is they have to be different from one another
+    [verifyCount(observer, times(1)) dataSource:set didInsertItemsAtIndexPaths:@[ IDX(0, 0), IDX(3, 0), IDX(1, 0), IDX(2, 0) ]];
+}
+
 #pragma mark Test Secure Coding
 
 - (void)testCoding
@@ -233,6 +265,50 @@
     [verifyCount(observer, times(1)) dataSourceDidChange:set];
     [verifyCount(observer, times(1)) dataSource:set didChangeItemsAtIndexPaths:@[ IDX(0, 0) ]];
     [verifyCount(observer, times(1)) dataSource:set didMoveItemAtIndexPath:IDX(1, 0) toIndexPath:IDX(3, 0)];
+}
+
+- (void)testUpdateDoesNotContainSameIndexes
+{
+    FTMutableSet *set = [[FTMutableSet alloc] initSortDescriptors:@[ [NSSortDescriptor sortDescriptorWithKey:@"value" ascending:YES] ]];
+
+    NSArray *items = @[ ITEM(10), ITEM(20), ITEM(30), ITEM(40), ITEM(50), ITEM(60) ];
+    [set addObjectsFromArray:items];
+
+    id<FTDataSourceObserver> observer = mockProtocol(@protocol(FTDataSourceObserver));
+    [set addObserver:observer];
+
+    FTTestItem *item = items[1];
+    item.value = 10;
+
+    FTTestItem *firstNewItem = ITEM(10);
+    FTTestItem *secondNewItem = ITEM(9);
+
+
+    
+    [set performBatchUpdate:^{
+        [set addObject:firstNewItem];
+        [set addObject:item];
+        [set addObject:items[0]];
+        [set addObject:secondNewItem];
+    }];
+
+    [verifyCount(observer, times(1)) dataSourceWillChange:set];
+    [verifyCount(observer, times(1)) dataSourceDidChange:set];
+    
+
+    //Capture argument for further evaluation
+    HCArgumentCaptor *argumentCaptor = [HCArgumentCaptor isAnything];
+    [verifyCount(observer, times(2)) dataSource:set didMoveItemAtIndexPath:anything() toIndexPath:(id)argumentCaptor];
+    
+    for (NSIndexPath *indexPath in [argumentCaptor allValues]) {
+        
+        for (NSIndexPath *internalIndexPath in [argumentCaptor allValues]) {
+            if(indexPath == internalIndexPath) continue;
+            
+            assertThatInt([indexPath compare:internalIndexPath], isNot(equalToInt(NSOrderedSame)));
+        }
+    }
+    
 }
 
 - (void)testMoveItemUp
