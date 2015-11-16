@@ -283,6 +283,8 @@
     FTTestItem *firstNewItem = ITEM(10);
     FTTestItem *secondNewItem = ITEM(9);
 
+
+    
     [set performBatchUpdate:^{
         [set addObject:firstNewItem];
         [set addObject:item];
@@ -292,8 +294,21 @@
 
     [verifyCount(observer, times(1)) dataSourceWillChange:set];
     [verifyCount(observer, times(1)) dataSourceDidChange:set];
+    
 
-    [verifyCount(observer, times(1)) dataSource:set didMoveItemAtIndexPath:anything() toIndexPath:IDX(0, 0)];
+    //Capture argument for further evaluation
+    HCArgumentCaptor *argumentCaptor = [HCArgumentCaptor isAnything];
+    [verifyCount(observer, times(2)) dataSource:set didMoveItemAtIndexPath:anything() toIndexPath:(id)argumentCaptor];
+    
+    for (NSIndexPath *indexPath in [argumentCaptor allValues]) {
+        
+        for (NSIndexPath *internalIndexPath in [argumentCaptor allValues]) {
+            if(indexPath == internalIndexPath) continue;
+            
+            assertThatInt([indexPath compare:internalIndexPath], isNot(equalToInt(NSOrderedSame)));
+        }
+    }
+    
 }
 
 - (void)testMoveItemUp
