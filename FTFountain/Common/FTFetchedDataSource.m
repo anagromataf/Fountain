@@ -191,6 +191,7 @@
         if ([_fetchedObjects isKindOfClass:[FTMutableSet class]]) {
             
             FTMutableSet *fetchedObjects = (FTMutableSet *)_fetchedObjects;
+
             [fetchedObjects performBatchUpdate:^{
                 [fetchedObjects removeAllObjects];
                 [fetchedObjects addObjectsFromArray:result];
@@ -199,6 +200,7 @@
         } else if ([_fetchedObjects isKindOfClass:[FTMutableClusterSet class]]) {
             
             FTMutableClusterSet *fetchedObjects = (FTMutableClusterSet *)_fetchedObjects;
+
             [fetchedObjects performBatchUpdate:^{
                 [fetchedObjects removeAllObjects];
                 [fetchedObjects addObjectsFromArray:result];
@@ -228,6 +230,7 @@
         if ([_fetchedObjects isKindOfClass:[FTMutableSet class]]) {
             
             FTMutableSet *fetchedObjects = (FTMutableSet *)_fetchedObjects;
+
             [fetchedObjects performBatchUpdate:^{
                 [fetchedObjects removeAllObjects];
                 [fetchedObjects addObjectsFromArray:result.finalResult];
@@ -236,6 +239,7 @@
         } else if ([_fetchedObjects isKindOfClass:[FTMutableClusterSet class]]) {
             
             FTMutableClusterSet *fetchedObjects = (FTMutableClusterSet *)_fetchedObjects;
+
             [fetchedObjects performBatchUpdate:^{
                 [fetchedObjects removeAllObjects];
                 [fetchedObjects addObjectsFromArray:result.finalResult];
@@ -350,6 +354,11 @@
 
 - (id)itemAtIndexPath:(NSIndexPath *)indexPath
 {
+    if (_fetchedObjects.count == 0)
+    {
+        return nil;
+    }
+    
     return [_fetchedObjects itemAtIndexPath:indexPath];
 }
 
