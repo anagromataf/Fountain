@@ -55,4 +55,8 @@ typedef NSDictionary * (^FTTableViewAdapterCellPropertiesBlock)(id cell, NSIndex
 #pragma mark Cell Properties
 @property (nonatomic, strong) FTTableViewAdapterCellPropertiesBlock cellPropertiesBlock;
 
+#pragma mark - UI
+
+@property BOOL shouldSkipReloadOfUpdatedItems;
+
 @end
