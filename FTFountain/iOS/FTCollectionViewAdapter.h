@@ -39,4 +39,8 @@ typedef void (^FTCollectionViewAdapterCellPrepareBlock)(id cell, id item, NSInde
          useViewWithReuseIdentifier:(NSString *)reuseIdentifier
                        prepareBlock:(FTCollectionViewAdapterCellPrepareBlock)prepareBlock;
 
+#pragma mark - UI
+
+@property BOOL shouldSkipReloadOfUpdatedItems;
+
 @end

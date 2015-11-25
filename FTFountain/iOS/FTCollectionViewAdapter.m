@@ -430,7 +430,7 @@
 
 - (void)dataSource:(id<FTDataSource>)dataSource didChangeItemsAtIndexPaths:(NSArray *)indexPaths
 {
-    if (_isInUserDrivenChangeCallCount == 0 && dataSource == _dataSource) {
+    if (_isInUserDrivenChangeCallCount == 0 && dataSource == _dataSource && !_shouldSkipReloadOfUpdatedItems) {
         [_reloadedItems addObjectsFromArray:indexPaths];
     }
 }
