@@ -68,15 +68,15 @@
 - (NSPredicate *)fetchPredicate
 {
     NSMutableArray *predicates = [[NSMutableArray alloc] init];
-    
+
     if (self.predicate) {
         [predicates addObject:self.predicate];
     }
-    
+
     if (self.filterPredicate) {
         [predicates addObject:self.filterPredicate];
     }
-    
+
     return [NSCompoundPredicate andPredicateWithSubpredicates:predicates];
 }
 
@@ -181,34 +181,34 @@
                             error:(NSError **)error
 {
     _filterPredicate = predicate;
-    
+
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:_entity.name];
     request.predicate = [self fetchPredicate];
-    
+
     NSArray *result = [_context executeFetchRequest:request error:error];
     if (result) {
-        
+
         if ([_fetchedObjects isKindOfClass:[FTMutableSet class]]) {
-            
+
             FTMutableSet *fetchedObjects = (FTMutableSet *)_fetchedObjects;
             [fetchedObjects performBatchUpdate:^{
                 [fetchedObjects removeAllObjects];
                 [fetchedObjects addObjectsFromArray:result];
             }];
-            
+
         } else if ([_fetchedObjects isKindOfClass:[FTMutableClusterSet class]]) {
-            
+
             FTMutableClusterSet *fetchedObjects = (FTMutableClusterSet *)_fetchedObjects;
             [fetchedObjects performBatchUpdate:^{
                 [fetchedObjects removeAllObjects];
                 [fetchedObjects addObjectsFromArray:result];
             }];
-            
+
         } else {
             NSAssert(NO, @"Internal error backing store must either be of kind 'FTMutableSet' or 'FTMutableClusterSet', but it is of kind '%@'", NSStringFromClass([_fetchedObjects class]));
             return NO;
         }
-        
+
         return YES;
     } else {
         return NO;
@@ -219,44 +219,44 @@
                        completion:(void (^)(BOOL success, NSError *error))completion
 {
     _filterPredicate = predicate;
-    
+
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:_entity.name];
     request.predicate = [self fetchPredicate];
-    
+
     NSPersistentStoreAsynchronousFetchResultCompletionBlock resultBlock = ^(NSAsynchronousFetchResult *result) {
-        
+
         if ([_fetchedObjects isKindOfClass:[FTMutableSet class]]) {
-            
+
             FTMutableSet *fetchedObjects = (FTMutableSet *)_fetchedObjects;
             [fetchedObjects performBatchUpdate:^{
                 [fetchedObjects removeAllObjects];
                 [fetchedObjects addObjectsFromArray:result.finalResult];
             }];
-            
+
         } else if ([_fetchedObjects isKindOfClass:[FTMutableClusterSet class]]) {
-            
+
             FTMutableClusterSet *fetchedObjects = (FTMutableClusterSet *)_fetchedObjects;
             [fetchedObjects performBatchUpdate:^{
                 [fetchedObjects removeAllObjects];
                 [fetchedObjects addObjectsFromArray:result.finalResult];
             }];
-            
+
         } else {
             NSAssert(NO, @"Internal error backing store must either be of kind 'FTMutableSet' or 'FTMutableClusterSet', but it is of kind '%@'", NSStringFromClass([_fetchedObjects class]));
-            
+
             if (completion) {
                 completion(NO, nil);
             }
         }
-        
+
         if (completion) {
             completion(YES, nil);
         }
     };
-    
+
     NSAsynchronousFetchRequest *asyncRequest = [[NSAsynchronousFetchRequest alloc] initWithFetchRequest:request
                                                                                         completionBlock:resultBlock];
-    
+
     [_context performBlock:^{
         NSError *error = nil;
         NSAsynchronousFetchResult *result = (NSAsynchronousFetchResult *)[_context executeRequest:asyncRequest error:&error];
@@ -350,11 +350,10 @@
 
 - (id)itemAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (_fetchedObjects.count == 0)
-    {
+    if (_fetchedObjects.count == 0) {
         return nil;
     }
-    
+
     return [_fetchedObjects itemAtIndexPath:indexPath];
 }
 

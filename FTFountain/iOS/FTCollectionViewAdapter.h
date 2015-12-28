@@ -42,6 +42,4 @@ typedef void (^FTCollectionViewAdapterCellPrepareBlock)(id cell, id item, NSInde
          useViewWithReuseIdentifier:(NSString *)reuseIdentifier
                        prepareBlock:(FTCollectionViewAdapterCellPrepareBlock)prepareBlock;
 
-
-
 @end

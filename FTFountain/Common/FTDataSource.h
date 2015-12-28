@@ -44,7 +44,7 @@
     @param section An index number identifying a section in the data source.
     @return A section item identified by the given section.
  */
-- (id )sectionItemForSection:(NSUInteger)section;
+- (id)sectionItemForSection:(NSUInteger)section;
 
 /** Ask the data source for the item at a given index path.
     
@@ -53,7 +53,7 @@
     @param indexPath An index path locating an item in the data source.
     @return An item identified by the given index path.
  */
-- (id )itemAtIndexPath:(NSIndexPath *)indexPath;
+- (id)itemAtIndexPath:(NSIndexPath *)indexPath;
 
 #pragma mark Observer
 
@@ -69,12 +69,12 @@
  
     @param observer The observer to add. Mustnot be nil.
  */
-- (void)addObserver:(id<FTDataSourceObserver> )observer;
+- (void)addObserver:(id<FTDataSourceObserver>)observer;
 
 /** Removes an object as an observer for the data source.
  
     @param observer The observer to remove. Mustnot be nil.
  */
-- (void)removeObserver:(id<FTDataSourceObserver> )observer;
+- (void)removeObserver:(id<FTDataSourceObserver>)observer;
 
 @end

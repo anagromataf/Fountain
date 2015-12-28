@@ -371,9 +371,10 @@
                                          toIndexPath:[indexPaths lastObject]];
             }];
 
-        } completion:^(BOOL finished){
+        }
+            completion:^(BOOL finished){
 
-        }];
+            }];
 
         [_insertedSections removeAllIndexes];
         [_deletedSections removeAllIndexes];
