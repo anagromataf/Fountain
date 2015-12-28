@@ -26,6 +26,9 @@ typedef void (^FTCollectionViewAdapterCellPrepareBlock)(id cell, id item, NSInde
 #pragma mark Data Source
 @property (nonatomic, strong) id<FTDataSource> dataSource;
 
+#pragma mark Reload Behaviour
+@property (nonatomic, assign) BOOL shouldSkipReloadOfUpdatedItems;
+
 #pragma mark User-driven Change
 - (void)performUserDrivenChange:(void (^)())block;
 
@@ -39,8 +42,6 @@ typedef void (^FTCollectionViewAdapterCellPrepareBlock)(id cell, id item, NSInde
          useViewWithReuseIdentifier:(NSString *)reuseIdentifier
                        prepareBlock:(FTCollectionViewAdapterCellPrepareBlock)prepareBlock;
 
-#pragma mark - UI
 
-@property BOOL shouldSkipReloadOfUpdatedItems;
 
 @end
