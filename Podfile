@@ -5,11 +5,11 @@ xcodeproj 'FTFountain/FTFountain.xcodeproj'
 target :iOSTests, :exclusive => true do
     platform :ios, :deployment_target => '8.0'
     
-    pod 'OCMockito', '~> 1.4.0'
+    pod 'OCMockito', '~> 3.0.1'
 end
 
 target :OSXTests, :exclusive => true do
     platform :osx, :deployment_target => '10.10'
     
-    pod 'OCMockito', '~> 1.4.0'
+    pod 'OCMockito', '~> 3.0.1'
 end

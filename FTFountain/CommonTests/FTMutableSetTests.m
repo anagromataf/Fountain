@@ -235,6 +235,46 @@
     [verifyCount(observer, times(1)) dataSource:set didMoveItemAtIndexPath:IDX(1, 0) toIndexPath:IDX(3, 0)];
 }
 
+- (void)testUpdateWithAmbiguousSortOrder
+{
+    NSArray *sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:@"value" ascending:YES] ];
+    FTMutableSet *set = [[FTMutableSet alloc] initSortDescriptors:sortDescriptors];
+    
+    id<FTDataSourceObserver> observer = mockProtocol(@protocol(FTDataSourceObserver));
+    [set addObserver:observer];
+    
+    FTTestItem *item1 = ITEM(3);
+    FTTestItem *item2 = ITEM(5);
+    FTTestItem *item3 = ITEM(5);
+    FTTestItem *item4 = ITEM(5);
+    
+    NSSet *itemsSet = [NSSet setWithObjects:item1, item2, item3, item4, nil];
+    
+    [set performBatchUpdate:^{
+        [set unionSet:itemsSet];
+    }];
+    
+    assertThatInteger([(FTTestItem *)[set itemAtIndexPath:IDX(0, 0)] value], equalToInteger(3));
+    assertThatInteger([(FTTestItem *)[set itemAtIndexPath:IDX(1, 0)] value], equalToInteger(5));
+    assertThatInteger([(FTTestItem *)[set itemAtIndexPath:IDX(2, 0)] value], equalToInteger(5));
+    assertThatInteger([(FTTestItem *)[set itemAtIndexPath:IDX(3, 0)] value], equalToInteger(5));
+    
+    [verifyCount(observer, times(1)) dataSourceWillChange:set];
+    [verifyCount(observer, times(1)) dataSourceDidChange:set];
+    
+    // The actual order of indexes does not matter, the only requirement is,
+    // that they differ from each another.
+    
+    HCArgumentCaptor *indexPathsCaptor = [[HCArgumentCaptor alloc] init];
+    [verifyCount(observer, times(1)) dataSource:set didInsertItemsAtIndexPaths:(id)indexPathsCaptor];
+    
+    NSArray *indexPathsOfInsertedObjects = [indexPathsCaptor value];
+    
+    // Expecting 4 inserted objects
+    assertThat(indexPathsOfInsertedObjects, hasCountOf(4));
+    assertThat(indexPathsOfInsertedObjects, containsInAnyOrder(IDX(0, 0), IDX(1, 0), IDX(2, 0), IDX(3, 0), nil));
+}
+
 - (void)testMoveItemUp
 {
     FTMutableSet *set = [[FTMutableSet alloc] initSortDescriptors:@[ [NSSortDescriptor sortDescriptorWithKey:@"value" ascending:YES] ]];
