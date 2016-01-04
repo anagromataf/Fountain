@@ -296,6 +296,8 @@
 
             NSUInteger indexes[] = {0, index};
             [indexPathsOfInsertedItems addObject:[NSIndexPath indexPathWithIndexes:indexes length:2]];
+            
+            offset = index + 1;
         }
 
         if ([indexPathsOfInsertedItems count] > 0) {
