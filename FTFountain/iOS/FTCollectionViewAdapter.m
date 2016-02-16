@@ -352,6 +352,8 @@
 {
     if (_isInUserDrivenChangeCallCount == 0 && dataSource == _dataSource) {
 
+        NSMutableArray *movedItemsToReload = [[NSMutableArray alloc] init];
+
         [_collectionView performBatchUpdates:^{
             [_collectionView deleteSections:_deletedSections];
             [_collectionView insertSections:_insertedSections];
@@ -369,6 +371,7 @@
             [_movedItems enumerateObjectsUsingBlock:^(NSArray *indexPaths, NSUInteger idx, BOOL *stop) {
                 [_collectionView moveItemAtIndexPath:[indexPaths firstObject]
                                          toIndexPath:[indexPaths lastObject]];
+                [movedItemsToReload addObject:[indexPaths lastObject]];
             }];
 
         }
@@ -384,6 +387,15 @@
         [_deletedItems removeAllObjects];
         [_movedItems removeAllObjects];
         [_reloadedItems removeAllObjects];
+
+        if (self.shouldSkipReloadOfUpdatedItems == NO && self.reloadMovedItems == YES) {
+            [_collectionView performBatchUpdates:^{
+                [_collectionView reloadItemsAtIndexPaths:movedItemsToReload];
+            }
+                completion:^(BOOL finished){
+
+                }];
+        }
     }
 }
 

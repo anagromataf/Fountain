@@ -19,6 +19,10 @@
 #import "FTTestItem.h"
 #import "FTTestCollectionViewController.h"
 
+@interface FTCollectionViewCell : UICollectionViewCell
+@property (nonatomic, strong) FTTestItem *item;
+@end
+
 @interface FTCollectionViewAdapterTests : XCTestCase
 @property (nonatomic, strong) UIWindow *window;
 @property (nonatomic, strong) FTTestCollectionViewController *viewController;
@@ -256,10 +260,14 @@
 - (void)testChangeOperation
 {
     FTCollectionViewAdapter *adapter = self.viewController.adapter;
+    adapter.reloadMovedItems = YES;
+
+    [self.viewController.collectionView registerClass:[FTCollectionViewCell class] forCellWithReuseIdentifier:@"FTCollectionViewCell"];
 
     [adapter forItemsMatchingPredicate:nil
-            useCellWithReuseIdentifier:@"UICollectionViewCell"
-                          prepareBlock:^(UICollectionViewCell *cell, FTTestItem *item, NSIndexPath *indexPath, id<FTDataSource> dataSource) {
+            useCellWithReuseIdentifier:@"FTCollectionViewCell"
+                          prepareBlock:^(FTCollectionViewCell *cell, FTTestItem *item, NSIndexPath *indexPath, id<FTDataSource> dataSource) {
+                              cell.item = item;
                               cell.tag = item.value;
                           }];
 
@@ -293,23 +301,34 @@
         [set addObjectsFromArray:items];
     }];
 
-    UICollectionViewCell *cell = nil;
+    [adapter.collectionView setNeedsLayout];
+    [adapter.collectionView layoutIfNeeded];
 
-    cell = [adapter.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
-    assertThat(cell, notNilValue());
-    assertThatInteger(cell.tag, equalToInteger(0));
+    FTCollectionViewCell *cell = nil;
 
-    cell = [adapter.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
+    cell = (FTCollectionViewCell *)[adapter.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
     assertThat(cell, notNilValue());
-    assertThatInteger(cell.tag, equalToInteger(20));
+    assertThat(cell.item, is(item4));
+    assertThatInteger(cell.tag, equalToInteger(cell.item.value));
 
-    cell = [adapter.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:0]];
+    cell = (FTCollectionViewCell *)[adapter.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
     assertThat(cell, notNilValue());
-    assertThatInteger(cell.tag, equalToInteger(25));
+    assertThat(cell.item, is(item2));
+    assertThatInteger(cell.tag, equalToInteger(cell.item.value));
 
-    cell = [adapter.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:0]];
+    cell = (FTCollectionViewCell *)[adapter.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:0]];
     assertThat(cell, notNilValue());
-    assertThatInteger(cell.tag, equalToInteger(30));
+    assertThat(cell.item, is(item1));
+    assertThatInteger(cell.tag, equalToInteger(cell.item.value));
+
+    cell = (FTCollectionViewCell *)[adapter.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:0]];
+    assertThat(cell, notNilValue());
+    assertThat(cell.item, is(item3));
+    assertThatInteger(cell.tag, equalToInteger(cell.item.value));
 }
+
+@end
+
+@implementation FTCollectionViewCell
 
 @end

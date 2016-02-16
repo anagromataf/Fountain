@@ -21,6 +21,10 @@
 #import "FTTestItem.h"
 #import "FTTestTableViewController.h"
 
+@interface FTTableViewCell : UITableViewCell
+@property (nonatomic, strong) FTTestItem *item;
+@end
+
 @interface FTTableViewAdapterTests : XCTestCase
 @property (nonatomic, strong) UIWindow *window;
 @property (nonatomic, strong) FTTestTableViewController *viewController;
@@ -278,9 +282,14 @@
 - (void)testChangeOperation
 {
     FTTableViewAdapter *adapter = self.viewController.adapter;
+    adapter.reloadMovedItems = YES;
+
+    [self.viewController.tableView registerClass:[FTTableViewCell class] forCellReuseIdentifier:@"FTTableViewCell"];
+
     [adapter forRowsMatchingPredicate:nil
-           useCellWithReuseIdentifier:@"UITableViewCell"
-                         prepareBlock:^(UITableViewCell *cell, FTTestItem *item, NSIndexPath *indexPath, id<FTDataSource> dataSource) {
+           useCellWithReuseIdentifier:@"FTTableViewCell"
+                         prepareBlock:^(FTTableViewCell *cell, FTTestItem *item, NSIndexPath *indexPath, id<FTDataSource> dataSource) {
+                             cell.item = item;
                              cell.tag = item.value;
                          }];
 
@@ -307,23 +316,36 @@
         [set addObjectsFromArray:items];
     }];
 
-    UITableViewCell *cell = nil;
+    FTTableViewCell *cell = nil;
 
-    cell = [adapter.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+    cell = (FTTableViewCell *)[adapter.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
     assertThat(cell, notNilValue());
-    assertThatInteger(cell.tag, equalToInteger(0));
+    assertThat(cell.item, is(item4));
+    assertThatInteger(cell.tag, equalToInteger(cell.item.value));
 
-    cell = [adapter.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
+    cell = (FTTableViewCell *)[adapter.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
     assertThat(cell, notNilValue());
-    assertThatInteger(cell.tag, equalToInteger(20));
+    assertThat(cell.item, is(item2));
+    assertThatInteger(cell.tag, equalToInteger(cell.item.value));
 
-    cell = [adapter.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:0]];
+    cell = (FTTableViewCell *)[adapter.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:0]];
     assertThat(cell, notNilValue());
-    assertThatInteger(cell.tag, equalToInteger(25));
+    assertThat(cell.item, is(item1));
+    assertThatInteger(cell.tag, equalToInteger(cell.item.value));
 
-    cell = [adapter.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:0]];
+    cell = (FTTableViewCell *)[adapter.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:0]];
     assertThat(cell, notNilValue());
-    assertThatInteger(cell.tag, equalToInteger(30));
+    assertThat(cell.item, is(item3));
+    assertThatInteger(cell.tag, equalToInteger(cell.item.value));
+}
+
+@end
+
+@implementation FTTableViewCell
+
+- (void)layoutSubviews
+{
+    [super layoutSubviews];
 }
 
 @end
