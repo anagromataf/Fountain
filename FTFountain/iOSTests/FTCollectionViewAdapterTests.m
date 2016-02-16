@@ -16,6 +16,7 @@
 #import "FTFountain.h"
 #import "FTFountainiOS.h"
 
+#import "FTTestItem.h"
 #import "FTTestCollectionViewController.h"
 
 @interface FTCollectionViewAdapterTests : XCTestCase
@@ -248,6 +249,67 @@
 
     [verifyCount(dataSource, times(1)) hasItemsAfterLastItem];
     [verifyCount(dataSource, times(1)) loadMoreItemsAfterLastItemCompletionHandler:anything()];
+}
+
+#pragma mark Test Change Operation
+
+- (void)testChangeOperation
+{
+    FTCollectionViewAdapter *adapter = self.viewController.adapter;
+
+    [adapter forItemsMatchingPredicate:nil
+            useCellWithReuseIdentifier:@"UICollectionViewCell"
+                          prepareBlock:^(UICollectionViewCell *cell, FTTestItem *item, NSIndexPath *indexPath, id<FTDataSource> dataSource) {
+                              cell.tag = item.value;
+                          }];
+
+    [adapter forSupplementaryViewsOfKind:UICollectionElementKindSectionHeader
+                       matchingPredicate:nil
+              useViewWithReuseIdentifier:@"header"
+                            prepareBlock:^(UICollectionReusableView *view,
+                                           id item, NSIndexPath *indexPath, id<FTDataSource> dataSource){
+                            }];
+
+    FTMutableSet *set = [[FTMutableSet alloc] initSortDescriptors:@[ [NSSortDescriptor sortDescriptorWithKey:@"value" ascending:YES] ]];
+
+    FTTestItem *item1 = ITEM(10);
+    FTTestItem *item2 = ITEM(20);
+    FTTestItem *item3 = ITEM(30);
+    FTTestItem *item4 = ITEM(40);
+
+    NSArray *items = @[ item1, item2, item3, item4 ];
+    [set addObjectsFromArray:items];
+
+    adapter.dataSource = set;
+
+    [adapter.collectionView setNeedsLayout];
+    [adapter.collectionView layoutIfNeeded];
+
+    [set performBatchUpdate:^{
+        // Move last item to the top and update all other items.
+        item1.value = 25;
+        item4.value = 0;
+        NSArray *items = @[ item1, item2, item3, item4 ];
+        [set addObjectsFromArray:items];
+    }];
+
+    UICollectionViewCell *cell = nil;
+
+    cell = [adapter.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+    assertThat(cell, notNilValue());
+    assertThatInteger(cell.tag, equalToInteger(0));
+
+    cell = [adapter.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
+    assertThat(cell, notNilValue());
+    assertThatInteger(cell.tag, equalToInteger(20));
+
+    cell = [adapter.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:0]];
+    assertThat(cell, notNilValue());
+    assertThatInteger(cell.tag, equalToInteger(25));
+
+    cell = [adapter.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:0]];
+    assertThat(cell, notNilValue());
+    assertThatInteger(cell.tag, equalToInteger(30));
 }
 
 @end
