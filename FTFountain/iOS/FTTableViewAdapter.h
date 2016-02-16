@@ -32,6 +32,7 @@ typedef NSDictionary * (^FTTableViewAdapterCellPropertiesBlock)(id cell, NSIndex
 #pragma mark Reload Behaviour
 @property (nonatomic, assign) UITableViewRowAnimation rowAnimation;
 @property (nonatomic, assign) BOOL shouldSkipReloadOfUpdatedItems;
+@property (nonatomic, assign) BOOL reloadMovedItems;
 
 #pragma mark Editing
 @property (nonatomic, getter=isEditing) BOOL editing;

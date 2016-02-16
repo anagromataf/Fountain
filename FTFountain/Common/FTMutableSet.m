@@ -195,39 +195,38 @@
                                         }];
 }
 
-
 // Returns sorted array of the objects of the given set ordered by the sort descriptors. If the sort
 // order of two objects is ambiguous, used the given reference array as a hint for the order.
 + (NSArray *)arrayBySortingObjects:(NSSet *)objects usingSortDescriptors:(NSArray *)sortDescriptors orderAmbiguousObjectsByOrderInArray:(NSArray *)referenceArray
 {
     return [[objects allObjects] sortedArrayUsingComparator:^(id firstObject, id secondObject) {
-        
+
         // Early return, if the first object is the second object
-        
+
         if (firstObject == secondObject) {
             return NSOrderedSame;
         }
-        
+
         // Sort objects by the sort descriptors
-        
+
         for (NSSortDescriptor *sortDescriptor in sortDescriptors) {
             NSComparisonResult result = [sortDescriptor compareObject:firstObject toObject:secondObject];
             switch (result) {
-                case NSOrderedAscending:
-                    return sortDescriptor.ascending ? NSOrderedAscending : NSOrderedDescending;
-                case NSOrderedDescending:
-                    return sortDescriptor.ascending ? NSOrderedDescending : NSOrderedAscending;
-                default:
-                    break;
+            case NSOrderedAscending:
+                return sortDescriptor.ascending ? NSOrderedAscending : NSOrderedDescending;
+            case NSOrderedDescending:
+                return sortDescriptor.ascending ? NSOrderedDescending : NSOrderedAscending;
+            default:
+                break;
             }
         }
-        
+
         // If the sort order is ambiguous (based on the sort descriptors),
         // order the objects by the order in the backing store.
-        
+
         NSInteger firstIndex = [referenceArray indexOfObject:firstObject];
         NSInteger secondIndex = [referenceArray indexOfObject:secondObject];
-        
+
         if (firstIndex == secondIndex) {
             return NSOrderedSame; // should never happen
         } else if (firstIndex < secondIndex) {
@@ -235,7 +234,32 @@
         } else {
             return NSOrderedDescending;
         }
-        
+
+    }];
+}
+
++ (NSArray *)arrayBySortingObjects:(NSSet *)objects byOrderInArray:(NSArray *)referenceArray
+{
+    return [[objects allObjects] sortedArrayUsingComparator:^(id firstObject, id secondObject) {
+
+        // Early return, if the first object is the second object
+
+        if (firstObject == secondObject) {
+            return NSOrderedSame;
+        }
+
+        // Order the objects by the order in the backing store.
+
+        NSInteger firstIndex = [referenceArray indexOfObject:firstObject];
+        NSInteger secondIndex = [referenceArray indexOfObject:secondObject];
+
+        if (firstIndex == secondIndex) {
+            return NSOrderedSame; // should never happen
+        } else if (firstIndex < secondIndex) {
+            return NSOrderedAscending;
+        } else {
+            return NSOrderedDescending;
+        }
     }];
 }
 
@@ -340,7 +364,7 @@
 
             NSUInteger indexes[] = {0, index};
             [indexPathsOfInsertedItems addObject:[NSIndexPath indexPathWithIndexes:indexes length:2]];
-            
+
             offset = index + 1;
         }
 
@@ -361,51 +385,41 @@
     if ([_updatedObjects count] > 0) {
 
         NSComparator comperator = [[self class] comperatorUsingSortDescriptors:self.sortDescriptors];
-        NSArray *updatedObjects = [[self class] arrayBySortingObjects:_updatedObjects usingSortDescriptors:self.sortDescriptors orderAmbiguousObjectsByOrderInArray:_backingStore];
-        
-        NSUInteger offset = 0;
+        NSArray *updatedObjects = [[self class] arrayBySortingObjects:_updatedObjects
+                                                 usingSortDescriptors:self.sortDescriptors
+                                  orderAmbiguousObjectsByOrderInArray:_backingStore];
 
-        NSMutableArray *indexPathsOfUpdatedItems = [[NSMutableArray alloc] init];
-        NSMutableArray *indexPathsOfMovedItems = [[NSMutableArray alloc] init];
+        NSMutableIndexSet *indexes = [NSMutableIndexSet indexSet];
+        NSMapTable *indexesByObjects = [NSMapTable strongToStrongObjectsMapTable];
 
         for (id object in updatedObjects) {
-
             NSUInteger index = [_backingStore indexOfObject:object];
-            [_backingStore removeObject:object];
-
-            NSUInteger newIndex = [_backingStore indexOfObject:object
-                                                 inSortedRange:NSMakeRange(offset, [_backingStore count] - offset)
-                                                       options:NSBinarySearchingInsertionIndex
-                                               usingComparator:comperator];
-
-            [_backingStore insertObject:object atIndex:newIndex];
-
-            if (newIndex == index) {
-                NSUInteger indexes[] = {0, index};
-                [indexPathsOfUpdatedItems addObject:[NSIndexPath indexPathWithIndexes:indexes length:2]];
-            } else {
-                [indexPathsOfMovedItems addObject:@[ @(index), @(newIndex) ]];
-            }
-            
-            offset = index + 1;
+            [indexes addIndex:index];
+            [indexesByObjects setObject:@(index) forKey:object];
         }
 
-        if ([indexPathsOfUpdatedItems count] > 0) {
-            for (id<FTDataSourceObserver> observer in self.observers) {
-                if ([observer respondsToSelector:@selector(dataSource:didChangeItemsAtIndexPaths:)]) {
-                    [observer dataSource:self didChangeItemsAtIndexPaths:indexPathsOfUpdatedItems];
+        [_backingStore sortUsingComparator:comperator];
+
+        NSIndexPath *sectionIndex = [NSIndexPath indexPathWithIndex:0];
+
+        for (id object in updatedObjects) {
+            NSUInteger index = [[indexesByObjects objectForKey:object] unsignedIntegerValue];
+            NSUInteger newIndex = [_backingStore indexOfObject:object];
+
+            if (index == newIndex) {
+
+                NSIndexPath *indexPath = [sectionIndex indexPathByAddingIndex:index];
+
+                for (id<FTDataSourceObserver> observer in self.observers) {
+                    if ([observer respondsToSelector:@selector(dataSource:didChangeItemsAtIndexPaths:)]) {
+                        [observer dataSource:self didChangeItemsAtIndexPaths:@[ indexPath ]];
+                    }
                 }
-            }
-        }
 
-        if ([indexPathsOfMovedItems count] > 0) {
-            for (id<FTDataSourceObserver> observer in self.observers) {
-                if ([observer respondsToSelector:@selector(dataSource:didMoveItemAtIndexPath:toIndexPath:)]) {
-                    for (NSArray *indexes in indexPathsOfMovedItems) {
-                        NSUInteger index = [[indexes firstObject] unsignedIntegerValue];
-                        NSUInteger newIndex = [[indexes lastObject] unsignedIntegerValue];
+            } else {
 
-                        NSIndexPath *sectionIndex = [NSIndexPath indexPathWithIndex:0];
+                for (id<FTDataSourceObserver> observer in self.observers) {
+                    if ([observer respondsToSelector:@selector(dataSource:didMoveItemAtIndexPath:toIndexPath:)]) {
 
                         [observer dataSource:self
                             didMoveItemAtIndexPath:[sectionIndex indexPathByAddingIndex:index]

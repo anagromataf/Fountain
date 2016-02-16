@@ -28,6 +28,7 @@ typedef void (^FTCollectionViewAdapterCellPrepareBlock)(id cell, id item, NSInde
 
 #pragma mark Reload Behaviour
 @property (nonatomic, assign) BOOL shouldSkipReloadOfUpdatedItems;
+@property (nonatomic, assign) BOOL reloadMovedItems;
 
 #pragma mark User-driven Change
 - (void)performUserDrivenChange:(void (^)())block;
