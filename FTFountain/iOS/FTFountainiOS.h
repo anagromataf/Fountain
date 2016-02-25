@@ -8,4 +8,6 @@
 
 // Adapter
 #import "FTTableViewAdapter.h"
+#import "FTTableViewAdapter+Subclassing.h"
 #import "FTCollectionViewAdapter.h"
+#import "FTCollectionViewAdapter+Subclassing.h"
