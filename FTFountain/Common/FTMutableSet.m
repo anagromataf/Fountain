@@ -395,6 +395,12 @@
         for (id object in updatedObjects) {
             NSUInteger index = [_backingStore indexOfObject:object];
             [indexes addIndex:index];
+            
+            // Replace the object in the set with the updated object. The object might
+            // be a different object, because the update is based on equality and not
+            // on identity.
+            [_backingStore replaceObjectAtIndex:index withObject:object];
+            
             [indexesByObjects setObject:@(index) forKey:object];
         }
 
