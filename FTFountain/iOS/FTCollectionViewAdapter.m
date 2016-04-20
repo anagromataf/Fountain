@@ -118,35 +118,7 @@
 {
     if (_editing != editing) {
         _editing = editing;
-        
-        if ([self.dataSource conformsToProtocol:@protocol(FTMutableDataSource)]) {
-            
-            id<FTMutableDataSource> mutableDataSource = (id<FTMutableDataSource>)self.dataSource;
-            
-            NSMutableArray *indexPaths = [[NSMutableArray alloc] init];
-            
-            NSUInteger numberOfSections = [self.dataSource numberOfSections];
-            for (NSUInteger section = 0; section < numberOfSections; section++) {
-                NSUInteger numberOfTemplateItems = [mutableDataSource numberOfFutureItemTypesInSection:section];
-                
-                if (numberOfTemplateItems > 0) {
-                    NSUInteger firstTemplateIndex = [self.dataSource numberOfItemsInSection:section];
-                    NSIndexSet *indexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(firstTemplateIndex, numberOfTemplateItems)];
-                    
-                    [indexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
-                        [indexPaths addObject:[NSIndexPath indexPathForItem:idx inSection:section]];
-                    }];
-                }
-            }
-            
-            if ([indexPaths count] > 0) {
-                if (editing) {
-                    [self.collectionView insertItemsAtIndexPaths:indexPaths];
-                } else {
-                    [self.collectionView deleteItemsAtIndexPaths:indexPaths];
-                }
-            }
-        }
+        [self.collectionView reloadData];
     }
 }
 
