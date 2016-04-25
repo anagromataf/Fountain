@@ -327,6 +327,57 @@
     assertThatInteger(cell.tag, equalToInteger(cell.item.value));
 }
 
+- (void)testRemoveFirstItem
+{
+    FTCollectionViewAdapter *adapter = self.viewController.adapter;
+    adapter.reloadMovedItems = YES;
+    
+    [self.viewController.collectionView registerClass:[FTCollectionViewCell class] forCellWithReuseIdentifier:@"FTCollectionViewCell"];
+    
+    [adapter forItemsMatchingPredicate:nil
+            useCellWithReuseIdentifier:@"FTCollectionViewCell"
+                          prepareBlock:^(FTCollectionViewCell *cell, FTTestItem *item, NSIndexPath *indexPath, id<FTDataSource> dataSource) {
+                              cell.item = item;
+                              cell.tag = item.value;
+                          }];
+    
+    [adapter forSupplementaryViewsOfKind:UICollectionElementKindSectionHeader
+                       matchingPredicate:nil
+              useViewWithReuseIdentifier:@"header"
+                            prepareBlock:^(UICollectionReusableView *view,
+                                           id item, NSIndexPath *indexPath, id<FTDataSource> dataSource){
+                            }];
+    
+    FTMutableSet *set = [[FTMutableSet alloc] initSortDescriptors:@[ [NSSortDescriptor sortDescriptorWithKey:@"value" ascending:YES] ]];
+    
+    FTTestItem *item1 = ITEM(10);
+    FTTestItem *item2 = ITEM(20);
+    
+    NSArray *items = @[ item1, item2 ];
+    [set addObjectsFromArray:items];
+    
+    adapter.dataSource = set;
+    
+    [adapter.collectionView setNeedsLayout];
+    [adapter.collectionView layoutIfNeeded];
+    
+    [set performBatchUpdate:^{
+        NSArray *items = @[ item1 ];
+        [set removeAllObjects];
+        [set addObjectsFromArray:items];
+    }];
+    
+    [adapter.collectionView setNeedsLayout];
+    [adapter.collectionView layoutIfNeeded];
+    
+    FTCollectionViewCell *cell = nil;
+    
+    cell = (FTCollectionViewCell *)[adapter.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+    assertThat(cell, notNilValue());
+    assertThat(cell.item, is(item1));
+    assertThatInteger(cell.tag, equalToInteger(cell.item.value));
+}
+
 @end
 
 @implementation FTCollectionViewCell

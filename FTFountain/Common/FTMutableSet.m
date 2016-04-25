@@ -289,8 +289,8 @@
 
         if (_batchUpdateCallCount == 0) {
 
-            [self ft_applyDeletion];
             [self ft_applyUpdate];
+            [self ft_applyDeletion];
             [self ft_applyInsertion];
 
             for (id<FTDataSourceObserver> observer in self.observers) {

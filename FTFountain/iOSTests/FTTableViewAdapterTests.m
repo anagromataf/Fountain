@@ -339,6 +339,50 @@
     assertThatInteger(cell.tag, equalToInteger(cell.item.value));
 }
 
+- (void)testRemoveFirstItem
+{
+    FTTableViewAdapter *adapter = self.viewController.adapter;
+    adapter.reloadMovedItems = YES;
+    
+    [self.viewController.tableView registerClass:[FTTableViewCell class] forCellReuseIdentifier:@"FTTableViewCell"];
+    
+    [adapter forRowsMatchingPredicate:nil
+           useCellWithReuseIdentifier:@"FTTableViewCell"
+                         prepareBlock:^(FTTableViewCell *cell, FTTestItem *item, NSIndexPath *indexPath, id<FTDataSource> dataSource) {
+                             cell.item = item;
+                             cell.tag = item.value;
+                         }];
+    
+    FTMutableSet *set = [[FTMutableSet alloc] initSortDescriptors:@[ [NSSortDescriptor sortDescriptorWithKey:@"value" ascending:YES] ]];
+    
+    FTTestItem *item1 = ITEM(10);
+    FTTestItem *item2 = ITEM(20);
+    
+    NSArray *items = @[ item1, item2 ];
+    [set addObjectsFromArray:items];
+    
+    adapter.dataSource = set;
+    
+    [adapter.tableView setNeedsLayout];
+    [adapter.tableView layoutIfNeeded];
+    
+    [set performBatchUpdate:^{
+        NSArray *items = @[ item2 ];
+        [set removeAllObjects];
+        [set addObjectsFromArray:items];
+    }];
+    
+    [adapter.tableView setNeedsLayout];
+    [adapter.tableView layoutIfNeeded];
+    
+    FTTableViewCell *cell = nil;
+    
+    cell = (FTTableViewCell *)[adapter.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+    assertThat(cell, notNilValue());
+    assertThat(cell.item, is(item2));
+    assertThatInteger(cell.tag, equalToInteger(cell.item.value));
+}
+
 @end
 
 @implementation FTTableViewCell
