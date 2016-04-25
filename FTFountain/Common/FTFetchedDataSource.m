@@ -7,13 +7,14 @@
 //
 
 #import "FTDataSourceObserver.h"
+#import "FTObserverProxy.h"
 #import "FTMutableSet.h"
 
 #import "FTFetchedDataSource.h"
 
-@interface FTFetchedDataSource () <FTDataSourceObserver> {
+@interface FTFetchedDataSource () {
     NSMutableSet<FTDataSource, FTReverseDataSource> *_fetchedObjects;
-    NSHashTable *_observers;
+    FTObserverProxy *_observers;
     NSPredicate *_filterPredicate;
 }
 
@@ -43,7 +44,8 @@
 {
     self = [super init];
     if (self) {
-        _observers = [NSHashTable weakObjectsHashTable];
+        _observers = [[FTObserverProxy alloc] init];
+        _observers.object = self;
         _context = context;
         _entity = entity;
         _sortDescriptors = [sortDescriptors copy];
@@ -104,12 +106,12 @@
         if (_clusterComperator) {
             FTMutableClusterSet *set = [[FTMutableClusterSet alloc] initSortDescriptors:self.sortDescriptors comperator:self.clusterComperator];
             [set addObjectsFromArray:result];
-            [set addObserver:self];
+            [set addObserver:_observers];
             _fetchedObjects = set;
         } else {
             FTMutableSet *set = [[FTMutableSet alloc] initSortDescriptors:self.sortDescriptors];
             [set addObjectsFromArray:result];
-            [set addObserver:self];
+            [set addObserver:_observers];
             _fetchedObjects = set;
         }
 
@@ -141,12 +143,12 @@
         if (_clusterComperator) {
             FTMutableClusterSet *set = [[FTMutableClusterSet alloc] initSortDescriptors:self.sortDescriptors comperator:self.clusterComperator];
             [set addObjectsFromArray:result.finalResult];
-            [set addObserver:self];
+            [set addObserver:_observers];
             _fetchedObjects = set;
         } else {
             FTMutableSet *set = [[FTMutableSet alloc] initSortDescriptors:self.sortDescriptors];
             [set addObjectsFromArray:result.finalResult];
-            [set addObserver:self];
+            [set addObserver:_observers];
             _fetchedObjects = set;
         }
 
@@ -361,17 +363,17 @@
 
 - (NSArray *)observers
 {
-    return [_observers allObjects];
+    return [_observers observers];
 }
 
 - (void)addObserver:(id<FTDataSourceObserver>)observer
 {
-    [_observers addObject:observer];
+    [_observers addObserver:observer];
 }
 
 - (void)removeObserver:(id<FTDataSourceObserver>)observer
 {
-    [_observers removeObject:observer];
+    [_observers removeObserver:observer];
 }
 
 #pragma mark FTReverseDataSource
@@ -388,123 +390,6 @@
 - (NSArray *)indexPathsOfItem:(id)item
 {
     return [_fetchedObjects indexPathsOfItem:item];
-}
-
-#pragma mark FTDataSourceObserver
-
-- (void)dataSourceWillReset:(id<FTDataSource>)dataSource
-{
-    for (id<FTDataSourceObserver> observer in self.observers) {
-        if ([observer respondsToSelector:@selector(dataSourceWillReset:)]) {
-            [observer dataSourceWillReset:self];
-        }
-    }
-}
-
-- (void)dataSourceDidReset:(id<FTDataSource>)dataSource
-{
-    for (id<FTDataSourceObserver> observer in self.observers) {
-        if ([observer respondsToSelector:@selector(dataSourceDidReset:)]) {
-            [observer dataSourceDidReset:self];
-        }
-    }
-}
-
-#pragma mark Begin End Updates
-
-- (void)dataSourceWillChange:(id<FTDataSource>)dataSource
-{
-    for (id<FTDataSourceObserver> observer in self.observers) {
-        if ([observer respondsToSelector:@selector(dataSourceWillChange:)]) {
-            [observer dataSourceWillChange:self];
-        }
-    }
-}
-
-- (void)dataSourceDidChange:(id<FTDataSource>)dataSource
-{
-    for (id<FTDataSourceObserver> observer in self.observers) {
-        if ([observer respondsToSelector:@selector(dataSourceDidChange:)]) {
-            [observer dataSourceDidChange:self];
-        }
-    }
-}
-
-#pragma mark Manage Sections
-
-- (void)dataSource:(id<FTDataSource>)dataSource didInsertSections:(NSIndexSet *)sections
-{
-    for (id<FTDataSourceObserver> observer in self.observers) {
-        if ([observer respondsToSelector:@selector(dataSource:didInsertSections:)]) {
-            [observer dataSource:self didInsertSections:sections];
-        }
-    }
-}
-
-- (void)dataSource:(id<FTDataSource>)dataSource didDeleteSections:(NSIndexSet *)sections
-{
-    for (id<FTDataSourceObserver> observer in self.observers) {
-        if ([observer respondsToSelector:@selector(dataSource:didDeleteSections:)]) {
-            [observer dataSource:self didDeleteSections:sections];
-        }
-    }
-}
-
-- (void)dataSource:(id<FTDataSource>)dataSource didChangeSections:(NSIndexSet *)sections
-{
-    for (id<FTDataSourceObserver> observer in self.observers) {
-        if ([observer respondsToSelector:@selector(dataSource:didChangeSections:)]) {
-            [observer dataSource:self didChangeSections:sections];
-        }
-    }
-}
-
-- (void)dataSource:(id<FTDataSource>)dataSource didMoveSection:(NSInteger)section toSection:(NSInteger)newSection
-{
-    for (id<FTDataSourceObserver> observer in self.observers) {
-        if ([observer respondsToSelector:@selector(dataSource:didMoveSection:toSection:)]) {
-            [observer dataSource:self didMoveSection:section toSection:newSection];
-        }
-    }
-}
-
-#pragma mark Manage Items
-
-- (void)dataSource:(id<FTDataSource>)dataSource didInsertItemsAtIndexPaths:(NSArray *)indexPaths
-
-{
-    for (id<FTDataSourceObserver> observer in self.observers) {
-        if ([observer respondsToSelector:@selector(dataSource:didInsertItemsAtIndexPaths:)]) {
-            [observer dataSource:self didInsertItemsAtIndexPaths:indexPaths];
-        }
-    }
-}
-
-- (void)dataSource:(id<FTDataSource>)dataSource didDeleteItemsAtIndexPaths:(NSArray *)indexPaths
-{
-    for (id<FTDataSourceObserver> observer in self.observers) {
-        if ([observer respondsToSelector:@selector(dataSource:didDeleteItemsAtIndexPaths:)]) {
-            [observer dataSource:self didDeleteItemsAtIndexPaths:indexPaths];
-        }
-    }
-}
-
-- (void)dataSource:(id<FTDataSource>)dataSource didChangeItemsAtIndexPaths:(NSArray *)indexPaths
-{
-    for (id<FTDataSourceObserver> observer in self.observers) {
-        if ([observer respondsToSelector:@selector(dataSource:didChangeItemsAtIndexPaths:)]) {
-            [observer dataSource:self didChangeItemsAtIndexPaths:indexPaths];
-        }
-    }
-}
-
-- (void)dataSource:(id<FTDataSource>)dataSource didMoveItemAtIndexPath:(NSIndexPath *)indexPath toIndexPath:(NSIndexPath *)newIndexPath
-{
-    for (id<FTDataSourceObserver> observer in self.observers) {
-        if ([observer respondsToSelector:@selector(dataSource:didMoveItemAtIndexPath:toIndexPath:)]) {
-            [observer dataSource:self didMoveItemAtIndexPath:indexPath toIndexPath:newIndexPath];
-        }
-    }
 }
 
 @end
