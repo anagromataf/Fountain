@@ -43,6 +43,8 @@
     BOOL _isLoadingMoreItemsAfterLastItem;
 
     NSInteger _isInUserDrivenChangeCallCount;
+    
+    BOOL _editing;
 }
 
 @end
@@ -100,6 +102,26 @@
     }
 }
 
+#pragma mark Editing
+
+- (BOOL)isEditing
+{
+    return _editing;
+}
+
+- (void)setEditing:(BOOL)editing
+{
+    [self setEditing:editing animated:NO];
+}
+
+- (void)setEditing:(BOOL)editing animated:(BOOL)animated
+{
+    if (_editing != editing) {
+        _editing = editing;
+        [self.collectionView reloadData];
+    }
+}
+
 #pragma mark User-driven Change
 
 - (void)performUserDrivenChange:(void (^)())block
@@ -150,8 +172,19 @@
 - (void)itemPreperationForItemAtIndexPath:(NSIndexPath *)indexPath
                                 withBlock:(void (^)(NSString *, FTCollectionViewAdapterCellPrepareBlock, id))block
 {
-    id item = [_dataSource itemAtIndexPath:indexPath];
-
+    id item = nil;
+    
+    NSUInteger numberOfItemsInSection = [self.dataSource numberOfItemsInSection:indexPath.section];
+    if (indexPath.item < numberOfItemsInSection) {
+        item = [_dataSource itemAtIndexPath:indexPath];
+    } else if (self.editing && [self.dataSource conformsToProtocol:@protocol(FTMutableDataSource)]) {
+        id<FTMutableDataSource> mutableDataSource = (id<FTMutableDataSource>)self.dataSource;
+        
+        NSIndexPath *futureItemIndexPath = [NSIndexPath indexPathForItem:indexPath.item - numberOfItemsInSection
+                                                               inSection:indexPath.section];
+        item = [mutableDataSource futureItemTypeAtIndexPath:futureItemIndexPath];
+    }
+    
     NSDictionary *substitutionVariables = @{ @"SECTION" : @(indexPath.section),
                                              @"ITEM" : @(indexPath.item),
                                              @"ROW" : @(indexPath.row) };
@@ -214,7 +247,12 @@
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
     if (collectionView == _collectionView) {
-        return [self.dataSource numberOfItemsInSection:section];
+        NSUInteger numberOfItemsInSection = [self.dataSource numberOfItemsInSection:section];
+        if (self.editing && [self.dataSource conformsToProtocol:@protocol(FTMutableDataSource)]) {
+            id<FTMutableDataSource> mutableDataSource = (id<FTMutableDataSource>)self.dataSource;
+            numberOfItemsInSection += [mutableDataSource numberOfFutureItemTypesInSection:section];
+        }
+        return numberOfItemsInSection;
     } else {
         return 0;
     }
