@@ -54,21 +54,21 @@
     @param dataSource The data source that sent this message.
     @param sections An index set that specifies the sections that have been inserted in the data source. If a section already exists at the specified index location, it is moved down one index location.
  */
-- (void)dataSource:(id<FTDataSource> )dataSource didInsertSections:(NSIndexSet *)sections;
+- (void)dataSource:(id<FTDataSource>)dataSource didInsertSections:(NSIndexSet *)sections;
 
 /** Notifies the receiver that a data source has deleted sections.
  
     @param dataSource The data source that sent this message.
     @param sections An index set that specifies the sections that have been deleted from the data source. If a section exists after the specified index location, it is moved up one index location.
  */
-- (void)dataSource:(id<FTDataSource> )dataSource didDeleteSections:(NSIndexSet *)sections;
+- (void)dataSource:(id<FTDataSource>)dataSource didDeleteSections:(NSIndexSet *)sections;
 
 /** Notifies the receiver that a data source has changed sections.
  
     @param dataSource The data source that sent this message.
     @param sections An index set identifying the sections that have been changed.
  */
-- (void)dataSource:(id<FTDataSource> )dataSource didChangeSections:(NSIndexSet *)sections;
+- (void)dataSource:(id<FTDataSource>)dataSource didChangeSections:(NSIndexSet *)sections;
 
 /** Notifies the receiver that a data source has moved a section.
  
@@ -76,7 +76,7 @@
     @param section The index of the section that has been moved.
     @param newSection The index in the data source that is the destination of the move for the section. The existing section at that location slides up or down to an adjoining index position to make room for it.
  */
-- (void)dataSource:(id<FTDataSource> )dataSource didMoveSection:(NSInteger)section toSection:(NSInteger)newSection;
+- (void)dataSource:(id<FTDataSource>)dataSource didMoveSection:(NSInteger)section toSection:(NSInteger)newSection;
 
 #pragma mark Manage Items
 
@@ -85,21 +85,21 @@
     @param dataSource The data source that sent this message.
     @param indexPaths An array of NSIndexPath objects, each representing an item index and section index that together identify an item in the data source.
  */
-- (void)dataSource:(id<FTDataSource> )dataSource didInsertItemsAtIndexPaths:(NSArray *)indexPaths;
+- (void)dataSource:(id<FTDataSource>)dataSource didInsertItemsAtIndexPaths:(NSArray *)indexPaths;
 
 /** Notifies the receiver that a data source has deleted items.
  
     @param dataSource The data source that sent this message.
     @param indexPaths An array of NSIndexPath objects, each representing an item index and section index that together identify an item in the data source.
  */
-- (void)dataSource:(id<FTDataSource> )dataSource didDeleteItemsAtIndexPaths:(NSArray *)indexPaths;
+- (void)dataSource:(id<FTDataSource>)dataSource didDeleteItemsAtIndexPaths:(NSArray *)indexPaths;
 
 /** Notifies the receiver that a data source has changed items.
  
     @param dataSource The data source that sent this message.
     @param indexPaths An array of NSIndexPath objects, each representing an item index and section index that together identify an item in the data source.
  */
-- (void)dataSource:(id<FTDataSource> )dataSource didChangeItemsAtIndexPaths:(NSArray *)indexPaths;
+- (void)dataSource:(id<FTDataSource>)dataSource didChangeItemsAtIndexPaths:(NSArray *)indexPaths;
 
 /** Notifies the receiver that a data source hjas moved an item.
  
@@ -107,6 +107,6 @@
     @param indexPath An index path identifying the item to move.
     @param newIndexPath An index path identifying the position that is the destination of the item at indexPath. The existing item at that location slides up or down to an adjoining index position to make room for it.
  */
-- (void)dataSource:(id<FTDataSource> )dataSource didMoveItemAtIndexPath:(NSIndexPath *)indexPath toIndexPath:(NSIndexPath *)newIndexPath;
+- (void)dataSource:(id<FTDataSource>)dataSource didMoveItemAtIndexPath:(NSIndexPath *)indexPath toIndexPath:(NSIndexPath *)newIndexPath;
 
 @end

@@ -23,7 +23,7 @@
     @param sectionItem An object for which the index number are requested.
     @return An index set with the index numbers for the sections.
  */
-- (NSIndexSet *)sectionsOfSectionItem:(id )sectionItem;
+- (NSIndexSet *)sectionsOfSectionItem:(id)sectionItem;
 
 #pragma mark Getting Item Index Paths
 
@@ -34,6 +34,6 @@
     @param item An object fir wich the index paths are requested.
     @return An array of index paths for the items.
  */
-- (NSArray *)indexPathsOfItem:(id )item;
+- (NSArray *)indexPathsOfItem:(id)item;
 
 @end

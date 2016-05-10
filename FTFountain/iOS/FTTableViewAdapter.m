@@ -37,6 +37,8 @@
     BOOL _isLoadingMoreItemsAfterLastItem;
 
     NSInteger _isInUserDrivenChangeCallCount;
+
+    NSMutableArray *_indexPathsOfMovedItemsToReload;
 }
 
 @end
@@ -58,6 +60,8 @@
         _footerPrepareHandler = [[NSMutableArray alloc] init];
 
         _rowAnimation = UITableViewRowAnimationAutomatic;
+
+        _indexPathsOfMovedItemsToReload = [[NSMutableArray alloc] init];
     }
     return self;
 }
@@ -489,6 +493,12 @@
 {
     if (_isInUserDrivenChangeCallCount == 0 && dataSource == _dataSource) {
         [_tableView endUpdates];
+        if (self.shouldSkipReloadOfUpdatedItems == NO && self.reloadMovedItems == YES) {
+            [_tableView beginUpdates];
+            [_tableView reloadRowsAtIndexPaths:_indexPathsOfMovedItemsToReload withRowAnimation:UITableViewRowAnimationAutomatic];
+            [_tableView endUpdates];
+        }
+        [_indexPathsOfMovedItemsToReload removeAllObjects];
     }
 }
 
@@ -536,7 +546,7 @@
 
 - (void)dataSource:(id<FTDataSource>)dataSource didChangeItemsAtIndexPaths:(NSArray *)indexPaths
 {
-    if (_isInUserDrivenChangeCallCount == 0 && dataSource == _dataSource) {
+    if (_isInUserDrivenChangeCallCount == 0 && dataSource == _dataSource && !_shouldSkipReloadOfUpdatedItems) {
         [_tableView reloadRowsAtIndexPaths:indexPaths withRowAnimation:self.rowAnimation];
     }
 }
@@ -545,6 +555,10 @@
 {
     if (_isInUserDrivenChangeCallCount == 0 && dataSource == _dataSource) {
         [_tableView moveRowAtIndexPath:indexPath toIndexPath:newIndexPath];
+
+        if (self.shouldSkipReloadOfUpdatedItems == NO && self.reloadMovedItems == YES) {
+            [_indexPathsOfMovedItemsToReload addObject:newIndexPath];
+        }
     }
 }
 

@@ -26,6 +26,14 @@ typedef void (^FTCollectionViewAdapterCellPrepareBlock)(id cell, id item, NSInde
 #pragma mark Data Source
 @property (nonatomic, strong) id<FTDataSource> dataSource;
 
+#pragma mark Reload Behaviour
+@property (nonatomic, assign) BOOL shouldSkipReloadOfUpdatedItems;
+@property (nonatomic, assign) BOOL reloadMovedItems;
+
+#pragma mark Editing
+@property (nonatomic, getter=isEditing) BOOL editing;
+- (void)setEditing:(BOOL)editing animated:(BOOL)animated;
+
 #pragma mark User-driven Change
 - (void)performUserDrivenChange:(void (^)())block;
 

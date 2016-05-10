@@ -14,6 +14,7 @@
 
 // Observer
 #import "FTDataSourceObserver.h"
+#import "FTObserverProxy.h"
 
 // Common Data Sources
 #import "FTMutableArray.h"

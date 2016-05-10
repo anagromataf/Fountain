@@ -81,19 +81,20 @@
     assertThat([(FTEntity *)[dataSource itemAtIndexPath:IDX(20, 0)] value], equalTo(@(20)));
     assertThat([(FTEntity *)[dataSource itemAtIndexPath:IDX(30, 0)] value], equalTo(@(30)));
     assertThat([(FTEntity *)[dataSource itemAtIndexPath:IDX(40, 0)] value], equalTo(@(40)));
-    
+
     XCTestExpectation *expectFilter = [self expectationWithDescription:@"Expect Filtered Objects"];
-    
+
     NSPredicate *filterPredicate = [NSPredicate predicateWithFormat:@"value >= 20"];
-    [dataSource filterResultWithPredicate:filterPredicate completion:^(BOOL success, NSError *error) {
-        assertThatBool(success, isTrue());
-        [expectFilter fulfill];
-    }];
-    
+    [dataSource filterResultWithPredicate:filterPredicate
+                               completion:^(BOOL success, NSError *error) {
+                                   assertThatBool(success, isTrue());
+                                   [expectFilter fulfill];
+                               }];
+
     [self waitForExpectationsWithTimeout:1.0 handler:nil];
-    
+
     assertThat(dataSource.filterPredicate, equalTo(filterPredicate));
-    
+
     assertThatInteger([dataSource numberOfSections], equalToInteger(1));
     assertThatInteger([dataSource numberOfItemsInSection:0], equalToInteger(70));
 }
@@ -101,37 +102,37 @@
 - (void)testFetchObjects
 {
     [self seedContext];
-    
+
     NSEntityDescription *entity = [NSEntityDescription entityForName:@"Entity" inManagedObjectContext:self.context];
     NSArray *sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:@"value" ascending:YES] ];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"flag == YES"];
-    
+
     FTFetchedDataSource *dataSource = [[FTFetchedDataSource alloc] initWithManagedObjectContext:self.context
                                                                                          entity:entity
                                                                                 sortDescriptors:sortDescriptors
                                                                                       predicate:predicate];
-    
+
     BOOL success = NO;
     NSError *error = nil;
-    
+
     success = [dataSource fetchObjects:&error];
     assertThatBool(success, isTrue());
-    
+
     assertThatInteger([dataSource numberOfSections], equalToInteger(1));
     assertThatInteger([dataSource numberOfItemsInSection:0], equalToInteger(90));
-    
+
     NSPredicate *filterPredicate = [NSPredicate predicateWithFormat:@"value >= 20"];
     success = [dataSource filterResultWithPredicate:filterPredicate error:&error];
     assertThatBool(success, isTrue());
     assertThat(dataSource.filterPredicate, equalTo(filterPredicate));
-    
+
     assertThatInteger([dataSource numberOfSections], equalToInteger(1));
     assertThatInteger([dataSource numberOfItemsInSection:0], equalToInteger(70));
-    
+
     success = [dataSource filterResultWithPredicate:nil error:&error];
     assertThatBool(success, isTrue());
     assertThat(dataSource.filterPredicate, nilValue());
-    
+
     assertThatInteger([dataSource numberOfSections], equalToInteger(1));
     assertThatInteger([dataSource numberOfItemsInSection:0], equalToInteger(90));
 }

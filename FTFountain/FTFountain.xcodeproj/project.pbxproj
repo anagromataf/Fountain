@@ -50,6 +50,10 @@
 		F66C7ED41B5AAC4100662CD1 /* FTReverseDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = F66C7ECF1B5AAC4100662CD1 /* FTReverseDataSource.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F66C7ED51B5AAC4100662CD1 /* FTDataSourceObserver.h in Headers */ = {isa = PBXBuildFile; fileRef = F66C7ED01B5AAC4100662CD1 /* FTDataSourceObserver.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F66C7ED61B5AAC4100662CD1 /* FTDataSourceObserver.h in Headers */ = {isa = PBXBuildFile; fileRef = F66C7ED01B5AAC4100662CD1 /* FTDataSourceObserver.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F676EF451CCE15B2003047EC /* FTObserverProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = F676EF431CCE15B2003047EC /* FTObserverProxy.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F676EF461CCE15B2003047EC /* FTObserverProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = F676EF431CCE15B2003047EC /* FTObserverProxy.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F676EF471CCE15B2003047EC /* FTObserverProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = F676EF441CCE15B2003047EC /* FTObserverProxy.m */; };
+		F676EF481CCE15B2003047EC /* FTObserverProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = F676EF441CCE15B2003047EC /* FTObserverProxy.m */; };
 		F6A333EA1B810F9D00C77C58 /* FTMutableSet.h in Headers */ = {isa = PBXBuildFile; fileRef = F6A333E81B810F9D00C77C58 /* FTMutableSet.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F6A333EB1B810F9D00C77C58 /* FTMutableSet.h in Headers */ = {isa = PBXBuildFile; fileRef = F6A333E81B810F9D00C77C58 /* FTMutableSet.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F6A333EC1B810F9D00C77C58 /* FTMutableSet.m in Sources */ = {isa = PBXBuildFile; fileRef = F6A333E91B810F9D00C77C58 /* FTMutableSet.m */; };
@@ -151,6 +155,8 @@
 		F66C7ECE1B5AAC4100662CD1 /* FTDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = FTDataSource.h; sourceTree = "<group>"; };
 		F66C7ECF1B5AAC4100662CD1 /* FTReverseDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FTReverseDataSource.h; sourceTree = "<group>"; };
 		F66C7ED01B5AAC4100662CD1 /* FTDataSourceObserver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = FTDataSourceObserver.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		F676EF431CCE15B2003047EC /* FTObserverProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FTObserverProxy.h; sourceTree = "<group>"; };
+		F676EF441CCE15B2003047EC /* FTObserverProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTObserverProxy.m; sourceTree = "<group>"; };
 		F6A333E81B810F9D00C77C58 /* FTMutableSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FTMutableSet.h; sourceTree = "<group>"; };
 		F6A333E91B810F9D00C77C58 /* FTMutableSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FTMutableSet.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		F6A333EE1B81173900C77C58 /* FTMutableSetTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTMutableSetTests.m; sourceTree = "<group>"; };
@@ -345,6 +351,7 @@
 				F66C7ED71B5AAC4400662CD1 /* Protocols */,
 				F66C7EDE1B5AAC5400662CD1 /* General Data Sources */,
 				F6C796871B85E10600B55B6B /* Core Data */,
+				F676EF421CCE159D003047EC /* Proxy */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -389,6 +396,15 @@
 				F60065281B95A9A8006ED118 /* FTCombinedDataSource.m */,
 			);
 			name = "General Data Sources";
+			sourceTree = "<group>";
+		};
+		F676EF421CCE159D003047EC /* Proxy */ = {
+			isa = PBXGroup;
+			children = (
+				F676EF431CCE15B2003047EC /* FTObserverProxy.h */,
+				F676EF441CCE15B2003047EC /* FTObserverProxy.m */,
+			);
+			name = Proxy;
 			sourceTree = "<group>";
 		};
 		F6AE695B1B7C981A00F43CFF /* Table View */ = {
@@ -477,6 +493,7 @@
 				F6B5E6451B8A0475002C6181 /* FTTestItem.h in Headers */,
 				F60065291B95A9A8006ED118 /* FTCombinedDataSource.h in Headers */,
 				F66C7E991B5AABAE00662CD1 /* FTFountainiOS.h in Headers */,
+				F676EF451CCE15B2003047EC /* FTObserverProxy.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -495,6 +512,7 @@
 				F6B5E6461B8A0475002C6181 /* FTTestItem.h in Headers */,
 				F66C78841B8E27AB0044913D /* FTMutableClusterSet.h in Headers */,
 				F6EE0A9B1B8F211200A3F608 /* FTTestItemClusterComperator.h in Headers */,
+				F676EF461CCE15B2003047EC /* FTObserverProxy.h in Headers */,
 				F6A3D56E1B8B478A00437C34 /* FTEntity+CoreDataProperties.h in Headers */,
 				F66C7ED21B5AAC4100662CD1 /* FTDataSource.h in Headers */,
 				F66C7ED61B5AAC4100662CD1 /* FTDataSourceObserver.h in Headers */,
@@ -534,6 +552,7 @@
 				F66C7E9C1B5AABAF00662CD1 /* Frameworks */,
 				F66C7E9D1B5AABAF00662CD1 /* Resources */,
 				D37BD789E3C52DC71A4321F1 /* Copy Pods Resources */,
+				4C062E2208914EDDE5A337CB /* Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -572,6 +591,7 @@
 				F66C7EB81B5AABC300662CD1 /* Frameworks */,
 				F66C7EB91B5AABC300662CD1 /* Resources */,
 				692557C7ADDFC7570F98221C /* Copy Pods Resources */,
+				A732AD92BB12B9441AE444BF /* Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -662,6 +682,21 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		4C062E2208914EDDE5A337CB /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-iOSTests/Pods-iOSTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		692557C7ADDFC7570F98221C /* Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -675,6 +710,21 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-OSXTests/Pods-OSXTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		A732AD92BB12B9441AE444BF /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-OSXTests/Pods-OSXTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		BE7773E094713265501A7A68 /* Check Pods Manifest.lock */ = {
@@ -737,6 +787,7 @@
 				F6FEDF8E1B78FCBF00BAD0FF /* FTTableViewAdapter.m in Sources */,
 				F600652B1B95A9A8006ED118 /* FTCombinedDataSource.m in Sources */,
 				F66C78851B8E27AB0044913D /* FTMutableClusterSet.m in Sources */,
+				F676EF471CCE15B2003047EC /* FTObserverProxy.m in Sources */,
 				F610704A1B7C905E009C2D40 /* FTCollectionViewAdapter.m in Sources */,
 				F6C7968C1B85E12D00B55B6B /* FTFetchedDataSource.m in Sources */,
 				F6EE0AA31B8F220B00A3F608 /* FTEntityClusterComperator.m in Sources */,
@@ -773,6 +824,7 @@
 				F66C78861B8E27AB0044913D /* FTMutableClusterSet.m in Sources */,
 				F6A3D5721B8B478A00437C34 /* FTEntity.m in Sources */,
 				F6B5E6481B8A0475002C6181 /* FTTestItem.m in Sources */,
+				F676EF481CCE15B2003047EC /* FTObserverProxy.m in Sources */,
 				F6C7968D1B85E12D00B55B6B /* FTFetchedDataSource.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
