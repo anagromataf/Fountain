@@ -172,19 +172,7 @@
 - (void)itemPreperationForItemAtIndexPath:(NSIndexPath *)indexPath
                                 withBlock:(void (^)(NSString *, FTCollectionViewAdapterCellPrepareBlock, id))block
 {
-    id item = nil;
-    
-    NSUInteger numberOfItemsInSection = [self.dataSource numberOfItemsInSection:indexPath.section];
-    if (indexPath.item < numberOfItemsInSection) {
-        item = [_dataSource itemAtIndexPath:indexPath];
-    } else if (self.editing && [self.dataSource conformsToProtocol:@protocol(FTMutableDataSource)]) {
-        id<FTMutableDataSource> mutableDataSource = (id<FTMutableDataSource>)self.dataSource;
-        
-        NSIndexPath *futureItemIndexPath = [NSIndexPath indexPathForItem:indexPath.item - numberOfItemsInSection
-                                                               inSection:indexPath.section];
-        item = [mutableDataSource futureItemTypeAtIndexPath:futureItemIndexPath];
-    }
-    
+    id item = [self itemAtIndexPath:indexPath];
     NSDictionary *substitutionVariables = @{ @"SECTION" : @(indexPath.section),
                                              @"ITEM" : @(indexPath.item),
                                              @"ROW" : @(indexPath.row) };
@@ -216,7 +204,7 @@
             item = [self.dataSource sectionItemForSection:indexPath.section];
             substitutionVariables = @{ @"SECTION" : @(indexPath.section) };
         } else if ([indexPath length] == 2) {
-            item = [self.dataSource itemAtIndexPath:indexPath];
+            item = [self itemAtIndexPath:indexPath];
             substitutionVariables = @{ @"SECTION" : @(indexPath.section),
                                        @"ITEM" : @(indexPath.item),
                                        @"ROW" : @(indexPath.row) };
@@ -230,6 +218,22 @@
                 *stop = YES;
             }
         }];
+    }
+}
+
+- (id)itemAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSUInteger numberOfItemsInSection = [self.dataSource numberOfItemsInSection:indexPath.section];
+    if (indexPath.item < numberOfItemsInSection) {
+        return [_dataSource itemAtIndexPath:indexPath];
+    } else if (self.editing && [self.dataSource conformsToProtocol:@protocol(FTMutableDataSource)]) {
+        id<FTMutableDataSource> mutableDataSource = (id<FTMutableDataSource>)self.dataSource;
+
+        NSIndexPath *futureItemIndexPath = [NSIndexPath indexPathForItem:indexPath.item - numberOfItemsInSection
+                                                               inSection:indexPath.section];
+        return [mutableDataSource futureItemTypeAtIndexPath:futureItemIndexPath];
+    } else {
+        return nil;
     }
 }
 
