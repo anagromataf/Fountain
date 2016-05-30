@@ -7,8 +7,8 @@
 //
 
 #import "FTDataSourceObserver.h"
-#import "FTObserverProxy.h"
 #import "FTMutableSet.h"
+#import "FTObserverProxy.h"
 
 #import "FTFetchedDataSource.h"
 

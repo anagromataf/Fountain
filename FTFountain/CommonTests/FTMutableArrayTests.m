@@ -13,7 +13,7 @@
 #import <OCMockito/OCMockito.h>
 #import <XCTest/XCTest.h>
 
-#import "FTFountain.h"
+#import <Fountain/Fountain.h>
 
 #define IDX(item, section) [[NSIndexPath indexPathWithIndex:section] indexPathByAddingIndex:item]
 

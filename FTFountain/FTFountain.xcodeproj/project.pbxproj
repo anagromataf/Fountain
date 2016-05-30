@@ -37,13 +37,13 @@
 		F66C78861B8E27AB0044913D /* FTMutableClusterSet.m in Sources */ = {isa = PBXBuildFile; fileRef = F66C78821B8E27AB0044913D /* FTMutableClusterSet.m */; };
 		F66C78881B8E2BE70044913D /* FTMutableClusterTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F6A333F11B81DCFA00C77C58 /* FTMutableClusterTests.m */; };
 		F66C78891B8E2BE80044913D /* FTMutableClusterTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F6A333F11B81DCFA00C77C58 /* FTMutableClusterTests.m */; };
-		F66C7E991B5AABAE00662CD1 /* FTFountainiOS.h in Headers */ = {isa = PBXBuildFile; fileRef = F66C7E981B5AABAE00662CD1 /* FTFountainiOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		F66C7EA01B5AABAF00662CD1 /* FTFountainiOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F66C7E951B5AABAE00662CD1 /* FTFountainiOS.framework */; };
-		F66C7EB51B5AABC300662CD1 /* FTFountainOSX.h in Headers */ = {isa = PBXBuildFile; fileRef = F66C7EB41B5AABC300662CD1 /* FTFountainOSX.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		F66C7EBC1B5AABC300662CD1 /* FTFountainOSX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F66C7EB21B5AABC300662CD1 /* FTFountainOSX.framework */; };
+		F66C7E991B5AABAE00662CD1 /* FountainiOS.h in Headers */ = {isa = PBXBuildFile; fileRef = F66C7E981B5AABAE00662CD1 /* FountainiOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F66C7EA01B5AABAF00662CD1 /* Fountain.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F66C7E951B5AABAE00662CD1 /* Fountain.framework */; };
+		F66C7EB51B5AABC300662CD1 /* FountainOSX.h in Headers */ = {isa = PBXBuildFile; fileRef = F66C7EB41B5AABC300662CD1 /* FountainOSX.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F66C7EBC1B5AABC300662CD1 /* Fountain.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F66C7EB21B5AABC300662CD1 /* Fountain.framework */; };
 		F66C7EC11B5AABC300662CD1 /* OSXTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F66C7EC01B5AABC300662CD1 /* OSXTests.m */; };
-		F66C7ECC1B5AAC3B00662CD1 /* FTFountain.h in Headers */ = {isa = PBXBuildFile; fileRef = F66C7ECB1B5AAC3B00662CD1 /* FTFountain.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		F66C7ECD1B5AAC3B00662CD1 /* FTFountain.h in Headers */ = {isa = PBXBuildFile; fileRef = F66C7ECB1B5AAC3B00662CD1 /* FTFountain.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F66C7ECC1B5AAC3B00662CD1 /* Fountain.h in Headers */ = {isa = PBXBuildFile; fileRef = F66C7ECB1B5AAC3B00662CD1 /* Fountain.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F66C7ECD1B5AAC3B00662CD1 /* Fountain.h in Headers */ = {isa = PBXBuildFile; fileRef = F66C7ECB1B5AAC3B00662CD1 /* Fountain.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F66C7ED11B5AAC4100662CD1 /* FTDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = F66C7ECE1B5AAC4100662CD1 /* FTDataSource.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F66C7ED21B5AAC4100662CD1 /* FTDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = F66C7ECE1B5AAC4100662CD1 /* FTDataSource.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F66C7ED31B5AAC4100662CD1 /* FTReverseDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = F66C7ECF1B5AAC4100662CD1 /* FTReverseDataSource.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -140,18 +140,18 @@
 		F653D1601B8B434100C6F706 /* TestModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = TestModel.xcdatamodel; sourceTree = "<group>"; };
 		F66C78811B8E27AB0044913D /* FTMutableClusterSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FTMutableClusterSet.h; sourceTree = "<group>"; };
 		F66C78821B8E27AB0044913D /* FTMutableClusterSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTMutableClusterSet.m; sourceTree = "<group>"; };
-		F66C7E951B5AABAE00662CD1 /* FTFountainiOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FTFountainiOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		F66C7E981B5AABAE00662CD1 /* FTFountainiOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FTFountainiOS.h; sourceTree = "<group>"; };
+		F66C7E951B5AABAE00662CD1 /* Fountain.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Fountain.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		F66C7E981B5AABAE00662CD1 /* FountainiOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FountainiOS.h; sourceTree = "<group>"; };
 		F66C7E9A1B5AABAE00662CD1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F66C7E9F1B5AABAF00662CD1 /* iOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iOSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F66C7EA61B5AABAF00662CD1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		F66C7EB21B5AABC300662CD1 /* FTFountainOSX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FTFountainOSX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		F66C7EB41B5AABC300662CD1 /* FTFountainOSX.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FTFountainOSX.h; sourceTree = "<group>"; };
+		F66C7EB21B5AABC300662CD1 /* Fountain.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Fountain.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		F66C7EB41B5AABC300662CD1 /* FountainOSX.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FountainOSX.h; sourceTree = "<group>"; };
 		F66C7EB61B5AABC300662CD1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F66C7EBB1B5AABC300662CD1 /* OSXTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OSXTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F66C7EC01B5AABC300662CD1 /* OSXTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSXTests.m; sourceTree = "<group>"; };
 		F66C7EC21B5AABC300662CD1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		F66C7ECB1B5AAC3B00662CD1 /* FTFountain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FTFountain.h; sourceTree = "<group>"; };
+		F66C7ECB1B5AAC3B00662CD1 /* Fountain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Fountain.h; sourceTree = "<group>"; };
 		F66C7ECE1B5AAC4100662CD1 /* FTDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = FTDataSource.h; sourceTree = "<group>"; };
 		F66C7ECF1B5AAC4100662CD1 /* FTReverseDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FTReverseDataSource.h; sourceTree = "<group>"; };
 		F66C7ED01B5AAC4100662CD1 /* FTDataSourceObserver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = FTDataSourceObserver.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
@@ -193,7 +193,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F66C7EA01B5AABAF00662CD1 /* FTFountainiOS.framework in Frameworks */,
+				F66C7EA01B5AABAF00662CD1 /* Fountain.framework in Frameworks */,
 				BA76125BE0868B2E5286D745 /* libPods-iOSTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -209,7 +209,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F66C7EBC1B5AABC300662CD1 /* FTFountainOSX.framework in Frameworks */,
+				F66C7EBC1B5AABC300662CD1 /* Fountain.framework in Frameworks */,
 				E819ECD6025418DBD2F88D2F /* libPods-OSXTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -297,9 +297,9 @@
 		F66C7E961B5AABAE00662CD1 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				F66C7E951B5AABAE00662CD1 /* FTFountainiOS.framework */,
+				F66C7E951B5AABAE00662CD1 /* Fountain.framework */,
 				F66C7E9F1B5AABAF00662CD1 /* iOSTests.xctest */,
-				F66C7EB21B5AABC300662CD1 /* FTFountainOSX.framework */,
+				F66C7EB21B5AABC300662CD1 /* Fountain.framework */,
 				F66C7EBB1B5AABC300662CD1 /* OSXTests.xctest */,
 			);
 			name = Products;
@@ -308,7 +308,7 @@
 		F66C7E971B5AABAE00662CD1 /* iOS */ = {
 			isa = PBXGroup;
 			children = (
-				F66C7E981B5AABAE00662CD1 /* FTFountainiOS.h */,
+				F66C7E981B5AABAE00662CD1 /* FountainiOS.h */,
 				F66C7E9A1B5AABAE00662CD1 /* Info.plist */,
 				F6FEDF8F1B78FCC400BAD0FF /* Adapter */,
 			);
@@ -329,7 +329,7 @@
 		F66C7EB31B5AABC300662CD1 /* OSX */ = {
 			isa = PBXGroup;
 			children = (
-				F66C7EB41B5AABC300662CD1 /* FTFountainOSX.h */,
+				F66C7EB41B5AABC300662CD1 /* FountainOSX.h */,
 				F66C7EB61B5AABC300662CD1 /* Info.plist */,
 			);
 			path = OSX;
@@ -347,7 +347,7 @@
 		F66C7EC91B5AABFA00662CD1 /* Common */ = {
 			isa = PBXGroup;
 			children = (
-				F66C7ECB1B5AAC3B00662CD1 /* FTFountain.h */,
+				F66C7ECB1B5AAC3B00662CD1 /* Fountain.h */,
 				F66C7ED71B5AAC4400662CD1 /* Protocols */,
 				F66C7EDE1B5AAC5400662CD1 /* General Data Sources */,
 				F6C796871B85E10600B55B6B /* Core Data */,
@@ -489,10 +489,10 @@
 				F6EE0A9A1B8F211200A3F608 /* FTTestItemClusterComperator.h in Headers */,
 				F61070481B7C905E009C2D40 /* FTCollectionViewAdapter.h in Headers */,
 				F6EE0AA11B8F220B00A3F608 /* FTEntityClusterComperator.h in Headers */,
-				F66C7ECC1B5AAC3B00662CD1 /* FTFountain.h in Headers */,
+				F66C7ECC1B5AAC3B00662CD1 /* Fountain.h in Headers */,
 				F6B5E6451B8A0475002C6181 /* FTTestItem.h in Headers */,
 				F60065291B95A9A8006ED118 /* FTCombinedDataSource.h in Headers */,
-				F66C7E991B5AABAE00662CD1 /* FTFountainiOS.h in Headers */,
+				F66C7E991B5AABAE00662CD1 /* FountainiOS.h in Headers */,
 				F676EF451CCE15B2003047EC /* FTObserverProxy.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -516,8 +516,8 @@
 				F6A3D56E1B8B478A00437C34 /* FTEntity+CoreDataProperties.h in Headers */,
 				F66C7ED21B5AAC4100662CD1 /* FTDataSource.h in Headers */,
 				F66C7ED61B5AAC4100662CD1 /* FTDataSourceObserver.h in Headers */,
-				F66C7ECD1B5AAC3B00662CD1 /* FTFountain.h in Headers */,
-				F66C7EB51B5AABC300662CD1 /* FTFountainOSX.h in Headers */,
+				F66C7ECD1B5AAC3B00662CD1 /* Fountain.h in Headers */,
+				F66C7EB51B5AABC300662CD1 /* FountainOSX.h in Headers */,
 				F6A3D5701B8B478A00437C34 /* FTEntity.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -540,7 +540,7 @@
 			);
 			name = FTFountainiOS;
 			productName = iOS;
-			productReference = F66C7E951B5AABAE00662CD1 /* FTFountainiOS.framework */;
+			productReference = F66C7E951B5AABAE00662CD1 /* Fountain.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		F66C7E9E1B5AABAF00662CD1 /* iOSTests */ = {
@@ -579,7 +579,7 @@
 			);
 			name = FTFountainOSX;
 			productName = OSX;
-			productReference = F66C7EB21B5AABC300662CD1 /* FTFountainOSX.framework */;
+			productReference = F66C7EB21B5AABC300662CD1 /* Fountain.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		F66C7EBA1B5AABC300662CD1 /* OSXTests */ = {
@@ -924,7 +924,7 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "de.tobias-kraentzer.iOS";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Fountain;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -973,7 +973,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "de.tobias-kraentzer.iOS";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Fountain;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1121,7 +1121,7 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "de.tobias-kraentzer.OSX";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Fountain;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -1170,7 +1170,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "de.tobias-kraentzer.OSX";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Fountain;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				VERSIONING_SYSTEM = "apple-generic";

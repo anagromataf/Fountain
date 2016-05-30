@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-#import "FTFountain.h"
+@protocol FTDataSource;
 
 typedef void (^FTCollectionViewAdapterCellPrepareBlock)(id cell, id item, NSIndexPath *indexPath, id<FTDataSource> dataSource);
 

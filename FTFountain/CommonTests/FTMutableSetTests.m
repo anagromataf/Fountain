@@ -9,13 +9,12 @@
 #define HC_SHORTHAND
 #define MOCKITO_SHORTHAND
 
+#import <Fountain/Fountain.h>
 #import <OCHamcrest/OCHamcrest.h>
 #import <OCMockito/OCMockito.h>
 #import <XCTest/XCTest.h>
 
 #import "FTTestItem.h"
-
-#import "FTFountain.h"
 
 #define IDX(item, section) [[NSIndexPath indexPathWithIndex:section] indexPathByAddingIndex:item]
 

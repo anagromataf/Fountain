@@ -6,8 +6,8 @@
 //  Copyright (c) 2015 Tobias Kräntzer. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
+#import <Foundation/Foundation.h>
 
 #import "FTMutableClusterSet.h"
 
