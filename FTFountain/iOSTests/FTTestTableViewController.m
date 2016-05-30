@@ -6,8 +6,7 @@
 //  Copyright © 2015 Tobias Kräntzer. All rights reserved.
 //
 
-#import "FTFountain.h"
-#import "FTFountainiOS.h"
+#import <Fountain/Fountain.h>
 
 #import "FTTestTableViewController.h"
 

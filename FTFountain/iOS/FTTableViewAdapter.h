@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-#import "FTFountain.h"
+@protocol FTDataSource;
 
 typedef void (^FTTableViewAdapterCellPrepareBlock)(id cell, id item, NSIndexPath *indexPath, id<FTDataSource> dataSource);
 typedef void (^FTTableViewAdapterHeaderFooterPrepareBlock)(id view, id item, NSUInteger section, id<FTDataSource> dataSource);

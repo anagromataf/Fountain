@@ -7,6 +7,10 @@
 //
 
 #import "FTTableViewAdapter.h"
+#import "FTDataSource.h"
+#import "FTDataSourceObserver.h"
+#import "FTMutableDataSource.h"
+#import "FTPagingDataSource.h"
 #import "FTTableViewAdapter+Subclassing.h"
 
 @interface FTTableViewAdapterPreperationHandler : NSObject

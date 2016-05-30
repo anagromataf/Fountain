@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 Tobias Kräntzer. All rights reserved.
 //
 
-#import "FTFountain.h"
+#import <fountain/Fountain.h>
 
 @interface FTEntityClusterComperator : FTClusterComperator
 

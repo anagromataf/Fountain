@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "F66C7EB11B5AABC300662CD1"
-               BuildableName = "FTFountainOSX.framework"
-               BlueprintName = "FTFountainOSX"
+               BlueprintIdentifier = "F66C7E941B5AABAE00662CD1"
+               BuildableName = "Fountain.framework"
+               BlueprintName = "FTFountainiOS"
                ReferencedContainer = "container:FTFountain.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -32,9 +32,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "F66C7EBA1B5AABC300662CD1"
-               BuildableName = "OSXTests.xctest"
-               BlueprintName = "OSXTests"
+               BlueprintIdentifier = "F66C7E9E1B5AABAF00662CD1"
+               BuildableName = "iOSTests.xctest"
+               BlueprintName = "iOSTests"
                ReferencedContainer = "container:FTFountain.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -42,9 +42,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "F66C7EB11B5AABC300662CD1"
-            BuildableName = "FTFountainOSX.framework"
-            BlueprintName = "FTFountainOSX"
+            BlueprintIdentifier = "F66C7E941B5AABAE00662CD1"
+            BuildableName = "Fountain.framework"
+            BlueprintName = "FTFountainiOS"
             ReferencedContainer = "container:FTFountain.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -64,9 +64,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "F66C7EB11B5AABC300662CD1"
-            BuildableName = "FTFountainOSX.framework"
-            BlueprintName = "FTFountainOSX"
+            BlueprintIdentifier = "F66C7E941B5AABAE00662CD1"
+            BuildableName = "Fountain.framework"
+            BlueprintName = "FTFountainiOS"
             ReferencedContainer = "container:FTFountain.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -82,9 +82,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "F66C7EB11B5AABC300662CD1"
-            BuildableName = "FTFountainOSX.framework"
-            BlueprintName = "FTFountainOSX"
+            BlueprintIdentifier = "F66C7E941B5AABAE00662CD1"
+            BuildableName = "Fountain.framework"
+            BlueprintName = "FTFountainiOS"
             ReferencedContainer = "container:FTFountain.xcodeproj">
          </BuildableReference>
       </MacroExpansion>

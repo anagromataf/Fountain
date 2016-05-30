@@ -8,6 +8,10 @@
 
 #import "FTCollectionViewAdapter.h"
 #import "FTCollectionViewAdapter+Subclassing.h"
+#import "FTDataSource.h"
+#import "FTDataSourceObserver.h"
+#import "FTMutableDataSource.h"
+#import "FTPagingDataSource.h"
 
 @interface FTCollectionViewAdapterPreperationHandler : NSObject
 #pragma mark Life-cycle
@@ -43,7 +47,7 @@
     BOOL _isLoadingMoreItemsAfterLastItem;
 
     NSInteger _isInUserDrivenChangeCallCount;
-    
+
     BOOL _editing;
 }
 
@@ -417,9 +421,9 @@
             }];
 
         }
-            completion:^(BOOL finished){
+                                  completion:^(BOOL finished){
 
-            }];
+                                  }];
 
         [_insertedSections removeAllIndexes];
         [_deletedSections removeAllIndexes];
@@ -434,9 +438,9 @@
             [_collectionView performBatchUpdates:^{
                 [_collectionView reloadItemsAtIndexPaths:movedItemsToReload];
             }
-                completion:^(BOOL finished){
+                                      completion:^(BOOL finished){
 
-                }];
+                                      }];
         }
     }
 }

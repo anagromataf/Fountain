@@ -9,11 +9,10 @@
 #define HC_SHORTHAND
 #define MOCKITO_SHORTHAND
 
+#import <Fountain/Fountain.h>
 #import <OCHamcrest/OCHamcrest.h>
 #import <OCMockito/OCMockito.h>
 #import <XCTest/XCTest.h>
-
-#import "FTFountain.h"
 
 #import "FTTestItem.h"
 #import "FTTestItemClusterComperator.h"
