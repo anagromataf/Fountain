@@ -10,6 +10,7 @@ Pod::Spec.new do |s|
   s.homepage                = 'https://github.com/anagromataf/Fountain'
   s.source                  = {:git => 'https://github.com/anagromataf/Fountain.git', :tag => "#{s.version}"}
   
+  s.module_name             = "Fountain"
   s.requires_arc            = true
   s.ios.deployment_target   = '8.0'
   s.osx.deployment_target   = '10.10'
