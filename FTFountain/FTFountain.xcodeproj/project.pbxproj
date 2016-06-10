@@ -27,6 +27,18 @@
 		F610704F1B7C92FC009C2D40 /* CollectionTest.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F610704E1B7C92FC009C2D40 /* CollectionTest.storyboard */; };
 		F61070521B7C9334009C2D40 /* FTTestCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F61070511B7C9334009C2D40 /* FTTestCollectionViewController.m */; };
 		F61070541B7C93E6009C2D40 /* FTCollectionViewAdapterTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F61070531B7C93E6009C2D40 /* FTCollectionViewAdapterTests.m */; };
+		F61C3C3D1D0AAA3F0028B3CF /* NSArray+Fountain.h in Headers */ = {isa = PBXBuildFile; fileRef = F61C3C3B1D0AAA3F0028B3CF /* NSArray+Fountain.h */; };
+		F61C3C3E1D0AAA3F0028B3CF /* NSArray+Fountain.h in Headers */ = {isa = PBXBuildFile; fileRef = F61C3C3B1D0AAA3F0028B3CF /* NSArray+Fountain.h */; };
+		F61C3C3F1D0AAA3F0028B3CF /* NSArray+Fountain.m in Sources */ = {isa = PBXBuildFile; fileRef = F61C3C3C1D0AAA3F0028B3CF /* NSArray+Fountain.m */; };
+		F61C3C401D0AAA3F0028B3CF /* NSArray+Fountain.m in Sources */ = {isa = PBXBuildFile; fileRef = F61C3C3C1D0AAA3F0028B3CF /* NSArray+Fountain.m */; };
+		F61C3C431D0AAB080028B3CF /* NSSortDescriptor+Fountain.h in Headers */ = {isa = PBXBuildFile; fileRef = F61C3C411D0AAB080028B3CF /* NSSortDescriptor+Fountain.h */; };
+		F61C3C441D0AAB080028B3CF /* NSSortDescriptor+Fountain.h in Headers */ = {isa = PBXBuildFile; fileRef = F61C3C411D0AAB080028B3CF /* NSSortDescriptor+Fountain.h */; };
+		F61C3C451D0AAB080028B3CF /* NSSortDescriptor+Fountain.m in Sources */ = {isa = PBXBuildFile; fileRef = F61C3C421D0AAB080028B3CF /* NSSortDescriptor+Fountain.m */; };
+		F61C3C461D0AAB080028B3CF /* NSSortDescriptor+Fountain.m in Sources */ = {isa = PBXBuildFile; fileRef = F61C3C421D0AAB080028B3CF /* NSSortDescriptor+Fountain.m */; };
+		F61C3C481D0AABB40028B3CF /* NSArrayFountainTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F61C3C471D0AABB40028B3CF /* NSArrayFountainTests.m */; };
+		F61C3C491D0AABB40028B3CF /* NSArrayFountainTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F61C3C471D0AABB40028B3CF /* NSArrayFountainTests.m */; };
+		F61C3C4B1D0AAD190028B3CF /* NSSortDescriptorFountainTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F61C3C4A1D0AAD190028B3CF /* NSSortDescriptorFountainTests.m */; };
+		F61C3C4C1D0AAD190028B3CF /* NSSortDescriptorFountainTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F61C3C4A1D0AAD190028B3CF /* NSSortDescriptorFountainTests.m */; };
 		F653D15D1B8B42FF00C6F706 /* FTFetchedDataSourceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F653D15C1B8B42FF00C6F706 /* FTFetchedDataSourceTests.m */; };
 		F653D15E1B8B42FF00C6F706 /* FTFetchedDataSourceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F653D15C1B8B42FF00C6F706 /* FTFetchedDataSourceTests.m */; };
 		F653D1611B8B434100C6F706 /* TestModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = F653D15F1B8B434100C6F706 /* TestModel.xcdatamodeld */; };
@@ -136,6 +148,12 @@
 		F61070501B7C9334009C2D40 /* FTTestCollectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FTTestCollectionViewController.h; sourceTree = "<group>"; };
 		F61070511B7C9334009C2D40 /* FTTestCollectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTTestCollectionViewController.m; sourceTree = "<group>"; };
 		F61070531B7C93E6009C2D40 /* FTCollectionViewAdapterTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTCollectionViewAdapterTests.m; sourceTree = "<group>"; };
+		F61C3C3B1D0AAA3F0028B3CF /* NSArray+Fountain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+Fountain.h"; sourceTree = "<group>"; };
+		F61C3C3C1D0AAA3F0028B3CF /* NSArray+Fountain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+Fountain.m"; sourceTree = "<group>"; };
+		F61C3C411D0AAB080028B3CF /* NSSortDescriptor+Fountain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSSortDescriptor+Fountain.h"; sourceTree = "<group>"; };
+		F61C3C421D0AAB080028B3CF /* NSSortDescriptor+Fountain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSSortDescriptor+Fountain.m"; sourceTree = "<group>"; };
+		F61C3C471D0AABB40028B3CF /* NSArrayFountainTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSArrayFountainTests.m; sourceTree = "<group>"; };
+		F61C3C4A1D0AAD190028B3CF /* NSSortDescriptorFountainTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSSortDescriptorFountainTests.m; sourceTree = "<group>"; };
 		F653D15C1B8B42FF00C6F706 /* FTFetchedDataSourceTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTFetchedDataSourceTests.m; sourceTree = "<group>"; };
 		F653D1601B8B434100C6F706 /* TestModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = TestModel.xcdatamodel; sourceTree = "<group>"; };
 		F66C78811B8E27AB0044913D /* FTMutableClusterSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FTMutableClusterSet.h; sourceTree = "<group>"; };
@@ -268,6 +286,17 @@
 			name = "Collection View";
 			sourceTree = "<group>";
 		};
+		F61C3C3A1D0AAA160028B3CF /* Additions */ = {
+			isa = PBXGroup;
+			children = (
+				F61C3C3B1D0AAA3F0028B3CF /* NSArray+Fountain.h */,
+				F61C3C3C1D0AAA3F0028B3CF /* NSArray+Fountain.m */,
+				F61C3C411D0AAB080028B3CF /* NSSortDescriptor+Fountain.h */,
+				F61C3C421D0AAB080028B3CF /* NSSortDescriptor+Fountain.m */,
+			);
+			name = Additions;
+			sourceTree = "<group>";
+		};
 		F653D1681B8B439400C6F706 /* Test Model */ = {
 			isa = PBXGroup;
 			children = (
@@ -350,6 +379,7 @@
 				F66C7ECB1B5AAC3B00662CD1 /* Fountain.h */,
 				F66C7ED71B5AAC4400662CD1 /* Protocols */,
 				F66C7EDE1B5AAC5400662CD1 /* General Data Sources */,
+				F61C3C3A1D0AAA160028B3CF /* Additions */,
 				F6C796871B85E10600B55B6B /* Core Data */,
 				F676EF421CCE159D003047EC /* Proxy */,
 			);
@@ -364,6 +394,8 @@
 				F6A333F11B81DCFA00C77C58 /* FTMutableClusterTests.m */,
 				F6A397901B98937B0093BC21 /* FTCombinedDataSourceTests.m */,
 				F653D15C1B8B42FF00C6F706 /* FTFetchedDataSourceTests.m */,
+				F61C3C471D0AABB40028B3CF /* NSArrayFountainTests.m */,
+				F61C3C4A1D0AAD190028B3CF /* NSSortDescriptorFountainTests.m */,
 				F653D1681B8B439400C6F706 /* Test Model */,
 				F6B5E6491B8A047C002C6181 /* Test Item */,
 				F6EE0A9E1B8F211800A3F608 /* Comperator */,
@@ -486,7 +518,9 @@
 				F66C7ED11B5AAC4100662CD1 /* FTDataSource.h in Headers */,
 				F6FEDF8D1B78FCBF00BAD0FF /* FTTableViewAdapter.h in Headers */,
 				F66C7ED51B5AAC4100662CD1 /* FTDataSourceObserver.h in Headers */,
+				F61C3C3D1D0AAA3F0028B3CF /* NSArray+Fountain.h in Headers */,
 				F6EE0A9A1B8F211200A3F608 /* FTTestItemClusterComperator.h in Headers */,
+				F61C3C431D0AAB080028B3CF /* NSSortDescriptor+Fountain.h in Headers */,
 				F61070481B7C905E009C2D40 /* FTCollectionViewAdapter.h in Headers */,
 				F6EE0AA11B8F220B00A3F608 /* FTEntityClusterComperator.h in Headers */,
 				F66C7ECC1B5AAC3B00662CD1 /* Fountain.h in Headers */,
@@ -513,6 +547,8 @@
 				F66C78841B8E27AB0044913D /* FTMutableClusterSet.h in Headers */,
 				F6EE0A9B1B8F211200A3F608 /* FTTestItemClusterComperator.h in Headers */,
 				F676EF461CCE15B2003047EC /* FTObserverProxy.h in Headers */,
+				F61C3C441D0AAB080028B3CF /* NSSortDescriptor+Fountain.h in Headers */,
+				F61C3C3E1D0AAA3F0028B3CF /* NSArray+Fountain.h in Headers */,
 				F6A3D56E1B8B478A00437C34 /* FTEntity+CoreDataProperties.h in Headers */,
 				F66C7ED21B5AAC4100662CD1 /* FTDataSource.h in Headers */,
 				F66C7ED61B5AAC4100662CD1 /* FTDataSourceObserver.h in Headers */,
@@ -782,10 +818,12 @@
 				F6FFB7A21B62C3F2007B9652 /* FTMutableArray.m in Sources */,
 				F6EE0A9C1B8F211200A3F608 /* FTTestItemClusterComperator.m in Sources */,
 				F6A333EC1B810F9D00C77C58 /* FTMutableSet.m in Sources */,
+				F61C3C451D0AAB080028B3CF /* NSSortDescriptor+Fountain.m in Sources */,
 				F6A3D5711B8B478A00437C34 /* FTEntity.m in Sources */,
 				F6B5E6471B8A0475002C6181 /* FTTestItem.m in Sources */,
 				F6FEDF8E1B78FCBF00BAD0FF /* FTTableViewAdapter.m in Sources */,
 				F600652B1B95A9A8006ED118 /* FTCombinedDataSource.m in Sources */,
+				F61C3C3F1D0AAA3F0028B3CF /* NSArray+Fountain.m in Sources */,
 				F66C78851B8E27AB0044913D /* FTMutableClusterSet.m in Sources */,
 				F676EF471CCE15B2003047EC /* FTObserverProxy.m in Sources */,
 				F610704A1B7C905E009C2D40 /* FTCollectionViewAdapter.m in Sources */,
@@ -802,10 +840,12 @@
 				F653D1611B8B434100C6F706 /* TestModel.xcdatamodeld in Sources */,
 				F61070331B7BCB05009C2D40 /* FTTableViewAdapterTests.m in Sources */,
 				F61070311B7BC7BD009C2D40 /* FTTestTableViewController.m in Sources */,
+				F61C3C481D0AABB40028B3CF /* NSArrayFountainTests.m in Sources */,
 				F61070521B7C9334009C2D40 /* FTTestCollectionViewController.m in Sources */,
 				F6A333EF1B81173900C77C58 /* FTMutableSetTests.m in Sources */,
 				F61070541B7C93E6009C2D40 /* FTCollectionViewAdapterTests.m in Sources */,
 				F61070421B7BF581009C2D40 /* FTSectionHeaderFooterView.m in Sources */,
+				F61C3C4B1D0AAD190028B3CF /* NSSortDescriptorFountainTests.m in Sources */,
 				F66C78881B8E2BE70044913D /* FTMutableClusterTests.m in Sources */,
 				F653D15D1B8B42FF00C6F706 /* FTFetchedDataSourceTests.m in Sources */,
 				F6A397911B98937B0093BC21 /* FTCombinedDataSourceTests.m in Sources */,
@@ -817,6 +857,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F6A333ED1B810F9D00C77C58 /* FTMutableSet.m in Sources */,
+				F61C3C461D0AAB080028B3CF /* NSSortDescriptor+Fountain.m in Sources */,
 				F6EE0A9D1B8F211200A3F608 /* FTTestItemClusterComperator.m in Sources */,
 				F6FFB7A31B62C3F2007B9652 /* FTMutableArray.m in Sources */,
 				F6EE0AA41B8F220B00A3F608 /* FTEntityClusterComperator.m in Sources */,
@@ -825,6 +866,7 @@
 				F6A3D5721B8B478A00437C34 /* FTEntity.m in Sources */,
 				F6B5E6481B8A0475002C6181 /* FTTestItem.m in Sources */,
 				F676EF481CCE15B2003047EC /* FTObserverProxy.m in Sources */,
+				F61C3C401D0AAA3F0028B3CF /* NSArray+Fountain.m in Sources */,
 				F6C7968D1B85E12D00B55B6B /* FTFetchedDataSource.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -833,8 +875,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F61C3C491D0AABB40028B3CF /* NSArrayFountainTests.m in Sources */,
 				F6A333F01B81173900C77C58 /* FTMutableSetTests.m in Sources */,
 				F653D15E1B8B42FF00C6F706 /* FTFetchedDataSourceTests.m in Sources */,
+				F61C3C4C1D0AAD190028B3CF /* NSSortDescriptorFountainTests.m in Sources */,
 				F60967791B62D1D0007F2F35 /* FTMutableArrayTests.m in Sources */,
 				F653D1621B8B434100C6F706 /* TestModel.xcdatamodeld in Sources */,
 				F66C7EC11B5AABC300662CD1 /* OSXTests.m in Sources */,
