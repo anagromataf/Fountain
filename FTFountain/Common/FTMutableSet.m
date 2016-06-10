@@ -7,6 +7,8 @@
 //
 
 #import "FTDataSourceObserver.h"
+#import "NSArray+Fountain.h"
+#import "NSSortDescriptor+Fountain.h"
 
 #import "FTMutableSet.h"
 
@@ -162,24 +164,6 @@
     }
 }
 
-+ (NSComparator)comperatorUsingSortDescriptors:(NSArray *)sortDescriptors
-{
-    return ^(id firstObject, id secondObject) {
-        for (NSSortDescriptor *sortDescriptor in sortDescriptors) {
-            NSComparisonResult result = [sortDescriptor compareObject:firstObject toObject:secondObject];
-            switch (result) {
-            case NSOrderedAscending:
-                return sortDescriptor.ascending ? NSOrderedAscending : NSOrderedDescending;
-            case NSOrderedDescending:
-                return sortDescriptor.ascending ? NSOrderedDescending : NSOrderedAscending;
-            default:
-                break;
-            }
-        }
-        return NSOrderedSame;
-    };
-}
-
 + (NSSortDescriptor *)defaultSortDescriptor
 {
     return [NSSortDescriptor sortDescriptorWithKey:@"self"
@@ -193,74 +177,6 @@
                                                 return NSOrderedSame;
                                             }
                                         }];
-}
-
-// Returns sorted array of the objects of the given set ordered by the sort descriptors. If the sort
-// order of two objects is ambiguous, used the given reference array as a hint for the order.
-+ (NSArray *)arrayBySortingObjects:(NSSet *)objects usingSortDescriptors:(NSArray *)sortDescriptors orderAmbiguousObjectsByOrderInArray:(NSArray *)referenceArray
-{
-    return [[objects allObjects] sortedArrayUsingComparator:^(id firstObject, id secondObject) {
-
-        // Early return, if the first object is the second object
-
-        if (firstObject == secondObject) {
-            return NSOrderedSame;
-        }
-
-        // Sort objects by the sort descriptors
-
-        for (NSSortDescriptor *sortDescriptor in sortDescriptors) {
-            NSComparisonResult result = [sortDescriptor compareObject:firstObject toObject:secondObject];
-            switch (result) {
-            case NSOrderedAscending:
-                return sortDescriptor.ascending ? NSOrderedAscending : NSOrderedDescending;
-            case NSOrderedDescending:
-                return sortDescriptor.ascending ? NSOrderedDescending : NSOrderedAscending;
-            default:
-                break;
-            }
-        }
-
-        // If the sort order is ambiguous (based on the sort descriptors),
-        // order the objects by the order in the backing store.
-
-        NSInteger firstIndex = [referenceArray indexOfObject:firstObject];
-        NSInteger secondIndex = [referenceArray indexOfObject:secondObject];
-
-        if (firstIndex == secondIndex) {
-            return NSOrderedSame; // should never happen
-        } else if (firstIndex < secondIndex) {
-            return NSOrderedAscending;
-        } else {
-            return NSOrderedDescending;
-        }
-
-    }];
-}
-
-+ (NSArray *)arrayBySortingObjects:(NSSet *)objects byOrderInArray:(NSArray *)referenceArray
-{
-    return [[objects allObjects] sortedArrayUsingComparator:^(id firstObject, id secondObject) {
-
-        // Early return, if the first object is the second object
-
-        if (firstObject == secondObject) {
-            return NSOrderedSame;
-        }
-
-        // Order the objects by the order in the backing store.
-
-        NSInteger firstIndex = [referenceArray indexOfObject:firstObject];
-        NSInteger secondIndex = [referenceArray indexOfObject:secondObject];
-
-        if (firstIndex == secondIndex) {
-            return NSOrderedSame; // should never happen
-        } else if (firstIndex < secondIndex) {
-            return NSOrderedAscending;
-        } else {
-            return NSOrderedDescending;
-        }
-    }];
 }
 
 #pragma mark Batch Updates
@@ -346,7 +262,7 @@
 {
     if ([_insertedObjects count] > 0) {
 
-        NSComparator comperator = [[self class] comperatorUsingSortDescriptors:self.sortDescriptors];
+        NSComparator comperator = [NSSortDescriptor ft_comperatorUsingSortDescriptors:self.sortDescriptors];
         NSArray *insertedObjects = [_insertedObjects sortedArrayUsingDescriptors:self.sortDescriptors];
 
         NSMutableArray *indexPathsOfInsertedItems = [[NSMutableArray alloc] init];
@@ -384,10 +300,10 @@
 {
     if ([_updatedObjects count] > 0) {
 
-        NSComparator comperator = [[self class] comperatorUsingSortDescriptors:self.sortDescriptors];
-        NSArray *updatedObjects = [[self class] arrayBySortingObjects:_updatedObjects
-                                                 usingSortDescriptors:self.sortDescriptors
-                                  orderAmbiguousObjectsByOrderInArray:_backingStore];
+        NSComparator comperator = [NSSortDescriptor ft_comperatorUsingSortDescriptors:self.sortDescriptors];
+        NSArray *updatedObjects = [NSArray ft_arrayBySortingObjects:_updatedObjects
+                                               usingSortDescriptors:self.sortDescriptors
+                                orderAmbiguousObjectsByOrderInArray:_backingStore];
 
         NSMutableIndexSet *indexes = [NSMutableIndexSet indexSet];
         NSMapTable *indexesByObjects = [NSMapTable strongToStrongObjectsMapTable];
