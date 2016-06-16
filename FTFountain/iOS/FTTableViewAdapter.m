@@ -95,13 +95,6 @@
 
 #pragma mark Editing
 
-@dynamic editing;
-
-- (BOOL)isEditing
-{
-    return self.tableView.editing;
-}
-
 - (void)setEditing:(BOOL)editing
 {
     [self setEditing:editing animated:NO];
@@ -109,7 +102,9 @@
 
 - (void)setEditing:(BOOL)editing animated:(BOOL)animated
 {
-    if (self.editing != editing) {
+    if (_editing != editing) {
+
+        _editing = editing;
 
         [self.tableView setEditing:editing animated:animated];
 
@@ -350,7 +345,10 @@
         if (editingStyle == UITableViewCellEditingStyleDelete &&
             [self.dataSource conformsToProtocol:@protocol(FTMutableDataSource)]) {
             id<FTMutableDataSource> mutableDataSource = (id<FTMutableDataSource>)self.dataSource;
-            [mutableDataSource deleteItemAtIndexPath:indexPath];
+            [self performUserDrivenChange:^{
+                [mutableDataSource deleteItemAtIndexPath:indexPath];
+                [tableView deleteRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationAutomatic];
+            }];
         }
     } else if (self.editing && [self.dataSource conformsToProtocol:@protocol(FTMutableDataSource)]) {
 
