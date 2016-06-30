@@ -385,7 +385,6 @@
 				F66C7EB41B5AABC300662CD1 /* FountainOSX.h */,
 				F66C7EB61B5AABC300662CD1 /* Info.plist */,
 			);
-			name = macOS;
 			path = macOS;
 			sourceTree = "<group>";
 		};
