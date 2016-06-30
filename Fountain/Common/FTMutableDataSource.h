@@ -19,7 +19,6 @@
 
 #pragma mark Deletion
 - (BOOL)canDeleteItemAtIndexPath:(NSIndexPath *)indexPath;
-- (void)deleteItemAtIndexPath:(NSIndexPath *)indexPath __attribute__((deprecated));
 - (BOOL)deleteItemAtIndexPath:(NSIndexPath *)indexPath error:(NSError **)error;
 
 @end
