@@ -2,9 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:FTFountain/FTFountain.xcodeproj">
+      location = "group:Cartfile.private">
    </FileRef>
    <FileRef
-      location = "group:Pods/Pods.xcodeproj">
+      location = "group:FTFountain/FTFountain.xcodeproj">
    </FileRef>
 </Workspace>

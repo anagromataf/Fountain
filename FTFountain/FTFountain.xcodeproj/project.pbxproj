@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		BA76125BE0868B2E5286D745 /* libPods-iOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 181AAC39A27B232748D1FB07 /* libPods-iOSTests.a */; };
-		E819ECD6025418DBD2F88D2F /* libPods-OSXTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C645279FCA25E88BB3758D72 /* libPods-OSXTests.a */; };
 		F60065291B95A9A8006ED118 /* FTCombinedDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = F60065271B95A9A8006ED118 /* FTCombinedDataSource.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F600652A1B95A9A8006ED118 /* FTCombinedDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = F60065271B95A9A8006ED118 /* FTCombinedDataSource.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F600652B1B95A9A8006ED118 /* FTCombinedDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = F60065281B95A9A8006ED118 /* FTCombinedDataSource.m */; };
@@ -39,6 +37,12 @@
 		F61C3C491D0AABB40028B3CF /* NSArrayFountainTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F61C3C471D0AABB40028B3CF /* NSArrayFountainTests.m */; };
 		F61C3C4B1D0AAD190028B3CF /* NSSortDescriptorFountainTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F61C3C4A1D0AAD190028B3CF /* NSSortDescriptorFountainTests.m */; };
 		F61C3C4C1D0AAD190028B3CF /* NSSortDescriptorFountainTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F61C3C4A1D0AAD190028B3CF /* NSSortDescriptorFountainTests.m */; };
+		F64514591D2518450066A016 /* OCHamcrest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F64514571D2518450066A016 /* OCHamcrest.framework */; };
+		F645145A1D2518450066A016 /* OCMockito.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F64514581D2518450066A016 /* OCMockito.framework */; };
+		F645145F1D2519110066A016 /* OCHamcrest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F645145D1D2519110066A016 /* OCHamcrest.framework */; };
+		F64514601D2519110066A016 /* OCMockito.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F645145E1D2519110066A016 /* OCMockito.framework */; };
+		F64514631D2519400066A016 /* OCHamcrest.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = F645145D1D2519110066A016 /* OCHamcrest.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		F64514641D2519400066A016 /* OCMockito.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = F645145E1D2519110066A016 /* OCMockito.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		F653D15D1B8B42FF00C6F706 /* FTFetchedDataSourceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F653D15C1B8B42FF00C6F706 /* FTFetchedDataSourceTests.m */; };
 		F653D15E1B8B42FF00C6F706 /* FTFetchedDataSourceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F653D15C1B8B42FF00C6F706 /* FTFetchedDataSourceTests.m */; };
 		F653D1611B8B434100C6F706 /* TestModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = F653D15F1B8B434100C6F706 /* TestModel.xcdatamodeld */; };
@@ -124,13 +128,21 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		F64514621D2519360066A016 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				F64514631D2519400066A016 /* OCHamcrest.framework in CopyFiles */,
+				F64514641D2519400066A016 /* OCMockito.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
-		181AAC39A27B232748D1FB07 /* libPods-iOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-iOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		8A356347C516C26F05A528E9 /* Pods-OSXTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OSXTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-OSXTests/Pods-OSXTests.release.xcconfig"; sourceTree = "<group>"; };
-		A25FEFF74EE2613DFA2E70EF /* Pods-iOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOSTests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-iOSTests/Pods-iOSTests.debug.xcconfig"; sourceTree = "<group>"; };
-		B840933B8AFFFE51509020A3 /* Pods-iOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOSTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-iOSTests/Pods-iOSTests.release.xcconfig"; sourceTree = "<group>"; };
-		C1E257ACB1DFDAC116021BD8 /* Pods-OSXTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OSXTests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-OSXTests/Pods-OSXTests.debug.xcconfig"; sourceTree = "<group>"; };
-		C645279FCA25E88BB3758D72 /* libPods-OSXTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-OSXTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F60065271B95A9A8006ED118 /* FTCombinedDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FTCombinedDataSource.h; sourceTree = "<group>"; };
 		F60065281B95A9A8006ED118 /* FTCombinedDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTCombinedDataSource.m; sourceTree = "<group>"; };
 		F60967771B62D1D0007F2F35 /* FTMutableArrayTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FTMutableArrayTests.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
@@ -154,6 +166,10 @@
 		F61C3C421D0AAB080028B3CF /* NSSortDescriptor+Fountain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSSortDescriptor+Fountain.m"; sourceTree = "<group>"; };
 		F61C3C471D0AABB40028B3CF /* NSArrayFountainTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSArrayFountainTests.m; sourceTree = "<group>"; };
 		F61C3C4A1D0AAD190028B3CF /* NSSortDescriptorFountainTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSSortDescriptorFountainTests.m; sourceTree = "<group>"; };
+		F64514571D2518450066A016 /* OCHamcrest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OCHamcrest.framework; path = ../Carthage/Build/iOS/OCHamcrest.framework; sourceTree = "<group>"; };
+		F64514581D2518450066A016 /* OCMockito.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OCMockito.framework; path = ../Carthage/Build/iOS/OCMockito.framework; sourceTree = "<group>"; };
+		F645145D1D2519110066A016 /* OCHamcrest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OCHamcrest.framework; path = ../Carthage/Build/Mac/OCHamcrest.framework; sourceTree = "<group>"; };
+		F645145E1D2519110066A016 /* OCMockito.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OCMockito.framework; path = ../Carthage/Build/Mac/OCMockito.framework; sourceTree = "<group>"; };
 		F653D15C1B8B42FF00C6F706 /* FTFetchedDataSourceTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTFetchedDataSourceTests.m; sourceTree = "<group>"; };
 		F653D1601B8B434100C6F706 /* TestModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = TestModel.xcdatamodel; sourceTree = "<group>"; };
 		F66C78811B8E27AB0044913D /* FTMutableClusterSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FTMutableClusterSet.h; sourceTree = "<group>"; };
@@ -211,8 +227,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F64514591D2518450066A016 /* OCHamcrest.framework in Frameworks */,
+				F645145A1D2518450066A016 /* OCMockito.framework in Frameworks */,
 				F66C7EA01B5AABAF00662CD1 /* Fountain.framework in Frameworks */,
-				BA76125BE0868B2E5286D745 /* libPods-iOSTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -227,30 +244,20 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F645145F1D2519110066A016 /* OCHamcrest.framework in Frameworks */,
+				F64514601D2519110066A016 /* OCMockito.framework in Frameworks */,
 				F66C7EBC1B5AABC300662CD1 /* Fountain.framework in Frameworks */,
-				E819ECD6025418DBD2F88D2F /* libPods-OSXTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		07445CE301D9F3B7BCA918D8 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				C1E257ACB1DFDAC116021BD8 /* Pods-OSXTests.debug.xcconfig */,
-				8A356347C516C26F05A528E9 /* Pods-OSXTests.release.xcconfig */,
-				A25FEFF74EE2613DFA2E70EF /* Pods-iOSTests.debug.xcconfig */,
-				B840933B8AFFFE51509020A3 /* Pods-iOSTests.release.xcconfig */,
-			);
-			name = Pods;
-			sourceTree = "<group>";
-		};
 		9C6EABA5FC22E955B4EF0A94 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				C645279FCA25E88BB3758D72 /* libPods-OSXTests.a */,
-				181AAC39A27B232748D1FB07 /* libPods-iOSTests.a */,
+				F645145B1D25184C0066A016 /* iOS */,
+				F64514611D2519170066A016 /* macOS */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -297,6 +304,24 @@
 			name = Additions;
 			sourceTree = "<group>";
 		};
+		F645145B1D25184C0066A016 /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				F64514571D2518450066A016 /* OCHamcrest.framework */,
+				F64514581D2518450066A016 /* OCMockito.framework */,
+			);
+			name = iOS;
+			sourceTree = "<group>";
+		};
+		F64514611D2519170066A016 /* macOS */ = {
+			isa = PBXGroup;
+			children = (
+				F645145D1D2519110066A016 /* OCHamcrest.framework */,
+				F645145E1D2519110066A016 /* OCMockito.framework */,
+			);
+			name = macOS;
+			sourceTree = "<group>";
+		};
 		F653D1681B8B439400C6F706 /* Test Model */ = {
 			isa = PBXGroup;
 			children = (
@@ -318,7 +343,6 @@
 				F66C7EB31B5AABC300662CD1 /* OSX */,
 				F66C7EBF1B5AABC300662CD1 /* OSXTests */,
 				F66C7E961B5AABAE00662CD1 /* Products */,
-				07445CE301D9F3B7BCA918D8 /* Pods */,
 				9C6EABA5FC22E955B4EF0A94 /* Frameworks */,
 			);
 			sourceTree = "<group>";
@@ -583,12 +607,10 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = F66C7EAA1B5AABAF00662CD1 /* Build configuration list for PBXNativeTarget "iOSTests" */;
 			buildPhases = (
-				BE7773E094713265501A7A68 /* Check Pods Manifest.lock */,
 				F66C7E9B1B5AABAF00662CD1 /* Sources */,
 				F66C7E9C1B5AABAF00662CD1 /* Frameworks */,
 				F66C7E9D1B5AABAF00662CD1 /* Resources */,
-				D37BD789E3C52DC71A4321F1 /* Copy Pods Resources */,
-				4C062E2208914EDDE5A337CB /* Embed Pods Frameworks */,
+				F645145C1D2518760066A016 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -622,12 +644,10 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = F66C7EC61B5AABC300662CD1 /* Build configuration list for PBXNativeTarget "OSXTests" */;
 			buildPhases = (
-				D7CEA158DAB25E033FD0AE6B /* Check Pods Manifest.lock */,
 				F66C7EB71B5AABC300662CD1 /* Sources */,
 				F66C7EB81B5AABC300662CD1 /* Frameworks */,
 				F66C7EB91B5AABC300662CD1 /* Resources */,
-				692557C7ADDFC7570F98221C /* Copy Pods Resources */,
-				A732AD92BB12B9441AE444BF /* Embed Pods Frameworks */,
+				F64514621D2519360066A016 /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -651,9 +671,13 @@
 				TargetAttributes = {
 					F66C7E941B5AABAE00662CD1 = {
 						CreatedOnToolsVersion = 7.0;
+						DevelopmentTeam = EJW69VRSSH;
+						DevelopmentTeamName = "Tobias Kraentzer";
 					};
 					F66C7E9E1B5AABAF00662CD1 = {
 						CreatedOnToolsVersion = 7.0;
+						DevelopmentTeam = EJW69VRSSH;
+						DevelopmentTeamName = "Tobias Kraentzer";
 					};
 					F66C7EB11B5AABC300662CD1 = {
 						CreatedOnToolsVersion = 7.0;
@@ -718,95 +742,20 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		4C062E2208914EDDE5A337CB /* Embed Pods Frameworks */ = {
+		F645145C1D2518760066A016 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
+				"$(SRCROOT)/../Carthage/Build/iOS/OCHamcrest.framework",
+				"$(SRCROOT)/../Carthage/Build/iOS/OCMockito.framework",
 			);
-			name = "Embed Pods Frameworks";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-iOSTests/Pods-iOSTests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		692557C7ADDFC7570F98221C /* Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-OSXTests/Pods-OSXTests-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		A732AD92BB12B9441AE444BF /* Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-OSXTests/Pods-OSXTests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		BE7773E094713265501A7A68 /* Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Check Pods Manifest.lock";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		D37BD789E3C52DC71A4321F1 /* Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-iOSTests/Pods-iOSTests-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		D7CEA158DAB25E033FD0AE6B /* Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Check Pods Manifest.lock";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
+			shellScript = "/usr/local/bin/carthage copy-frameworks";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -1029,7 +978,6 @@
 		};
 		F66C7EAB1B5AABAF00662CD1 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A25FEFF74EE2613DFA2E70EF /* Pods-iOSTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -1050,6 +998,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/../Carthage/Build/iOS";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -1077,7 +1026,6 @@
 		};
 		F66C7EAC1B5AABAF00662CD1 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B840933B8AFFFE51509020A3 /* Pods-iOSTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -1098,6 +1046,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/../Carthage/Build/iOS";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -1224,7 +1173,6 @@
 		};
 		F66C7EC71B5AABC300662CD1 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C1E257ACB1DFDAC116021BD8 /* Pods-OSXTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -1245,6 +1193,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/../Carthage/Build/Mac";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -1272,7 +1221,6 @@
 		};
 		F66C7EC81B5AABC300662CD1 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8A356347C516C26F05A528E9 /* Pods-OSXTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -1293,6 +1241,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/../Carthage/Build/Mac";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
