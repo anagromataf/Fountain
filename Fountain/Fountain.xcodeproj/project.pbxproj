@@ -95,6 +95,8 @@
 		F6C7968D1B85E12D00B55B6B /* FTFetchedDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = F6C796891B85E12D00B55B6B /* FTFetchedDataSource.m */; };
 		F6DCE4601BA82A3D00D2BE54 /* FTMutableDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = F6DCE45F1BA82A3D00D2BE54 /* FTMutableDataSource.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F6DCE4611BA82A3D00D2BE54 /* FTMutableDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = F6DCE45F1BA82A3D00D2BE54 /* FTMutableDataSource.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F6E9E87E1D254CCA005E51B9 /* FTFutureItemsDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = F6E9E87D1D254CCA005E51B9 /* FTFutureItemsDataSource.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F6E9E87F1D254CCA005E51B9 /* FTFutureItemsDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = F6E9E87D1D254CCA005E51B9 /* FTFutureItemsDataSource.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F6EE0A9A1B8F211200A3F608 /* FTTestItemClusterComperator.h in Headers */ = {isa = PBXBuildFile; fileRef = F6EE0A981B8F211200A3F608 /* FTTestItemClusterComperator.h */; };
 		F6EE0A9B1B8F211200A3F608 /* FTTestItemClusterComperator.h in Headers */ = {isa = PBXBuildFile; fileRef = F6EE0A981B8F211200A3F608 /* FTTestItemClusterComperator.h */; };
 		F6EE0A9C1B8F211200A3F608 /* FTTestItemClusterComperator.m in Sources */ = {isa = PBXBuildFile; fileRef = F6EE0A991B8F211200A3F608 /* FTTestItemClusterComperator.m */; };
@@ -205,6 +207,7 @@
 		F6C796881B85E12D00B55B6B /* FTFetchedDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = FTFetchedDataSource.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		F6C796891B85E12D00B55B6B /* FTFetchedDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FTFetchedDataSource.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		F6DCE45F1BA82A3D00D2BE54 /* FTMutableDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = FTMutableDataSource.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		F6E9E87D1D254CCA005E51B9 /* FTFutureItemsDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FTFutureItemsDataSource.h; sourceTree = "<group>"; };
 		F6EE0A981B8F211200A3F608 /* FTTestItemClusterComperator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = FTTestItemClusterComperator.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		F6EE0A991B8F211200A3F608 /* FTTestItemClusterComperator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FTTestItemClusterComperator.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		F6EE0A9F1B8F220B00A3F608 /* FTEntityClusterComperator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = FTEntityClusterComperator.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
@@ -435,6 +438,7 @@
 				F61070431B7C05DD009C2D40 /* FTPagingDataSource.h */,
 				F6DCE45F1BA82A3D00D2BE54 /* FTMutableDataSource.h */,
 				F66C7ED01B5AAC4100662CD1 /* FTDataSourceObserver.h */,
+				F6E9E87D1D254CCA005E51B9 /* FTFutureItemsDataSource.h */,
 			);
 			name = Protocols;
 			sourceTree = "<group>";
@@ -538,6 +542,7 @@
 				F6C7968A1B85E12D00B55B6B /* FTFetchedDataSource.h in Headers */,
 				F61070391B7BD475009C2D40 /* FTTableViewAdapter+Subclassing.h in Headers */,
 				F6A3D56F1B8B478A00437C34 /* FTEntity.h in Headers */,
+				F6E9E87E1D254CCA005E51B9 /* FTFutureItemsDataSource.h in Headers */,
 				F61070441B7C05DD009C2D40 /* FTPagingDataSource.h in Headers */,
 				F66C7ED11B5AAC4100662CD1 /* FTDataSource.h in Headers */,
 				F6FEDF8D1B78FCBF00BAD0FF /* FTTableViewAdapter.h in Headers */,
@@ -570,6 +575,7 @@
 				F6B5E6461B8A0475002C6181 /* FTTestItem.h in Headers */,
 				F66C78841B8E27AB0044913D /* FTMutableClusterSet.h in Headers */,
 				F6EE0A9B1B8F211200A3F608 /* FTTestItemClusterComperator.h in Headers */,
+				F6E9E87F1D254CCA005E51B9 /* FTFutureItemsDataSource.h in Headers */,
 				F676EF461CCE15B2003047EC /* FTObserverProxy.h in Headers */,
 				F61C3C441D0AAB080028B3CF /* NSSortDescriptor+Fountain.h in Headers */,
 				F61C3C3E1D0AAA3F0028B3CF /* NSArray+Fountain.h in Headers */,

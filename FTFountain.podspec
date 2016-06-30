@@ -1,7 +1,7 @@
 # coding: utf-8
 Pod::Spec.new do |s|
   s.name                    = "FTFountain"
-  s.version                 = "2.3.3"
+  s.version                 = "2.4"
   s.summary                 = "Pluggable data sources and adapters for managing list-like content."
   
   s.authors                 = { "Tobias Kräntzer" => "info@tobias-kraentzer.de" }
@@ -15,9 +15,9 @@ Pod::Spec.new do |s|
   s.ios.deployment_target   = '8.0'
   s.osx.deployment_target   = '10.10'
   
-  s.source_files            = 'FTFountain/Common/**/*.{h,m,c}'
-  s.ios.source_files        = 'FTFountain/iOS/**/*.{h,m,c}'
-  s.osx.source_files        = 'FTFountain/OSX/**/*.{h,m,c}'
+  s.source_files            = 'Fountain/Common/**/*.{h,m,c}'
+  s.ios.source_files        = 'Fountain/iOS/**/*.{h,m,c}'
+  s.osx.source_files        = 'Fountain/macOS/**/*.{h,m,c}'
   
   s.frameworks = 'CoreData'
 end
