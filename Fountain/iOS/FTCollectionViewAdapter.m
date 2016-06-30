@@ -10,7 +10,7 @@
 #import "FTCollectionViewAdapter+Subclassing.h"
 #import "FTDataSource.h"
 #import "FTDataSourceObserver.h"
-#import "FTMutableDataSource.h"
+#import "FTFutureItemsDataSource.h"
 #import "FTPagingDataSource.h"
 
 @interface FTCollectionViewAdapterPreperationHandler : NSObject
@@ -230,12 +230,10 @@
     NSUInteger numberOfItemsInSection = [self.dataSource numberOfItemsInSection:indexPath.section];
     if (indexPath.item < numberOfItemsInSection) {
         return [_dataSource itemAtIndexPath:indexPath];
-    } else if (self.editing && [self.dataSource conformsToProtocol:@protocol(FTMutableDataSource)]) {
-        id<FTMutableDataSource> mutableDataSource = (id<FTMutableDataSource>)self.dataSource;
-
-        NSIndexPath *futureItemIndexPath = [NSIndexPath indexPathForItem:indexPath.item - numberOfItemsInSection
-                                                               inSection:indexPath.section];
-        return [mutableDataSource futureItemTypeAtIndexPath:futureItemIndexPath];
+    } else if (self.editing && [self.dataSource conformsToProtocol:@protocol(FTFutureItemsDataSource)]) {
+        id<FTFutureItemsDataSource> futureItemDataSource = (id<FTFutureItemsDataSource>)self.dataSource;
+        NSIndexPath *futureItemIndexPath = [self futureItemIndexPathForTableViewIndexPath:indexPath];
+        return [futureItemDataSource futureItemAtIndexPath:futureItemIndexPath];
     } else {
         return nil;
     }
@@ -256,9 +254,9 @@
 {
     if (collectionView == _collectionView) {
         NSUInteger numberOfItemsInSection = [self.dataSource numberOfItemsInSection:section];
-        if (self.editing && [self.dataSource conformsToProtocol:@protocol(FTMutableDataSource)]) {
-            id<FTMutableDataSource> mutableDataSource = (id<FTMutableDataSource>)self.dataSource;
-            numberOfItemsInSection += [mutableDataSource numberOfFutureItemTypesInSection:section];
+        if (self.editing && [self.dataSource conformsToProtocol:@protocol(FTFutureItemsDataSource)]) {
+            id<FTFutureItemsDataSource> futureItemDataSource = (id<FTFutureItemsDataSource>)self.dataSource;
+            numberOfItemsInSection += [futureItemDataSource numberOfFutureItemsInSection:section];
         }
         return numberOfItemsInSection;
     } else {
@@ -498,6 +496,86 @@
 {
     if (_isInUserDrivenChangeCallCount == 0 && dataSource == _dataSource) {
         [_movedItems addObject:@[ indexPath, newIndexPath ]];
+    }
+}
+
+#pragma mark FTFutureItemsDataSourceObserver
+
+- (void)dataSource:(id<FTFutureItemsDataSource>)dataSource didInsertFutureItemsAtIndexPaths:(NSArray *)indexPaths
+{
+    if (_isInUserDrivenChangeCallCount == 0 && dataSource == _dataSource && self.editing == YES) {
+        NSMutableArray *tableViewIndexPaths = [[NSMutableArray alloc] init];
+        for (NSIndexPath *indexPath in indexPaths) {
+            NSIndexPath *tableViewIndexPath = [self tableViewIndexPathForFutureItemIndexPath:indexPath];
+            if (tableViewIndexPath) {
+                [tableViewIndexPaths addObject:tableViewIndexPath];
+            }
+        }
+        [_insertedItems addObjectsFromArray:tableViewIndexPaths];
+    }
+}
+
+- (void)dataSource:(id<FTFutureItemsDataSource>)dataSource didDeleteFutureItemsAtIndexPaths:(NSArray *)indexPaths
+{
+    if (_isInUserDrivenChangeCallCount == 0 && dataSource == _dataSource && self.editing == YES) {
+        NSMutableArray *tableViewIndexPaths = [[NSMutableArray alloc] init];
+        for (NSIndexPath *indexPath in indexPaths) {
+            NSIndexPath *tableViewIndexPath = [self tableViewIndexPathForFutureItemIndexPath:indexPath];
+            if (tableViewIndexPath) {
+                [tableViewIndexPaths addObject:tableViewIndexPath];
+            }
+        }
+        [_deletedItems addObjectsFromArray:tableViewIndexPaths];
+    }
+}
+
+- (void)dataSource:(id<FTFutureItemsDataSource>)dataSource didChangeFutureItemsAtIndexPaths:(NSArray *)indexPaths
+{
+    if (_isInUserDrivenChangeCallCount == 0 && dataSource == _dataSource && !_shouldSkipReloadOfUpdatedItems && self.editing == YES) {
+        NSMutableArray *tableViewIndexPaths = [[NSMutableArray alloc] init];
+        for (NSIndexPath *indexPath in indexPaths) {
+            NSIndexPath *tableViewIndexPath = [self tableViewIndexPathForFutureItemIndexPath:indexPath];
+            if (tableViewIndexPath) {
+                [tableViewIndexPaths addObject:tableViewIndexPath];
+            }
+        }
+        [_reloadedItems addObjectsFromArray:tableViewIndexPaths];
+    }
+}
+
+- (void)dataSource:(id<FTFutureItemsDataSource>)dataSource didMoveFutureItemAtIndexPath:(NSIndexPath *)indexPath toIndexPath:(NSIndexPath *)newIndexPath
+{
+    if (_isInUserDrivenChangeCallCount == 0 && dataSource == _dataSource && self.editing == YES) {
+        NSIndexPath *tableViewIndexPath = [self tableViewIndexPathForFutureItemIndexPath:indexPath];
+        NSIndexPath *newTableViewIndexPath = [self tableViewIndexPathForFutureItemIndexPath:newIndexPath];
+        if (tableViewIndexPath && newTableViewIndexPath) {
+            [_movedItems addObject:@[ tableViewIndexPath, newTableViewIndexPath ]];
+        }
+    }
+}
+
+#pragma mark -
+
+- (NSIndexPath *)tableViewIndexPathForFutureItemIndexPath:(NSIndexPath *)futureItemIndexPath
+{
+    if ([self.dataSource numberOfSections] > futureItemIndexPath.section) {
+        NSUInteger numberOfItems = [self.dataSource numberOfItemsInSection:futureItemIndexPath.section];
+        return [NSIndexPath indexPathForItem:futureItemIndexPath.item + numberOfItems
+                                   inSection:futureItemIndexPath.section];
+    } else {
+        return nil;
+    }
+}
+
+- (NSIndexPath *)futureItemIndexPathForTableViewIndexPath:(NSIndexPath *)tableViewIndexPath
+{
+    if ([self.dataSource numberOfSections] > tableViewIndexPath.section &&
+        tableViewIndexPath.item >= [self.dataSource numberOfItemsInSection:tableViewIndexPath.section]) {
+        NSUInteger numberOfItems = [self.dataSource numberOfItemsInSection:tableViewIndexPath.section];
+        return [NSIndexPath indexPathForItem:tableViewIndexPath.item - numberOfItems
+                                   inSection:tableViewIndexPath.section];
+    } else {
+        return nil;
     }
 }
 

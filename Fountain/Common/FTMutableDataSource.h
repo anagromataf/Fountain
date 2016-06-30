@@ -8,25 +8,18 @@
 
 #import "FTDataSource.h"
 
-@protocol FTMutableDataSource;
-
-@protocol FTMutableDataSourceObserver <FTDataSourceObserver>
-@optional
-- (void)dataSource:(id<FTMutableDataSource>)dataSource didChangeFutureItemTypesInSections:(NSIndexSet *)sections;
-@end
-
 @protocol FTMutableDataSource <FTDataSource>
+
+#pragma mark Insertion
+- (BOOL)canInsertItem:(id)item;
+- (NSIndexPath *)insertItem:(id)item atProposedIndexPath:(NSIndexPath *)proposedIndexPath error:(NSError **)error;
 
 #pragma mark Editing
 - (BOOL)canEditItemAtIndexPath:(NSIndexPath *)indexPath;
 
-#pragma mark Insertion
-- (NSUInteger)numberOfFutureItemTypesInSection:(NSUInteger)section;
-- (id)futureItemTypeAtIndexPath:(NSIndexPath *)indexPath;
-- (void)insertItemWithProperties:(NSDictionary *)properties basedOnType:(id)futureItemType atIndexPath:(NSIndexPath *)indexPath;
-
 #pragma mark Deletion
 - (BOOL)canDeleteItemAtIndexPath:(NSIndexPath *)indexPath;
-- (void)deleteItemAtIndexPath:(NSIndexPath *)indexPath;
+- (void)deleteItemAtIndexPath:(NSIndexPath *)indexPath __attribute__((deprecated));
+- (BOOL)deleteItemAtIndexPath:(NSIndexPath *)indexPath error:(NSError **)error;
 
 @end

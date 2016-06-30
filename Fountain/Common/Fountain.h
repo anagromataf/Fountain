@@ -22,6 +22,7 @@ FOUNDATION_EXPORT const unsigned char FountainVersionString[];
 #import <Fountain/FTDataSource.h>
 #import <Fountain/FTDataSourceObserver.h>
 #import <Fountain/FTFetchedDataSource.h>
+#import <Fountain/FTFutureItemsDataSource.h>
 #import <Fountain/FTMutableArray.h>
 #import <Fountain/FTMutableClusterSet.h>
 #import <Fountain/FTMutableDataSource.h>
