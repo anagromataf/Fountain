@@ -16,7 +16,7 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "F66C7EB11B5AABC300662CD1"
                BuildableName = "Fountain.framework"
-               BlueprintName = "FTFountainOSX"
+               BlueprintName = "macOS"
                ReferencedContainer = "container:FTFountain.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -33,8 +33,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "F66C7EBA1B5AABC300662CD1"
-               BuildableName = "OSXTests.xctest"
-               BlueprintName = "OSXTests"
+               BuildableName = "macOSTests.xctest"
+               BlueprintName = "macOSTests"
                ReferencedContainer = "container:FTFountain.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -44,7 +44,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "F66C7EB11B5AABC300662CD1"
             BuildableName = "Fountain.framework"
-            BlueprintName = "FTFountainOSX"
+            BlueprintName = "macOS"
             ReferencedContainer = "container:FTFountain.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -66,7 +66,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "F66C7EB11B5AABC300662CD1"
             BuildableName = "Fountain.framework"
-            BlueprintName = "FTFountainOSX"
+            BlueprintName = "macOS"
             ReferencedContainer = "container:FTFountain.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -84,7 +84,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "F66C7EB11B5AABC300662CD1"
             BuildableName = "Fountain.framework"
-            BlueprintName = "FTFountainOSX"
+            BlueprintName = "macOS"
             ReferencedContainer = "container:FTFountain.xcodeproj">
          </BuildableReference>
       </MacroExpansion>

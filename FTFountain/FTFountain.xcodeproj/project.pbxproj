@@ -182,7 +182,7 @@
 		F66C7EB21B5AABC300662CD1 /* Fountain.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Fountain.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F66C7EB41B5AABC300662CD1 /* FountainOSX.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FountainOSX.h; sourceTree = "<group>"; };
 		F66C7EB61B5AABC300662CD1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		F66C7EBB1B5AABC300662CD1 /* OSXTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OSXTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F66C7EBB1B5AABC300662CD1 /* macOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = macOSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F66C7EC01B5AABC300662CD1 /* OSXTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSXTests.m; sourceTree = "<group>"; };
 		F66C7EC21B5AABC300662CD1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F66C7ECB1B5AAC3B00662CD1 /* Fountain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Fountain.h; sourceTree = "<group>"; };
@@ -353,7 +353,7 @@
 				F66C7E951B5AABAE00662CD1 /* Fountain.framework */,
 				F66C7E9F1B5AABAF00662CD1 /* iOSTests.xctest */,
 				F66C7EB21B5AABC300662CD1 /* Fountain.framework */,
-				F66C7EBB1B5AABC300662CD1 /* OSXTests.xctest */,
+				F66C7EBB1B5AABC300662CD1 /* macOSTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -585,9 +585,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		F66C7E941B5AABAE00662CD1 /* FTFountainiOS */ = {
+		F66C7E941B5AABAE00662CD1 /* iOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = F66C7EA71B5AABAF00662CD1 /* Build configuration list for PBXNativeTarget "FTFountainiOS" */;
+			buildConfigurationList = F66C7EA71B5AABAF00662CD1 /* Build configuration list for PBXNativeTarget "iOS" */;
 			buildPhases = (
 				F66C7E901B5AABAE00662CD1 /* Sources */,
 				F66C7E911B5AABAE00662CD1 /* Frameworks */,
@@ -598,7 +598,7 @@
 			);
 			dependencies = (
 			);
-			name = FTFountainiOS;
+			name = iOS;
 			productName = iOS;
 			productReference = F66C7E951B5AABAE00662CD1 /* Fountain.framework */;
 			productType = "com.apple.product-type.framework";
@@ -622,9 +622,9 @@
 			productReference = F66C7E9F1B5AABAF00662CD1 /* iOSTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		F66C7EB11B5AABC300662CD1 /* FTFountainOSX */ = {
+		F66C7EB11B5AABC300662CD1 /* macOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = F66C7EC31B5AABC300662CD1 /* Build configuration list for PBXNativeTarget "FTFountainOSX" */;
+			buildConfigurationList = F66C7EC31B5AABC300662CD1 /* Build configuration list for PBXNativeTarget "macOS" */;
 			buildPhases = (
 				F66C7EAD1B5AABC300662CD1 /* Sources */,
 				F66C7EAE1B5AABC300662CD1 /* Frameworks */,
@@ -635,14 +635,14 @@
 			);
 			dependencies = (
 			);
-			name = FTFountainOSX;
+			name = macOS;
 			productName = OSX;
 			productReference = F66C7EB21B5AABC300662CD1 /* Fountain.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		F66C7EBA1B5AABC300662CD1 /* OSXTests */ = {
+		F66C7EBA1B5AABC300662CD1 /* macOSTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = F66C7EC61B5AABC300662CD1 /* Build configuration list for PBXNativeTarget "OSXTests" */;
+			buildConfigurationList = F66C7EC61B5AABC300662CD1 /* Build configuration list for PBXNativeTarget "macOSTests" */;
 			buildPhases = (
 				F66C7EB71B5AABC300662CD1 /* Sources */,
 				F66C7EB81B5AABC300662CD1 /* Frameworks */,
@@ -654,9 +654,9 @@
 			dependencies = (
 				F66C7EBE1B5AABC300662CD1 /* PBXTargetDependency */,
 			);
-			name = OSXTests;
+			name = macOSTests;
 			productName = OSXTests;
-			productReference = F66C7EBB1B5AABC300662CD1 /* OSXTests.xctest */;
+			productReference = F66C7EBB1B5AABC300662CD1 /* macOSTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -700,10 +700,10 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				F66C7E941B5AABAE00662CD1 /* FTFountainiOS */,
+				F66C7E941B5AABAE00662CD1 /* iOS */,
 				F66C7E9E1B5AABAF00662CD1 /* iOSTests */,
-				F66C7EB11B5AABC300662CD1 /* FTFountainOSX */,
-				F66C7EBA1B5AABC300662CD1 /* OSXTests */,
+				F66C7EB11B5AABC300662CD1 /* macOS */,
+				F66C7EBA1B5AABC300662CD1 /* macOSTests */,
 			);
 		};
 /* End PBXProject section */
@@ -841,12 +841,12 @@
 /* Begin PBXTargetDependency section */
 		F66C7EA21B5AABAF00662CD1 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = F66C7E941B5AABAE00662CD1 /* FTFountainiOS */;
+			target = F66C7E941B5AABAE00662CD1 /* iOS */;
 			targetProxy = F66C7EA11B5AABAF00662CD1 /* PBXContainerItemProxy */;
 		};
 		F66C7EBE1B5AABC300662CD1 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = F66C7EB11B5AABC300662CD1 /* FTFountainOSX */;
+			target = F66C7EB11B5AABC300662CD1 /* macOS */;
 			targetProxy = F66C7EBD1B5AABC300662CD1 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -1272,7 +1272,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		F66C7EA71B5AABAF00662CD1 /* Build configuration list for PBXNativeTarget "FTFountainiOS" */ = {
+		F66C7EA71B5AABAF00662CD1 /* Build configuration list for PBXNativeTarget "iOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F66C7EA81B5AABAF00662CD1 /* Debug */,
@@ -1290,7 +1290,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		F66C7EC31B5AABC300662CD1 /* Build configuration list for PBXNativeTarget "FTFountainOSX" */ = {
+		F66C7EC31B5AABC300662CD1 /* Build configuration list for PBXNativeTarget "macOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F66C7EC41B5AABC300662CD1 /* Debug */,
@@ -1299,7 +1299,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		F66C7EC61B5AABC300662CD1 /* Build configuration list for PBXNativeTarget "OSXTests" */ = {
+		F66C7EC61B5AABC300662CD1 /* Build configuration list for PBXNativeTarget "macOSTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F66C7EC71B5AABC300662CD1 /* Debug */,
