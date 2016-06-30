@@ -687,7 +687,7 @@
 					};
 				};
 			};
-			buildConfigurationList = F66C7E8D1B5AABA100662CD1 /* Build configuration list for PBXProject "FTFountain" */;
+			buildConfigurationList = F66C7E8D1B5AABA100662CD1 /* Build configuration list for PBXProject "Fountain" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -1263,7 +1263,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		F66C7E8D1B5AABA100662CD1 /* Build configuration list for PBXProject "FTFountain" */ = {
+		F66C7E8D1B5AABA100662CD1 /* Build configuration list for PBXProject "Fountain" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F66C7E8E1B5AABA100662CD1 /* Debug */,

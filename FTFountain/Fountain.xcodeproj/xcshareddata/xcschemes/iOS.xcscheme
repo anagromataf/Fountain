@@ -17,7 +17,7 @@
                BlueprintIdentifier = "F66C7E941B5AABAE00662CD1"
                BuildableName = "Fountain.framework"
                BlueprintName = "iOS"
-               ReferencedContainer = "container:FTFountain.xcodeproj">
+               ReferencedContainer = "container:Fountain.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -35,7 +35,7 @@
                BlueprintIdentifier = "F66C7E9E1B5AABAF00662CD1"
                BuildableName = "iOSTests.xctest"
                BlueprintName = "iOSTests"
-               ReferencedContainer = "container:FTFountain.xcodeproj">
+               ReferencedContainer = "container:Fountain.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -45,7 +45,7 @@
             BlueprintIdentifier = "F66C7E941B5AABAE00662CD1"
             BuildableName = "Fountain.framework"
             BlueprintName = "iOS"
-            ReferencedContainer = "container:FTFountain.xcodeproj">
+            ReferencedContainer = "container:Fountain.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -67,7 +67,7 @@
             BlueprintIdentifier = "F66C7E941B5AABAE00662CD1"
             BuildableName = "Fountain.framework"
             BlueprintName = "iOS"
-            ReferencedContainer = "container:FTFountain.xcodeproj">
+            ReferencedContainer = "container:Fountain.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -85,7 +85,7 @@
             BlueprintIdentifier = "F66C7E941B5AABAE00662CD1"
             BuildableName = "Fountain.framework"
             BlueprintName = "iOS"
-            ReferencedContainer = "container:FTFountain.xcodeproj">
+            ReferencedContainer = "container:Fountain.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>

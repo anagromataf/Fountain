@@ -17,7 +17,7 @@
                BlueprintIdentifier = "F66C7EB11B5AABC300662CD1"
                BuildableName = "Fountain.framework"
                BlueprintName = "macOS"
-               ReferencedContainer = "container:FTFountain.xcodeproj">
+               ReferencedContainer = "container:Fountain.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -35,7 +35,7 @@
                BlueprintIdentifier = "F66C7EBA1B5AABC300662CD1"
                BuildableName = "macOSTests.xctest"
                BlueprintName = "macOSTests"
-               ReferencedContainer = "container:FTFountain.xcodeproj">
+               ReferencedContainer = "container:Fountain.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -45,7 +45,7 @@
             BlueprintIdentifier = "F66C7EB11B5AABC300662CD1"
             BuildableName = "Fountain.framework"
             BlueprintName = "macOS"
-            ReferencedContainer = "container:FTFountain.xcodeproj">
+            ReferencedContainer = "container:Fountain.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -67,7 +67,7 @@
             BlueprintIdentifier = "F66C7EB11B5AABC300662CD1"
             BuildableName = "Fountain.framework"
             BlueprintName = "macOS"
-            ReferencedContainer = "container:FTFountain.xcodeproj">
+            ReferencedContainer = "container:Fountain.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -85,7 +85,7 @@
             BlueprintIdentifier = "F66C7EB11B5AABC300662CD1"
             BuildableName = "Fountain.framework"
             BlueprintName = "macOS"
-            ReferencedContainer = "container:FTFountain.xcodeproj">
+            ReferencedContainer = "container:Fountain.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>

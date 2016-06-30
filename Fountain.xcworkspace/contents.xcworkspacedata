@@ -5,6 +5,6 @@
       location = "group:Cartfile.private">
    </FileRef>
    <FileRef
-      location = "group:FTFountain/FTFountain.xcodeproj">
+      location = "group:/Users/tobias/Projekte/Fountain/FTFountain/Fountain.xcodeproj">
    </FileRef>
 </Workspace>
