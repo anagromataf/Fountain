@@ -8,6 +8,8 @@
 
 @import Foundation;
 
+#import <Availability.h>
+
 //! Project version number for Fountain.
 FOUNDATION_EXPORT double FountainVersionNumber;
 
@@ -30,6 +32,6 @@ FOUNDATION_EXPORT const unsigned char FountainVersionString[];
 
 #if TARGET_OS_IOS
 #import <Fountain/FountainiOS.h>
-#elif TARGET_OS_MAC
+#elif TARGET_OS_OSX
 #import <Fountain/FountainOSX.h>
 #endif
