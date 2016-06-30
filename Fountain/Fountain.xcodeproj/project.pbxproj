@@ -340,8 +340,8 @@
 				F66C7ECA1B5AABFF00662CD1 /* CommonTests */,
 				F66C7E971B5AABAE00662CD1 /* iOS */,
 				F66C7EA31B5AABAF00662CD1 /* iOSTests */,
-				F66C7EB31B5AABC300662CD1 /* OSX */,
-				F66C7EBF1B5AABC300662CD1 /* OSXTests */,
+				F66C7EB31B5AABC300662CD1 /* macOS */,
+				F66C7EBF1B5AABC300662CD1 /* macOSTests */,
 				F66C7E961B5AABAE00662CD1 /* Products */,
 				9C6EABA5FC22E955B4EF0A94 /* Frameworks */,
 			);
@@ -379,22 +379,23 @@
 			path = iOSTests;
 			sourceTree = "<group>";
 		};
-		F66C7EB31B5AABC300662CD1 /* OSX */ = {
+		F66C7EB31B5AABC300662CD1 /* macOS */ = {
 			isa = PBXGroup;
 			children = (
 				F66C7EB41B5AABC300662CD1 /* FountainOSX.h */,
 				F66C7EB61B5AABC300662CD1 /* Info.plist */,
 			);
-			path = OSX;
+			name = macOS;
+			path = macOS;
 			sourceTree = "<group>";
 		};
-		F66C7EBF1B5AABC300662CD1 /* OSXTests */ = {
+		F66C7EBF1B5AABC300662CD1 /* macOSTests */ = {
 			isa = PBXGroup;
 			children = (
 				F66C7EC01B5AABC300662CD1 /* OSXTests.m */,
 				F66C7EC21B5AABC300662CD1 /* Info.plist */,
 			);
-			path = OSXTests;
+			path = macOSTests;
 			sourceTree = "<group>";
 		};
 		F66C7EC91B5AABFA00662CD1 /* Common */ = {
@@ -636,7 +637,7 @@
 			dependencies = (
 			);
 			name = macOS;
-			productName = OSX;
+			productName = macOS;
 			productReference = F66C7EB21B5AABC300662CD1 /* Fountain.framework */;
 			productType = "com.apple.product-type.framework";
 		};
@@ -655,7 +656,7 @@
 				F66C7EBE1B5AABC300662CD1 /* PBXTargetDependency */,
 			);
 			name = macOSTests;
-			productName = OSXTests;
+			productName = macOSTests;
 			productReference = F66C7EBB1B5AABC300662CD1 /* macOSTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
@@ -1138,7 +1139,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = OSX/Info.plist;
+				INFOPLIST_FILE = macOS/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = YES;
@@ -1188,7 +1189,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = OSX/Info.plist;
+				INFOPLIST_FILE = macOS/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
@@ -1238,12 +1239,12 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = OSXTests/Info.plist;
+				INFOPLIST_FILE = macOSTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = "de.tobias-kraentzer.OSXTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "de.tobias-kraentzer.macOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 			};
@@ -1280,11 +1281,11 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = OSXTests/Info.plist;
+				INFOPLIST_FILE = macOSTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = "de.tobias-kraentzer.OSXTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "de.tobias-kraentzer.macOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 			};
