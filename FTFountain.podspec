@@ -15,9 +15,9 @@ Pod::Spec.new do |s|
   s.ios.deployment_target   = '8.0'
   s.osx.deployment_target   = '10.10'
   
-  s.source_files            = 'FTFountain/Common/**/*.{h,m,c}'
-  s.ios.source_files        = 'FTFountain/iOS/**/*.{h,m,c}'
-  s.osx.source_files        = 'FTFountain/OSX/**/*.{h,m,c}'
+  s.source_files            = 'Fountain/Common/**/*.{h,m,c}'
+  s.ios.source_files        = 'Fountain/iOS/**/*.{h,m,c}'
+  s.osx.source_files        = 'Fountain/macOS/**/*.{h,m,c}'
   
   s.frameworks = 'CoreData'
 end
