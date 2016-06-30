@@ -212,8 +212,8 @@
 {
     FTMutableArray *array = [FTMutableArray arrayWithArray:@[ @0, @1, @2, @3, @4, @5, @6, @7 ]];
 
-    assertThatInt([array numberOfSections], equalToInt(1));
-    assertThatInt([array numberOfItemsInSection:0], equalToInt(8));
+    assertThatUnsignedLong([array numberOfSections], equalToUnsignedLong(1));
+    assertThatUnsignedLong([array numberOfItemsInSection:0], equalToUnsignedLong(8));
 }
 
 #pragma mark Test Getting Items
