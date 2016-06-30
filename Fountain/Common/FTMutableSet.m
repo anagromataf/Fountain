@@ -1,6 +1,6 @@
 //
 //  FTMutableSet.m
-//  FTFountain
+//  Fountain
 //
 //  Created by Tobias Kraentzer on 16.08.15.
 //  Copyright © 2015 Tobias Kräntzer. All rights reserved.

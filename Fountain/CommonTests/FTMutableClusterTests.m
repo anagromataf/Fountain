@@ -1,6 +1,6 @@
 //
 //  FTMutableClusterTests+Clustering.m
-//  FTFountain
+//  Fountain
 //
 //  Created by Tobias Kraentzer on 17.08.15.
 //  Copyright © 2015 Tobias Kräntzer. All rights reserved.

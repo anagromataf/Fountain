@@ -1,6 +1,6 @@
 //
 //  FTObserverProxy.h
-//  FTFountain
+//  Fountain
 //
 //  Created by Tobias Kraentzer on 25.04.16.
 //  Copyright © 2016 Tobias Kräntzer. All rights reserved.

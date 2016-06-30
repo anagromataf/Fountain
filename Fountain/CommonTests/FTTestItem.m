@@ -1,6 +1,6 @@
 //
 //  FTTestItem.m
-//  FTFountain
+//  Fountain
 //
 //  Created by Tobias Kraentzer on 23.08.15.
 //  Copyright (c) 2015 Tobias Kräntzer. All rights reserved.

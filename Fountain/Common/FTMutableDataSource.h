@@ -1,6 +1,6 @@
 //
 //  FTMutableDataSource.h
-//  FTFountain
+//  Fountain
 //
 //  Created by Tobias Kraentzer on 15.09.15.
 //  Copyright © 2015 Tobias Kräntzer. All rights reserved.

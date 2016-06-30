@@ -1,6 +1,6 @@
 //
 //  NSSortDescriptor+Fountain.h
-//  FTFountain
+//  Fountain
 //
 //  Created by Tobias Kraentzer on 10.06.16.
 //  Copyright © 2016 Tobias Kräntzer. All rights reserved.
