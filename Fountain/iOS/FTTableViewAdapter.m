@@ -464,6 +464,9 @@
 
         _tableView.delegate = nil;
         _tableView.delegate = self;
+
+        _tableView.dataSource = nil;
+        _tableView.dataSource = self;
     }
 }
 
