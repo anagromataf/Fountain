@@ -67,6 +67,8 @@
         _rowAnimation = UITableViewRowAnimationAutomatic;
 
         _indexPathsOfMovedItemsToReload = [[NSMutableArray alloc] init];
+
+        _collapsedSections = [NSIndexSet indexSet];
     }
     return self;
 }
@@ -90,6 +92,9 @@
         [_dataSource removeObserver:self];
         _dataSource = dataSource;
         [_dataSource addObserver:self];
+        if (self.collapseSectionsByDefault) {
+            _collapsedSections = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [dataSource numberOfSections])];
+        }
         [_tableView reloadData];
     }
 }
@@ -151,6 +156,58 @@
         _isInUserDrivenChangeCallCount++;
         block();
         _isInUserDrivenChangeCallCount--;
+    }
+}
+
+#pragma mark Collapsed Sections
+
+- (void)setCollapsedSections:(NSIndexSet *)collapsedSections withRowAnimation:(UITableViewRowAnimation)rowAnimation
+{
+    if (![_collapsedSections isEqualToIndexSet:collapsedSections]) {
+
+        NSIndexSet *previousCollapsedSections = _collapsedSections;
+        _collapsedSections = collapsedSections;
+
+        if (rowAnimation == UITableViewRowAnimationNone) {
+
+            [self.tableView reloadData];
+
+        } else {
+
+            [self.tableView beginUpdates];
+
+            [previousCollapsedSections enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *_Nonnull stop) {
+                if (![collapsedSections containsIndex:idx]) {
+
+                    NSUInteger numberOfRows = [self.dataSource numberOfItemsInSection:idx];
+
+                    NSMutableArray *indexPaths = [[NSMutableArray alloc] init];
+                    for (NSUInteger r = 0; r < numberOfRows; r++) {
+                        [indexPaths addObject:[NSIndexPath indexPathForRow:r inSection:idx]];
+                    }
+
+                    [self.tableView insertRowsAtIndexPaths:indexPaths
+                                          withRowAnimation:rowAnimation];
+                }
+            }];
+
+            [collapsedSections enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *_Nonnull stop) {
+                if (![previousCollapsedSections containsIndex:idx]) {
+
+                    NSUInteger numberOfRows = [self.dataSource numberOfItemsInSection:idx];
+
+                    NSMutableArray *indexPaths = [[NSMutableArray alloc] init];
+                    for (NSUInteger r = 0; r < numberOfRows; r++) {
+                        [indexPaths addObject:[NSIndexPath indexPathForRow:r inSection:idx]];
+                    }
+
+                    [self.tableView deleteRowsAtIndexPaths:indexPaths
+                                          withRowAnimation:rowAnimation];
+                }
+            }];
+
+            [self.tableView endUpdates];
+        }
     }
 }
 
@@ -277,12 +334,16 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     if (tableView == _tableView) {
-        NSUInteger numberOfItems = [self.dataSource numberOfItemsInSection:section];
-        if (self.editing && [self.dataSource conformsToProtocol:@protocol(FTMutableDataSource)]) {
-            id<FTFutureItemsDataSource> futureItemDataSource = (id<FTFutureItemsDataSource>)self.dataSource;
-            numberOfItems += [futureItemDataSource numberOfFutureItemsInSection:section];
+        if ([self.collapsedSections containsIndex:section]) {
+            return 0;
+        } else {
+            NSUInteger numberOfItems = [self.dataSource numberOfItemsInSection:section];
+            if (self.editing && [self.dataSource conformsToProtocol:@protocol(FTMutableDataSource)]) {
+                id<FTFutureItemsDataSource> futureItemDataSource = (id<FTFutureItemsDataSource>)self.dataSource;
+                numberOfItems += [futureItemDataSource numberOfFutureItemsInSection:section];
+            }
+            return numberOfItems;
         }
-        return numberOfItems;
     } else {
         return 0;
     }
@@ -517,6 +578,19 @@
 - (void)dataSource:(id<FTDataSource>)dataSource didInsertSections:(NSIndexSet *)sections
 {
     if (_isInUserDrivenChangeCallCount == 0 && dataSource == _dataSource) {
+        NSMutableIndexSet *collapsedSections = [_collapsedSections mutableCopy];
+        [sections enumerateIndexesUsingBlock:^(NSUInteger section, BOOL *_Nonnull stop) {
+            if (self.collapseSectionsByDefault) {
+                [collapsedSections addIndex:section];
+            }
+            [_collapsedSections enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *_Nonnull stop) {
+                if (idx >= section) {
+                    [collapsedSections removeIndex:idx];
+                    [collapsedSections addIndex:idx + 1];
+                }
+            }];
+        }];
+        _collapsedSections = collapsedSections;
         [_tableView insertSections:sections withRowAnimation:self.rowAnimation];
     }
 }
@@ -524,6 +598,20 @@
 - (void)dataSource:(id<FTDataSource>)dataSource didDeleteSections:(NSIndexSet *)sections
 {
     if (_isInUserDrivenChangeCallCount == 0 && dataSource == _dataSource) {
+
+        NSMutableIndexSet *collapsedSections = [_collapsedSections mutableCopy];
+        [sections enumerateIndexesUsingBlock:^(NSUInteger section, BOOL *_Nonnull stop) {
+            [_collapsedSections enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *_Nonnull stop) {
+                if (idx == section) {
+                    [collapsedSections removeIndex:idx];
+                } else if (idx > section) {
+                    [collapsedSections removeIndex:idx];
+                    [collapsedSections addIndex:idx - 1];
+                }
+            }];
+        }];
+        _collapsedSections = collapsedSections;
+
         [_tableView deleteSections:sections withRowAnimation:self.rowAnimation];
     }
 }
@@ -538,6 +626,12 @@
 - (void)dataSource:(id<FTDataSource>)dataSource didMoveSection:(NSInteger)section toSection:(NSInteger)newSection
 {
     if (_isInUserDrivenChangeCallCount == 0 && dataSource == _dataSource) {
+        if ([_collapsedSections containsIndex:section]) {
+            NSMutableIndexSet *collapsedSections = [_collapsedSections mutableCopy];
+            [collapsedSections removeIndex:section];
+            [collapsedSections addIndex:newSection];
+            _collapsedSections = collapsedSections;
+        }
         [_tableView moveSection:section toSection:newSection];
     }
 }
