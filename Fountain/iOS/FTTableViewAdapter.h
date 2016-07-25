@@ -42,6 +42,7 @@ typedef NSDictionary * (^FTTableViewAdapterCellPropertiesBlock)(id cell, NSIndex
 - (void)performUserDrivenChange:(void (^)())block;
 
 #pragma mark Collapsed Sections
+@property (nonatomic, assign) BOOL collapseSectionsByDefault;
 @property (nonatomic, readonly) NSIndexSet *collapsedSections;
 - (void)setCollapsedSections:(NSIndexSet *)collapsedSections withRowAnimation:(UITableViewRowAnimation)rowAnimation;
 
