@@ -158,30 +158,57 @@
 
 #pragma mark Collapsed Sections
 
-- (void)setCollapsedSections:(NSIndexSet *)collapsedSections animated:(BOOL)animated
+- (void)setCollapsedSections:(NSIndexSet *)collapsedSections withRowAnimation:(UITableViewRowAnimation)rowAnimation
 {
     if (![_collapsedSections isEqualToIndexSet:collapsedSections]) {
-
+        
         NSIndexSet *previousCollapsedSections = _collapsedSections;
         _collapsedSections = collapsedSections;
-
-        NSMutableIndexSet *sectionsToReload = [[NSMutableIndexSet alloc] init];
-
-        [previousCollapsedSections enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *_Nonnull stop) {
-            if (![collapsedSections containsIndex:idx]) {
-                [sectionsToReload addIndex:idx];
-            }
-        }];
-
-        [collapsedSections enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *_Nonnull stop) {
-            if (![previousCollapsedSections containsIndex:idx]) {
-                [sectionsToReload addIndex:idx];
-            }
-        }];
-
-        [self.tableView beginUpdates];
-        [self.tableView reloadSections:sectionsToReload withRowAnimation:animated ? UITableViewRowAnimationAutomatic : UITableViewRowAnimationNone];
-        [self.tableView endUpdates];
+        
+        if (rowAnimation == UITableViewRowAnimationNone) {
+            
+            [self.tableView reloadData];
+            
+        } else {
+            
+            [self.tableView beginUpdates];
+            
+            [previousCollapsedSections enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *_Nonnull stop) {
+                if (![collapsedSections containsIndex:idx]) {
+                    
+                    NSUInteger numberOfRows = [self.dataSource numberOfItemsInSection:idx];
+                    
+                    NSMutableArray *indexPaths = [[NSMutableArray alloc] init];
+                    for (NSUInteger r = 0; r < numberOfRows; r++) {
+                        [indexPaths addObject:[NSIndexPath indexPathForRow:r inSection:idx]];
+                    }
+                    
+                    [self.tableView insertRowsAtIndexPaths:indexPaths
+                                          withRowAnimation:rowAnimation];
+                    
+                    
+                }
+            }];
+            
+            [collapsedSections enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *_Nonnull stop) {
+                if (![previousCollapsedSections containsIndex:idx]) {
+                    
+                    
+                    NSUInteger numberOfRows = [self.dataSource numberOfItemsInSection:idx];
+                    
+                    NSMutableArray *indexPaths = [[NSMutableArray alloc] init];
+                    for (NSUInteger r = 0; r < numberOfRows; r++) {
+                        [indexPaths addObject:[NSIndexPath indexPathForRow:r inSection:idx]];
+                    }
+                    
+                    [self.tableView deleteRowsAtIndexPaths:indexPaths
+                                          withRowAnimation:rowAnimation];
+                    
+                }
+            }];
+            
+            [self.tableView endUpdates];
+        }
     }
 }
 

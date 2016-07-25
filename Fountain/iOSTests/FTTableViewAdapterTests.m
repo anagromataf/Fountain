@@ -425,8 +425,8 @@
     XCTAssertEqual([adapter.tableView numberOfRowsInSection:0], 2);
     XCTAssertEqual([adapter.tableView numberOfRowsInSection:1], 2);
 
-    [adapter setCollapsedSections:[NSIndexSet indexSetWithIndex:0] animated:YES];
-
+    [adapter setCollapsedSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationNone];
+    
     [adapter.tableView setNeedsLayout];
     [adapter.tableView layoutIfNeeded];
 
