@@ -382,6 +382,59 @@
     assertThatInteger(cell.tag, equalToInteger(cell.item.value));
 }
 
+#pragma mark Test Collapsing Sections
+
+- (void)testCollapsingSection
+{
+    FTTableViewAdapter *adapter = self.viewController.adapter;
+    adapter.reloadMovedItems = YES;
+
+    [self.viewController.tableView registerClass:[FTTableViewCell class] forCellReuseIdentifier:@"FTTableViewCell"];
+
+    [adapter forRowsMatchingPredicate:nil
+           useCellWithReuseIdentifier:@"FTTableViewCell"
+                         prepareBlock:^(FTTableViewCell *cell, FTTestItem *item, NSIndexPath *indexPath, id<FTDataSource> dataSource) {
+                             cell.item = item;
+                             cell.tag = item.value;
+                         }];
+
+    FTMutableArray *secttion_1 = ({
+        FTMutableArray *section = [[FTMutableArray alloc] init];
+        FTTestItem *item1 = ITEM(10);
+        FTTestItem *item2 = ITEM(20);
+        [section addObjectsFromArray:@[ item1, item2 ]];
+        section;
+    });
+
+    FTMutableArray *secttion_2 = ({
+        FTMutableArray *section = [[FTMutableArray alloc] init];
+        FTTestItem *item1 = ITEM(10);
+        FTTestItem *item2 = ITEM(20);
+        [section addObjectsFromArray:@[ item1, item2 ]];
+        section;
+    });
+
+    FTCombinedDataSource *dataSource = [[FTCombinedDataSource alloc] initWithDataSources:@[ secttion_1, secttion_2 ]];
+
+    adapter.dataSource = dataSource;
+
+    [adapter.tableView setNeedsLayout];
+    [adapter.tableView layoutIfNeeded];
+
+    XCTAssertEqual([adapter.tableView numberOfSections], 2);
+    XCTAssertEqual([adapter.tableView numberOfRowsInSection:0], 2);
+    XCTAssertEqual([adapter.tableView numberOfRowsInSection:1], 2);
+
+    [adapter setCollapsedSections:[NSIndexSet indexSetWithIndex:0] animated:YES];
+
+    [adapter.tableView setNeedsLayout];
+    [adapter.tableView layoutIfNeeded];
+
+    XCTAssertEqual([adapter.tableView numberOfSections], 2);
+    XCTAssertEqual([adapter.tableView numberOfRowsInSection:0], 0);
+    XCTAssertEqual([adapter.tableView numberOfRowsInSection:1], 2);
+}
+
 @end
 
 @implementation FTTableViewCell

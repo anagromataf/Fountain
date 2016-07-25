@@ -67,6 +67,8 @@
         _rowAnimation = UITableViewRowAnimationAutomatic;
 
         _indexPathsOfMovedItemsToReload = [[NSMutableArray alloc] init];
+
+        _collapsedSections = [NSIndexSet indexSet];
     }
     return self;
 }
@@ -151,6 +153,35 @@
         _isInUserDrivenChangeCallCount++;
         block();
         _isInUserDrivenChangeCallCount--;
+    }
+}
+
+#pragma mark Collapsed Sections
+
+- (void)setCollapsedSections:(NSIndexSet *)collapsedSections animated:(BOOL)animated
+{
+    if (![_collapsedSections isEqualToIndexSet:collapsedSections]) {
+
+        NSIndexSet *previousCollapsedSections = _collapsedSections;
+        _collapsedSections = collapsedSections;
+
+        NSMutableIndexSet *sectionsToReload = [[NSMutableIndexSet alloc] init];
+
+        [previousCollapsedSections enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *_Nonnull stop) {
+            if (![collapsedSections containsIndex:idx]) {
+                [sectionsToReload addIndex:idx];
+            }
+        }];
+
+        [collapsedSections enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *_Nonnull stop) {
+            if (![previousCollapsedSections containsIndex:idx]) {
+                [sectionsToReload addIndex:idx];
+            }
+        }];
+
+        [self.tableView beginUpdates];
+        [self.tableView reloadSections:sectionsToReload withRowAnimation:animated ? UITableViewRowAnimationAutomatic : UITableViewRowAnimationNone];
+        [self.tableView endUpdates];
     }
 }
 
@@ -277,12 +308,16 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     if (tableView == _tableView) {
-        NSUInteger numberOfItems = [self.dataSource numberOfItemsInSection:section];
-        if (self.editing && [self.dataSource conformsToProtocol:@protocol(FTMutableDataSource)]) {
-            id<FTFutureItemsDataSource> futureItemDataSource = (id<FTFutureItemsDataSource>)self.dataSource;
-            numberOfItems += [futureItemDataSource numberOfFutureItemsInSection:section];
+        if ([self.collapsedSections containsIndex:section]) {
+            return 0;
+        } else {
+            NSUInteger numberOfItems = [self.dataSource numberOfItemsInSection:section];
+            if (self.editing && [self.dataSource conformsToProtocol:@protocol(FTMutableDataSource)]) {
+                id<FTFutureItemsDataSource> futureItemDataSource = (id<FTFutureItemsDataSource>)self.dataSource;
+                numberOfItems += [futureItemDataSource numberOfFutureItemsInSection:section];
+            }
+            return numberOfItems;
         }
-        return numberOfItems;
     } else {
         return 0;
     }
@@ -517,6 +552,16 @@
 - (void)dataSource:(id<FTDataSource>)dataSource didInsertSections:(NSIndexSet *)sections
 {
     if (_isInUserDrivenChangeCallCount == 0 && dataSource == _dataSource) {
+        NSMutableIndexSet *collapsedSections = [_collapsedSections mutableCopy];
+        [sections enumerateIndexesUsingBlock:^(NSUInteger section, BOOL *_Nonnull stop) {
+            [_collapsedSections enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *_Nonnull stop) {
+                if (idx >= section) {
+                    [collapsedSections removeIndex:idx];
+                    [collapsedSections addIndex:idx + 1];
+                }
+            }];
+        }];
+        _collapsedSections = collapsedSections;
         [_tableView insertSections:sections withRowAnimation:self.rowAnimation];
     }
 }
@@ -524,6 +569,20 @@
 - (void)dataSource:(id<FTDataSource>)dataSource didDeleteSections:(NSIndexSet *)sections
 {
     if (_isInUserDrivenChangeCallCount == 0 && dataSource == _dataSource) {
+
+        NSMutableIndexSet *collapsedSections = [_collapsedSections mutableCopy];
+        [sections enumerateIndexesUsingBlock:^(NSUInteger section, BOOL *_Nonnull stop) {
+            [_collapsedSections enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *_Nonnull stop) {
+                if (idx == section) {
+                    [collapsedSections removeIndex:idx];
+                } else if (idx > section) {
+                    [collapsedSections removeIndex:idx];
+                    [collapsedSections addIndex:idx - 1];
+                }
+            }];
+        }];
+        _collapsedSections = collapsedSections;
+
         [_tableView deleteSections:sections withRowAnimation:self.rowAnimation];
     }
 }
@@ -538,6 +597,12 @@
 - (void)dataSource:(id<FTDataSource>)dataSource didMoveSection:(NSInteger)section toSection:(NSInteger)newSection
 {
     if (_isInUserDrivenChangeCallCount == 0 && dataSource == _dataSource) {
+        if ([_collapsedSections containsIndex:section]) {
+            NSMutableIndexSet *collapsedSections = [_collapsedSections mutableCopy];
+            [collapsedSections removeIndex:section];
+            [collapsedSections addIndex:newSection];
+            _collapsedSections = collapsedSections;
+        }
         [_tableView moveSection:section toSection:newSection];
     }
 }

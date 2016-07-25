@@ -41,6 +41,10 @@ typedef NSDictionary * (^FTTableViewAdapterCellPropertiesBlock)(id cell, NSIndex
 #pragma mark User-driven Change
 - (void)performUserDrivenChange:(void (^)())block;
 
+#pragma mark Collapsed Sections
+@property (nonatomic, readonly) NSIndexSet *collapsedSections;
+- (void)setCollapsedSections:(NSIndexSet *)collapsedSections animated:(BOOL)animated;
+
 #pragma mark Prepare Handler
 - (void)forRowsMatchingPredicate:(NSPredicate *)predicate
       useCellWithReuseIdentifier:(NSString *)reuseIdentifier
