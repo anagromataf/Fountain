@@ -551,6 +551,9 @@
 - (void)dataSourceDidReset:(id<FTDataSource>)dataSource
 {
     if (_isInUserDrivenChangeCallCount == 0 && dataSource == _dataSource) {
+        if (self.collapseSectionsByDefault) {
+            _collapsedSections = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [dataSource numberOfSections])];
+        }
         [_tableView reloadData];
     }
 }
