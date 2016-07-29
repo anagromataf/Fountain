@@ -69,12 +69,12 @@
  
     @param observer The observer to add. Mustnot be nil.
  */
-- (void)addObserver:(id<FTDataSourceObserver>)observer;
+- (void)addObserver:(id<FTDataSourceObserver>)observer NS_SWIFT_NAME(addObserver(_:));
 
 /** Removes an object as an observer for the data source.
  
     @param observer The observer to remove. Mustnot be nil.
  */
-- (void)removeObserver:(id<FTDataSourceObserver>)observer;
+- (void)removeObserver:(id<FTDataSourceObserver>)observer NS_SWIFT_NAME(removeObserver(_:));
 
 @end
