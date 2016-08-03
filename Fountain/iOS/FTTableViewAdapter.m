@@ -10,6 +10,7 @@
 #import "FTDataSource.h"
 #import "FTDataSourceObserver.h"
 #import "FTFutureItemsDataSource.h"
+#import "FTMovableItemsDataSource.h"
 #import "FTMutableDataSource.h"
 #import "FTPagingDataSource.h"
 #import "FTTableViewAdapter+Subclassing.h"
@@ -435,6 +436,47 @@
                 }];
             }
         }
+    }
+}
+
+- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if ([self.dataSource conformsToProtocol:@protocol(FTMovableItemsDataSource)]) {
+        id<FTMovableItemsDataSource> dataSource = (id<FTMovableItemsDataSource>)(self.dataSource);
+        NSUInteger numberOfItemsInSection = [dataSource numberOfItemsInSection:indexPath.section];
+        if (indexPath.item < numberOfItemsInSection) {
+            return [dataSource canMoveItemAtIndexPath:indexPath];
+        } else {
+            return NO;
+        }
+    } else {
+        return NO;
+    }
+}
+
+- (NSIndexPath *)tableView:(UITableView *)tableView targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath toProposedIndexPath:(NSIndexPath *)proposedDestinationIndexPath
+{
+    if ([self.dataSource conformsToProtocol:@protocol(FTMovableItemsDataSource)]) {
+        id<FTMovableItemsDataSource> dataSource = (id<FTMovableItemsDataSource>)(self.dataSource);
+        return [dataSource targetIndexPathForMoveFromItemAtIndexPath:sourceIndexPath toProposedIndexPath:proposedDestinationIndexPath];
+    } else {
+        return nil;
+    }
+}
+
+- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath
+{
+    if ([self.dataSource conformsToProtocol:@protocol(FTMovableItemsDataSource)]) {
+        id<FTMovableItemsDataSource> dataSource = (id<FTMovableItemsDataSource>)(self.dataSource);
+        [self performUserDrivenChange:^{
+            NSError *error = nil;
+            BOOL success = [dataSource moveItemAtIndexPath:sourceIndexPath
+                                               toIndexPath:destinationIndexPath
+                                                     error:&error];
+            if (!success) {
+                [self.tableView reloadData];
+            }
+        }];
     }
 }
 
