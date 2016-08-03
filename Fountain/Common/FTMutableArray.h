@@ -16,6 +16,6 @@
  */
 @interface FTMutableArray : NSMutableArray <FTDataSource, FTReverseDataSource>
 
-- (void)replaceAllObejctsWithObjects:(NSArray *)objects;
+- (void)replaceAllObjectsWithObjects:(NSArray *)objects;
 
 @end

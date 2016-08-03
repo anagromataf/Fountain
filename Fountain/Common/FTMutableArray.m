@@ -41,7 +41,7 @@
 
 #pragma mark FTMutableArray
 
-- (void)replaceAllObejctsWithObjects:(NSArray *)objects
+- (void)replaceAllObjectsWithObjects:(NSArray *)objects
 {
     [self ft_performBatchUpdate:^{
         [self removeAllObjects];
