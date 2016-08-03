@@ -49,6 +49,19 @@
     }];
 }
 
+- (void)moveObjectAtIndex:(NSUInteger)fromIndex toIndex:(NSUInteger)toIndex
+{
+    [self ft_performBatchUpdate:^{
+        id object = [self objectAtIndex:fromIndex];
+        [self insertObject:object atIndex:toIndex];
+        if (fromIndex < toIndex) {
+            [self removeObjectAtIndex:fromIndex];
+        } else if (fromIndex > toIndex) {
+            [self removeObjectAtIndex:fromIndex + 1];
+        }
+    }];
+}
+
 #pragma mark NSArray
 
 - (NSUInteger)count
