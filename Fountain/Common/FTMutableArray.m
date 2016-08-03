@@ -39,6 +39,16 @@
     return self;
 }
 
+#pragma mark FTMutableArray
+
+- (void)replaceAllObejctsWithObjects:(NSArray *)objects
+{
+    [self ft_performBatchUpdate:^{
+        [self removeAllObjects];
+        [self addObjectsFromArray:objects];
+    }];
+}
+
 #pragma mark NSArray
 
 - (NSUInteger)count
