@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 
 #import "FTDataSource.h"
+#import "FTMovableItemsDataSource.h"
+#import "FTMutableDataSource.h"
 #import "FTReverseDataSource.h"
 
 /*! <code>FTCombinedDataSource</code> is a data source, that combines the data sources
@@ -16,7 +18,7 @@
  
     The resulting data sour e is a concatenation of the sections of the given data sources.
  */
-@interface FTCombinedDataSource : NSObject <FTDataSource, FTReverseDataSource>
+@interface FTCombinedDataSource : NSObject <FTDataSource, FTReverseDataSource, FTMutableDataSource, FTMovableItemsDataSource>
 
 #pragma mark Life-cycle
 - (instancetype)initWithDataSources:(NSArray *)dataSources;
