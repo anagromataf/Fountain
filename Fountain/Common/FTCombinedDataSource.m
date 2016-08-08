@@ -261,7 +261,7 @@
         id<FTMutableDataSource> mutableDataSource = (id<FTMutableDataSource>)dataSource;
         return [mutableDataSource canEditItemAtIndexPath:convertedIndexPath];
     } else {
-        return nil;
+        return NO;
     }
 }
 
@@ -276,7 +276,7 @@
         id<FTMutableDataSource> mutableDataSource = (id<FTMutableDataSource>)dataSource;
         return [mutableDataSource canDeleteItemAtIndexPath:convertedIndexPath];
     } else {
-        return nil;
+        return NO;
     }
 }
 
@@ -289,7 +289,7 @@
         id<FTMutableDataSource> mutableDataSource = (id<FTMutableDataSource>)dataSource;
         return [mutableDataSource deleteItemAtIndexPath:convertedIndexPath error:error];
     } else {
-        return nil;
+        return NO;
     }
 }
 
