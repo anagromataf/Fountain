@@ -25,6 +25,7 @@
 
 #pragma mark Data Sources
 @property (nonatomic, readonly) NSArray *dataSources;
+- (id<FTDataSource>)dataSourceOfIndexPath:(NSIndexPath *)indexPath;
 
 - (NSUInteger)convertSection:(NSUInteger)section toDataSource:(id<FTDataSource>)dataSource;
 - (NSUInteger)convertSection:(NSUInteger)section fromDataSource:(id<FTDataSource>)dataSource;

@@ -46,6 +46,17 @@
 
 #pragma mark Section Mapping
 
+- (id<FTDataSource>)dataSourceOfIndexPath:(NSIndexPath *)indexPath
+{
+    for (id<FTDataSource> dataSource in _dataSources) {
+        NSRange range = [self sectionRangeOfDataSource:dataSource];
+        if (NSLocationInRange([indexPath indexAtPosition:0], range)) {
+            return dataSource;
+        }
+    }
+    return nil;
+}
+
 - (id<FTDataSource>)dataSourceOfSection:(NSUInteger)section
 {
     NSUInteger dataSourceIndex = [_sectionRanges indexOfObjectPassingTest:^BOOL(NSValue *value, NSUInteger idx, BOOL *stop) {
