@@ -6,6 +6,8 @@
 //  Copyright © 2015 Tobias Kräntzer. All rights reserved.
 //
 
+@import QuartzCore;
+
 #import "FTTableViewAdapter.h"
 #import "FTDataSource.h"
 #import "FTDataSourceObserver.h"
@@ -175,6 +177,8 @@
 
         } else {
 
+            NSMutableIndexSet *sectionFootersToUpdate = [[NSMutableIndexSet alloc] init];
+
             [self.tableView beginUpdates];
 
             [previousCollapsedSections enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *_Nonnull stop) {
@@ -189,6 +193,8 @@
 
                     [self.tableView insertRowsAtIndexPaths:indexPaths
                                           withRowAnimation:rowAnimation];
+
+                    [sectionFootersToUpdate addIndex:idx];
                 }
             }];
 
@@ -204,10 +210,26 @@
 
                     [self.tableView deleteRowsAtIndexPaths:indexPaths
                                           withRowAnimation:rowAnimation];
+
+                    [sectionFootersToUpdate addIndex:idx];
                 }
             }];
 
             [self.tableView endUpdates];
+
+            [CATransaction begin];
+            [sectionFootersToUpdate enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+                UIView *footerView = [self.tableView footerViewForSection:idx];
+                UIView *headerView = [self.tableView headerViewForSection:idx];
+                CGRect frame = [self.tableView rectForFooterInSection:idx];
+                footerView.frame = frame;
+
+                if (headerView) {
+                    [self.tableView bringSubviewToFront:headerView];
+                }
+
+            }];
+            [CATransaction commit];
         }
     }
 }

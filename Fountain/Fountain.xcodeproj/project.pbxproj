@@ -72,6 +72,7 @@
 		F676EF461CCE15B2003047EC /* FTObserverProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = F676EF431CCE15B2003047EC /* FTObserverProxy.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F676EF471CCE15B2003047EC /* FTObserverProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = F676EF441CCE15B2003047EC /* FTObserverProxy.m */; };
 		F676EF481CCE15B2003047EC /* FTObserverProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = F676EF441CCE15B2003047EC /* FTObserverProxy.m */; };
+		F6778D3A1D6D91CF00C97F2D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6778D391D6D91CF00C97F2D /* QuartzCore.framework */; };
 		F6A333EA1B810F9D00C77C58 /* FTMutableSet.h in Headers */ = {isa = PBXBuildFile; fileRef = F6A333E81B810F9D00C77C58 /* FTMutableSet.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F6A333EB1B810F9D00C77C58 /* FTMutableSet.h in Headers */ = {isa = PBXBuildFile; fileRef = F6A333E81B810F9D00C77C58 /* FTMutableSet.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F6A333EC1B810F9D00C77C58 /* FTMutableSet.m in Sources */ = {isa = PBXBuildFile; fileRef = F6A333E91B810F9D00C77C58 /* FTMutableSet.m */; };
@@ -196,6 +197,7 @@
 		F66C7ED01B5AAC4100662CD1 /* FTDataSourceObserver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = FTDataSourceObserver.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		F676EF431CCE15B2003047EC /* FTObserverProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = FTObserverProxy.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		F676EF441CCE15B2003047EC /* FTObserverProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FTObserverProxy.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		F6778D391D6D91CF00C97F2D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS9.3.sdk/System/Library/Frameworks/QuartzCore.framework; sourceTree = DEVELOPER_DIR; };
 		F6A333E81B810F9D00C77C58 /* FTMutableSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = FTMutableSet.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		F6A333E91B810F9D00C77C58 /* FTMutableSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FTMutableSet.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		F6A333EE1B81173900C77C58 /* FTMutableSetTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FTMutableSetTests.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
@@ -226,6 +228,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F6778D3A1D6D91CF00C97F2D /* QuartzCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -262,6 +265,7 @@
 		9C6EABA5FC22E955B4EF0A94 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F6778D391D6D91CF00C97F2D /* QuartzCore.framework */,
 				F645145B1D25184C0066A016 /* iOS */,
 				F64514611D2519170066A016 /* macOS */,
 			);
