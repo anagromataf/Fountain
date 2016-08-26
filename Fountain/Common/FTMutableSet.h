@@ -23,10 +23,15 @@
 @interface FTMutableSet : NSMutableSet <FTDataSource, FTReverseDataSource>
 
 #pragma mark Life-cycle
-- (instancetype)initSortDescriptors:(NSArray *)sortDescriptors;
+- (instancetype)initSortDescriptors:(NSArray *)sortDescriptors DEPRECATED_ATTRIBUTE;
+- (instancetype)initWithSortDescriptors:(NSArray *)sortDescriptors;
+- (instancetype)initWithSortDescriptors:(NSArray *)sortDescriptors includeEmptySections:(BOOL)includeEmptySections;
 
-#pragma mark Sort Descriptors & Clustering
+#pragma mark Sort Descriptors
 @property (nonatomic, readonly) NSArray *sortDescriptors;
+
+#pragma mark Include Empty Sections
+@property (nonatomic, readonly) BOOL includeEmptySections;
 
 #pragma mark Batch Updates
 

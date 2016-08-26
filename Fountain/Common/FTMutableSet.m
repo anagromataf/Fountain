@@ -23,13 +23,15 @@
     NSMutableSet *_insertedObjects;
     NSMutableSet *_updatedObjects;
     NSMutableSet *_deletedObjects;
+
+    BOOL _includeEmptySections;
 }
 
 #pragma mark Life-cycle
 
 - (instancetype)init
 {
-    return [self initWithBackingStore:[[NSMutableArray alloc] init] sortDescriptors:nil];
+    return [self initWithBackingStore:[[NSMutableArray alloc] init] sortDescriptors:nil includeEmptySections:YES];
 }
 
 - (instancetype)initWithObjects:(const id __unsafe_unretained *)objects count:(NSUInteger)cnt
@@ -41,17 +43,33 @@
             [backingStore addObject:obj];
         }
     }
-    return [self initWithBackingStore:backingStore sortDescriptors:nil];
+    return [self initWithBackingStore:backingStore sortDescriptors:nil includeEmptySections:YES];
 }
 
 - (instancetype)initSortDescriptors:(NSArray *)sortDescriptors
 {
     return [self initWithBackingStore:[[NSMutableArray alloc] init]
-                      sortDescriptors:sortDescriptors];
+                      sortDescriptors:sortDescriptors
+                 includeEmptySections:YES];
+}
+
+- (instancetype)initWithSortDescriptors:(NSArray *)sortDescriptors
+{
+    return [self initWithBackingStore:[[NSMutableArray alloc] init]
+                      sortDescriptors:sortDescriptors
+                 includeEmptySections:YES];
+}
+
+- (instancetype)initWithSortDescriptors:(NSArray *)sortDescriptors includeEmptySections:(BOOL)includeEmptySections
+{
+    return [self initWithBackingStore:[[NSMutableArray alloc] init]
+                      sortDescriptors:sortDescriptors
+                 includeEmptySections:includeEmptySections];
 }
 
 - (nonnull instancetype)initWithBackingStore:(NSMutableArray *)backingStore
                              sortDescriptors:(NSArray *)sortDescriptors
+                        includeEmptySections:(BOOL)includeEmptySections
 {
     self = [super init];
     if (self) {
@@ -59,6 +77,7 @@
         _observers = [[NSHashTable alloc] init];
         _batchUpdateCallCount = 0;
         _sortDescriptors = [sortDescriptors count] > 0 ? [sortDescriptors copy] : nil;
+        _includeEmptySections = includeEmptySections;
 
         [_backingStore sortUsingDescriptors:self.sortDescriptors];
     }
@@ -110,14 +129,14 @@
 
 - (id)copyWithZone:(nullable NSZone *)zone
 {
-    return [[[self class] alloc] initWithBackingStore:[_backingStore mutableCopy] sortDescriptors:[_sortDescriptors copy]];
+    return [[[self class] alloc] initWithBackingStore:[_backingStore mutableCopy] sortDescriptors:[_sortDescriptors copy] includeEmptySections:_includeEmptySections];
 }
 
 #pragma mark NSMutableCopying
 
 - (id)mutableCopyWithZone:(NSZone *)zone
 {
-    return [[[self class] alloc] initWithBackingStore:[_backingStore mutableCopy] sortDescriptors:[_sortDescriptors copy]];
+    return [[[self class] alloc] initWithBackingStore:[_backingStore mutableCopy] sortDescriptors:[_sortDescriptors copy] includeEmptySections:_includeEmptySections];
 }
 
 #pragma mark NSCoding
@@ -179,6 +198,13 @@
                                         }];
 }
 
+#pragma mark Include Empty Sections
+
+- (BOOL)includeEmptySections
+{
+    return _includeEmptySections;
+}
+
 #pragma mark Batch Updates
 
 - (void)performBatchUpdate:(void (^)(void))updates
@@ -205,11 +231,43 @@
 
         if (_batchUpdateCallCount == 0) {
 
-            [self ft_applyUpdate];
-            [self ft_applyDeletion];
-            [self ft_applyInsertion];
+            BOOL insertSection = NO;
+            BOOL removeSection = NO;
+
+            BOOL callObserver = YES;
+            if (_includeEmptySections == NO) {
+                if ([_backingStore count] == 0) {
+                    callObserver = NO;
+                    if ([_insertedObjects count] > 0) {
+                        insertSection = YES;
+                    }
+                } else {
+                    NSSet *exsitingObjects = [NSSet setWithArray:_backingStore];
+                    if ([exsitingObjects isEqual:_deletedObjects]) {
+                        callObserver = NO;
+                        removeSection = YES;
+                    }
+                }
+            }
+
+            [self ft_applyUpdateAndCallObserver:callObserver];
+            [self ft_applyDeletionAndCallObserver:callObserver];
+            [self ft_applyInsertionAndCallObserver:callObserver];
 
             for (id<FTDataSourceObserver> observer in self.observers) {
+
+                if (insertSection) {
+                    if ([observer respondsToSelector:@selector(dataSource:didInsertSections:)]) {
+                        [observer dataSource:self didInsertSections:[NSIndexSet indexSetWithIndex:0]];
+                    }
+                }
+
+                if (removeSection) {
+                    if ([observer respondsToSelector:@selector(dataSource:didDeleteSections:)]) {
+                        [observer dataSource:self didDeleteSections:[NSIndexSet indexSetWithIndex:0]];
+                    }
+                }
+
                 if ([observer respondsToSelector:@selector(dataSourceDidChange:)]) {
                     [observer dataSourceDidChange:self];
                 }
@@ -224,7 +282,7 @@
 
 #pragma mark Apply Changes
 
-- (void)ft_applyDeletion
+- (void)ft_applyDeletionAndCallObserver:(BOOL)callObserver
 {
     if ([_deletedObjects count] > 0) {
 
@@ -246,9 +304,11 @@
                 [indexPathsOfDeletedItems addObject:[sectionIndexPath indexPathByAddingIndex:idx]];
             }];
 
-            for (id<FTDataSourceObserver> observer in self.observers) {
-                if ([observer respondsToSelector:@selector(dataSource:didDeleteItemsAtIndexPaths:)]) {
-                    [observer dataSource:self didDeleteItemsAtIndexPaths:indexPathsOfDeletedItems];
+            if (callObserver == YES) {
+                for (id<FTDataSourceObserver> observer in self.observers) {
+                    if ([observer respondsToSelector:@selector(dataSource:didDeleteItemsAtIndexPaths:)]) {
+                        [observer dataSource:self didDeleteItemsAtIndexPaths:indexPathsOfDeletedItems];
+                    }
                 }
             }
         }
@@ -258,7 +318,7 @@
     }
 }
 
-- (void)ft_applyInsertion
+- (void)ft_applyInsertionAndCallObserver:(BOOL)callObserver
 {
     if ([_insertedObjects count] > 0) {
 
@@ -284,7 +344,7 @@
             offset = index + 1;
         }
 
-        if ([indexPathsOfInsertedItems count] > 0) {
+        if (callObserver == YES && [indexPathsOfInsertedItems count] > 0) {
             for (id<FTDataSourceObserver> observer in self.observers) {
                 if ([observer respondsToSelector:@selector(dataSource:didInsertItemsAtIndexPaths:)]) {
                     [observer dataSource:self didInsertItemsAtIndexPaths:indexPathsOfInsertedItems];
@@ -296,7 +356,7 @@
     }
 }
 
-- (void)ft_applyUpdate
+- (void)ft_applyUpdateAndCallObserver:(BOOL)callObserver
 {
     if ([_updatedObjects count] > 0) {
 
@@ -322,30 +382,32 @@
 
         [_backingStore sortUsingComparator:comperator];
 
-        NSIndexPath *sectionIndex = [NSIndexPath indexPathWithIndex:0];
+        if (callObserver) {
+            NSIndexPath *sectionIndex = [NSIndexPath indexPathWithIndex:0];
 
-        for (id object in updatedObjects) {
-            NSUInteger index = [[indexesByObjects objectForKey:object] unsignedIntegerValue];
-            NSUInteger newIndex = [_backingStore indexOfObject:object];
+            for (id object in updatedObjects) {
+                NSUInteger index = [[indexesByObjects objectForKey:object] unsignedIntegerValue];
+                NSUInteger newIndex = [_backingStore indexOfObject:object];
 
-            if (index == newIndex) {
+                if (index == newIndex) {
 
-                NSIndexPath *indexPath = [sectionIndex indexPathByAddingIndex:index];
+                    NSIndexPath *indexPath = [sectionIndex indexPathByAddingIndex:index];
 
-                for (id<FTDataSourceObserver> observer in self.observers) {
-                    if ([observer respondsToSelector:@selector(dataSource:didChangeItemsAtIndexPaths:)]) {
-                        [observer dataSource:self didChangeItemsAtIndexPaths:@[ indexPath ]];
+                    for (id<FTDataSourceObserver> observer in self.observers) {
+                        if ([observer respondsToSelector:@selector(dataSource:didChangeItemsAtIndexPaths:)]) {
+                            [observer dataSource:self didChangeItemsAtIndexPaths:@[ indexPath ]];
+                        }
                     }
-                }
 
-            } else {
+                } else {
 
-                for (id<FTDataSourceObserver> observer in self.observers) {
-                    if ([observer respondsToSelector:@selector(dataSource:didMoveItemAtIndexPath:toIndexPath:)]) {
+                    for (id<FTDataSourceObserver> observer in self.observers) {
+                        if ([observer respondsToSelector:@selector(dataSource:didMoveItemAtIndexPath:toIndexPath:)]) {
 
-                        [observer dataSource:self
-                            didMoveItemAtIndexPath:[sectionIndex indexPathByAddingIndex:index]
-                                       toIndexPath:[sectionIndex indexPathByAddingIndex:newIndex]];
+                            [observer dataSource:self
+                                didMoveItemAtIndexPath:[sectionIndex indexPathByAddingIndex:index]
+                                           toIndexPath:[sectionIndex indexPathByAddingIndex:newIndex]];
+                        }
                     }
                 }
             }
@@ -359,7 +421,11 @@
 
 - (NSUInteger)numberOfSections
 {
-    return 1;
+    if (_includeEmptySections) {
+        return 1;
+    } else {
+        return [_backingStore count] > 0 ? 1 : 0;
+    }
 }
 
 - (NSUInteger)numberOfItemsInSection:(NSUInteger)section

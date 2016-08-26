@@ -292,7 +292,7 @@
                              cell.tag = item.value;
                          }];
 
-    FTMutableSet *set = [[FTMutableSet alloc] initSortDescriptors:@[ [NSSortDescriptor sortDescriptorWithKey:@"value" ascending:YES] ]];
+    FTMutableSet *set = [[FTMutableSet alloc] initWithSortDescriptors:@[ [NSSortDescriptor sortDescriptorWithKey:@"value" ascending:YES] ]];
 
     FTTestItem *item1 = ITEM(10);
     FTTestItem *item2 = ITEM(20);
@@ -352,7 +352,7 @@
                              cell.tag = item.value;
                          }];
 
-    FTMutableSet *set = [[FTMutableSet alloc] initSortDescriptors:@[ [NSSortDescriptor sortDescriptorWithKey:@"value" ascending:YES] ]];
+    FTMutableSet *set = [[FTMutableSet alloc] initWithSortDescriptors:@[ [NSSortDescriptor sortDescriptorWithKey:@"value" ascending:YES] ]];
 
     FTTestItem *item1 = ITEM(10);
     FTTestItem *item2 = ITEM(20);
