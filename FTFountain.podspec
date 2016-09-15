@@ -1,7 +1,7 @@
 # coding: utf-8
 Pod::Spec.new do |s|
   s.name                    = "FTFountain"
-  s.version                 = "2.4.3"
+  s.version                 = "2.5"
   s.summary                 = "Pluggable data sources and adapters for managing list-like content."
   
   s.authors                 = { "Tobias Kräntzer" => "info@tobias-kraentzer.de" }
