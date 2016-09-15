@@ -46,6 +46,17 @@
 
 #pragma mark Section Mapping
 
+- (id<FTDataSource>)dataSourceOfIndexPath:(NSIndexPath *)indexPath
+{
+    for (id<FTDataSource> dataSource in _dataSources) {
+        NSRange range = [self sectionRangeOfDataSource:dataSource];
+        if (NSLocationInRange([indexPath indexAtPosition:0], range)) {
+            return dataSource;
+        }
+    }
+    return nil;
+}
+
 - (id<FTDataSource>)dataSourceOfSection:(NSUInteger)section
 {
     NSUInteger dataSourceIndex = [_sectionRanges indexOfObjectPassingTest:^BOOL(NSValue *value, NSUInteger idx, BOOL *stop) {
@@ -217,6 +228,143 @@
 - (void)removeObserver:(id<FTDataSourceObserver>)observer
 {
     [_observers removeObject:observer];
+}
+
+#pragma mark - FTMutableDataSource
+
+#pragma mark Insertion
+
+- (BOOL)canInsertItem:(id)item
+{
+    for (id<FTDataSource> dataSource in self.dataSources) {
+        if ([dataSource conformsToProtocol:@protocol(FTMutableDataSource)]) {
+            id<FTMutableDataSource> mutableDataSource = (id<FTMutableDataSource>)dataSource;
+            if ([mutableDataSource canInsertItem:item]) {
+                return YES;
+            }
+        }
+    }
+    return NO;
+}
+
+- (NSIndexPath *)insertItem:(id)item atProposedIndexPath:(NSIndexPath *)proposedIndexPath error:(NSError **)error
+{
+    NSUInteger section = [proposedIndexPath indexAtPosition:0];
+    id<FTDataSource> dataSource = [self dataSourceOfSection:section];
+    if ([dataSource conformsToProtocol:@protocol(FTMutableDataSource)]) {
+        NSIndexPath *convertedIndexPath = [self convertIndexPath:proposedIndexPath toDataSource:dataSource];
+        id<FTMutableDataSource> mutableDataSource = (id<FTMutableDataSource>)dataSource;
+        NSIndexPath *indexPath = [mutableDataSource insertItem:item atProposedIndexPath:convertedIndexPath error:error];
+        return [self convertIndexPath:indexPath fromDataSource:dataSource];
+    } else {
+        return nil;
+    }
+}
+
+#pragma mark Editing
+
+- (BOOL)canEditItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSUInteger section = [indexPath indexAtPosition:0];
+    id<FTDataSource> dataSource = [self dataSourceOfSection:section];
+    if ([dataSource conformsToProtocol:@protocol(FTMutableDataSource)]) {
+        NSIndexPath *convertedIndexPath = [self convertIndexPath:indexPath toDataSource:dataSource];
+        id<FTMutableDataSource> mutableDataSource = (id<FTMutableDataSource>)dataSource;
+        return [mutableDataSource canEditItemAtIndexPath:convertedIndexPath];
+    } else {
+        return NO;
+    }
+}
+
+#pragma mark Deletion
+
+- (BOOL)canDeleteItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSUInteger section = [indexPath indexAtPosition:0];
+    id<FTDataSource> dataSource = [self dataSourceOfSection:section];
+    if ([dataSource conformsToProtocol:@protocol(FTMutableDataSource)]) {
+        NSIndexPath *convertedIndexPath = [self convertIndexPath:indexPath toDataSource:dataSource];
+        id<FTMutableDataSource> mutableDataSource = (id<FTMutableDataSource>)dataSource;
+        return [mutableDataSource canDeleteItemAtIndexPath:convertedIndexPath];
+    } else {
+        return NO;
+    }
+}
+
+- (BOOL)deleteItemAtIndexPath:(NSIndexPath *)indexPath error:(NSError **)error
+{
+    NSUInteger section = [indexPath indexAtPosition:0];
+    id<FTDataSource> dataSource = [self dataSourceOfSection:section];
+    if ([dataSource conformsToProtocol:@protocol(FTMutableDataSource)]) {
+        NSIndexPath *convertedIndexPath = [self convertIndexPath:indexPath toDataSource:dataSource];
+        id<FTMutableDataSource> mutableDataSource = (id<FTMutableDataSource>)dataSource;
+        return [mutableDataSource deleteItemAtIndexPath:convertedIndexPath error:error];
+    } else {
+        return NO;
+    }
+}
+
+#pragma mark - FTMovableItemsDataSource
+
+- (BOOL)canMoveItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSUInteger section = [indexPath indexAtPosition:0];
+    id<FTDataSource> dataSource = [self dataSourceOfSection:section];
+    if ([dataSource conformsToProtocol:@protocol(FTMovableItemsDataSource)]) {
+        NSIndexPath *convertedIndexPath = [self convertIndexPath:indexPath toDataSource:dataSource];
+        id<FTMovableItemsDataSource> movableItemsDataSource = (id<FTMovableItemsDataSource>)dataSource;
+        return [movableItemsDataSource canMoveItemAtIndexPath:convertedIndexPath];
+    } else {
+        return NO;
+    }
+}
+
+- (NSIndexPath *)targetIndexPathForMoveFromItemAtIndexPath:(NSIndexPath *)sourceIndexPath
+                                       toProposedIndexPath:(NSIndexPath *)proposedDestinationIndexPath
+{
+    NSUInteger sourceSection = [sourceIndexPath indexAtPosition:0];
+    id<FTDataSource> sourceDataSource = [self dataSourceOfSection:sourceSection];
+
+    NSUInteger destinationSection = [proposedDestinationIndexPath indexAtPosition:0];
+    id<FTDataSource> destinationDataSource = [self dataSourceOfSection:destinationSection];
+
+    if (sourceDataSource == destinationDataSource) {
+        if ([sourceDataSource conformsToProtocol:@protocol(FTMovableItemsDataSource)]) {
+            id<FTMovableItemsDataSource> movableItemsDataSource = (id<FTMovableItemsDataSource>)sourceDataSource;
+            NSIndexPath *convertedSourceIndexPath = [self convertIndexPath:sourceIndexPath toDataSource:movableItemsDataSource];
+            NSIndexPath *convertedProposedDestinationIndexPath = [self convertIndexPath:proposedDestinationIndexPath toDataSource:movableItemsDataSource];
+            NSIndexPath *targetIndexPath = [movableItemsDataSource targetIndexPathForMoveFromItemAtIndexPath:convertedSourceIndexPath toProposedIndexPath:convertedProposedDestinationIndexPath];
+            return [self convertIndexPath:targetIndexPath fromDataSource:sourceDataSource];
+        } else {
+            return nil;
+        }
+    } else {
+        return nil;
+    }
+}
+
+- (BOOL)moveItemAtIndexPath:(NSIndexPath *)sourceIndexPath
+                toIndexPath:(NSIndexPath *)destinationIndexPath
+                      error:(NSError **)error
+{
+    NSUInteger sourceSection = [sourceIndexPath indexAtPosition:0];
+    id<FTDataSource> sourceDataSource = [self dataSourceOfSection:sourceSection];
+
+    NSUInteger destinationSection = [destinationIndexPath indexAtPosition:0];
+    id<FTDataSource> destinationDataSource = [self dataSourceOfSection:destinationSection];
+
+    if (sourceDataSource == destinationDataSource) {
+        if ([sourceDataSource conformsToProtocol:@protocol(FTMovableItemsDataSource)]) {
+            id<FTMovableItemsDataSource> movableItemsDataSource = (id<FTMovableItemsDataSource>)sourceDataSource;
+            NSIndexPath *convertedSourceIndexPath = [self convertIndexPath:sourceIndexPath toDataSource:movableItemsDataSource];
+            NSIndexPath *convertedDestinationIndexPath = [self convertIndexPath:destinationIndexPath toDataSource:movableItemsDataSource];
+            return [movableItemsDataSource moveItemAtIndexPath:convertedSourceIndexPath toIndexPath:convertedDestinationIndexPath error:error];
+        } else {
+            return NO;
+        }
+    } else {
+        return NO;
+    }
 }
 
 #pragma mark - FTDataSourceObserver

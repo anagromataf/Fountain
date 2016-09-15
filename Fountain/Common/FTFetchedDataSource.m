@@ -109,7 +109,7 @@
             [set addObserver:_observers];
             _fetchedObjects = set;
         } else {
-            FTMutableSet *set = [[FTMutableSet alloc] initSortDescriptors:self.sortDescriptors];
+            FTMutableSet *set = [[FTMutableSet alloc] initWithSortDescriptors:self.sortDescriptors];
             [set addObjectsFromArray:result];
             [set addObserver:_observers];
             _fetchedObjects = set;
@@ -146,7 +146,7 @@
             [set addObserver:_observers];
             _fetchedObjects = set;
         } else {
-            FTMutableSet *set = [[FTMutableSet alloc] initSortDescriptors:self.sortDescriptors];
+            FTMutableSet *set = [[FTMutableSet alloc] initWithSortDescriptors:self.sortDescriptors];
             [set addObjectsFromArray:result.finalResult];
             [set addObserver:_observers];
             _fetchedObjects = set;
