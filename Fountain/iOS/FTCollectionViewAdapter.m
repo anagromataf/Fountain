@@ -364,6 +364,15 @@
     }
 }
 
+- (BOOL)conformsToProtocol:(Protocol *)aProtocol
+{
+    if ([super conformsToProtocol:aProtocol]) {
+        return YES;
+    } else {
+        return [self.delegate conformsToProtocol:aProtocol];
+    }
+}
+
 - (id)forwardingTargetForSelector:(SEL)aSelector
 {
     return self.delegate;
