@@ -23,7 +23,7 @@
 @interface FTMutableSet : NSMutableSet <FTDataSource, FTReverseDataSource>
 
 #pragma mark Life-cycle
-- (instancetype)initSortDescriptors:(NSArray *)sortDescriptors NS_SWIFT_UNAVAILABLE("deprecated") DEPRECATED_ATTRIBUTE;
+- (instancetype)initSortDescriptors:(NSArray *)sortDescriptors NS_SWIFT_UNAVAILABLE("deprecated")DEPRECATED_ATTRIBUTE;
 - (instancetype)initWithSortDescriptors:(NSArray *)sortDescriptors;
 - (instancetype)initWithSortDescriptors:(NSArray *)sortDescriptors includeEmptySections:(BOOL)includeEmptySections;
 
