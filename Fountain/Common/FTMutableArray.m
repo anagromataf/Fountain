@@ -51,15 +51,13 @@
 
 - (void)moveObjectAtIndex:(NSUInteger)fromIndex toIndex:(NSUInteger)toIndex
 {
-    [self ft_performBatchUpdate:^{
-        id object = [self objectAtIndex:fromIndex];
-        [self insertObject:object atIndex:toIndex];
-        if (fromIndex < toIndex) {
+    if (fromIndex != toIndex) {
+        [self ft_performBatchUpdate:^{
+            id object = [self objectAtIndex:fromIndex];
             [self removeObjectAtIndex:fromIndex];
-        } else if (fromIndex > toIndex) {
-            [self removeObjectAtIndex:fromIndex + 1];
-        }
-    }];
+            [self insertObject:object atIndex:toIndex];
+        }];
+    }
 }
 
 #pragma mark NSArray
