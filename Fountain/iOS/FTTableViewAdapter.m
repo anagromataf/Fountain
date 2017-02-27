@@ -423,6 +423,22 @@
     }
 }
 
+- (NSArray<UITableViewRowAction *> *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSUInteger numberOfItemsInSection = [self.dataSource numberOfItemsInSection:indexPath.section];
+    if (indexPath.item < numberOfItemsInSection) {
+        if ([self.dataSource conformsToProtocol:@protocol(FTMutableDataSource)] &&
+            [self.dataSource respondsToSelector:@selector(editActionsForRowAtIndexPath:)]) {
+            id<FTMutableDataSource> mutableDataSource = (id<FTMutableDataSource>)self.dataSource;
+            NSArray *editActions = [mutableDataSource editActionsForRowAtIndexPath:indexPath];
+            return editActions;
+        } else {
+            return nil;
+        }
+    } else {
+        return nil;
+    }
+}
+
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if ([self.dataSource conformsToProtocol:@protocol(FTMutableDataSource)]) {
@@ -597,11 +613,21 @@
 
 - (BOOL)respondsToSelector:(SEL)aSelector
 {
-    if ([super respondsToSelector:aSelector]) {
-        return YES;
+    if (aSelector == @selector(tableView:editingStyleForRowAtIndexPath:)
+        && [self.dataSource conformsToProtocol:@protocol(FTMutableDataSource)]) {
+        id<FTMutableDataSource> mutableDataSource = (id<FTMutableDataSource>)self.dataSource;
+        if ([mutableDataSource respondsToSelector:@selector(editActionsForRowAtIndexPath:)]) {
+            return NO;
+        } else {
+            return YES;
+        }
     } else {
-        BOOL respondsToSelector = [self.delegate respondsToSelector:aSelector];
-        return respondsToSelector;
+        if ([super respondsToSelector:aSelector]) {
+            return YES;
+        } else {
+            BOOL respondsToSelector = [self.delegate respondsToSelector:aSelector];
+            return respondsToSelector;
+        }
     }
 }
 
