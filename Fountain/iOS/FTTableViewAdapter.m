@@ -98,6 +98,8 @@
         if (self.collapseSectionsByDefault) {
             _collapsedSections = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [dataSource numberOfSections])];
         }
+        _tableView.delegate = nil;
+        _tableView.delegate = self;
         [_tableView reloadData];
     }
 }
